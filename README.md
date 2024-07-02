@@ -5,7 +5,7 @@
     style="width: 75%; min-width: 250px; max-width: 500px;"/>
 </picture>
 
-<br>
+<p><br></p>
 
 [![CI][ci-b]][ci-l] ![tests][test-b] ![coverage][cov-b] [![pep8][pep-b]][pep-l]
 
@@ -26,9 +26,10 @@ This package is a wrapper for the well-known Thevenin equivalent circuit model. 
     Figure 1: 2RC Thevenin circuit.
 </p>
 
-This system is governed by the evolution of the state of charge (soc, $-$), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). soc and $V_j$ evolve in time as
+This system is governed by the evolution of the state of charge (soc, -), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). soc and $V_j$ evolve in time as
 
 $$\frac{d\rm soc}{dt} = \frac{-I}{3600Q},$$
+
 $$\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},$$
 
 where $I$ is the load current (A), $Q$ is the cell capacity (Ah), and $R_j$ and $C_j$ are the resistance (Ohm) and capacitance (F) of each RC pair $j$. Note that the sign convention for $I$ is chosen such that positive $I$ discharges the battery (reduces soc) and negative $I$ charges the battery (increases soc). This convention is consistent with common higher-fidelty models, e.g., the single particle model or pseudo-2D model. While it's not explicitly included in the equations above, $R_j$ and $C_j$ are functions of soc and $T_{\rm cell}$. The temperature increases while the cell is active according to
@@ -38,6 +39,7 @@ $$mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},$$
 where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $\dot{Q}_{\rm gen}$ is the heat generation (W), and $\dot{Q}_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
 
 $$\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}),$$
+
 $$\dot{Q}_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),$$
 
 where $h$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm ocv}$ is the open circuit voltage (V) and is a function of soc.
