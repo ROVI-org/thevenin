@@ -5,7 +5,7 @@
     style="width: 75%; min-width: 250px; max-width: 500px;"/>
 </picture>
 
-</br>
+<br>
 
 [![CI][ci-b]][ci-l] ![tests][test-b] ![coverage][cov-b] [![pep8][pep-b]][pep-l]
 
@@ -21,46 +21,30 @@
 ## Summary
 This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series reistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC paris; however, the model can be run with as few as zero, and as many as $N$.
 
-<p style="text-align: center">
+<p align="center">
     <img alt="2RC Thevenin circuit." src="./images/thevenin_circuit.png" style="width: 75%; min-width: 250px; max-width: 500px;"/></br>
     Figure 1: 2RC Thevenin circuit.
 </p>
 
 This system is governed by the evolution of the state of charge (soc, $-$), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). soc and $V_j$ evolve in time as
 
-$
-\begin{align}
-    &\frac{d\rm soc}{dt} = \frac{-I}{3600Q}, \\
-    &\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},
-\end{align}
-$
+$$\frac{d\rm soc}{dt} = \frac{-I}{3600Q},$$
+$$\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},$$
 
 where $I$ is the load current (A), $Q$ is the cell capacity (Ah), and $R_j$ and $C_j$ are the resistance (Ohm) and capacitance (F) of each RC pair $j$. Note that the sign convention for $I$ is chosen such that positive $I$ discharges the battery (reduces soc) and negative $I$ charges the battery (increases soc). This convention is consistent with common higher-fidelty models, e.g., the single particle model or pseudo-2D model. While it's not explicitly included in the equations above, $R_j$ and $C_j$ are functions of soc and $T_{\rm cell}$. The temperature increases while the cell is active according to
 
-$$
-\begin{equation}
-    mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},
-\end{equation}
-$$
+$$mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},$$
 
 where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $\dot{Q}_{\rm gen}$ is the heat generation (W), and $\dot{Q}_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
 
-$$
-\begin{align}
-    &\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}), \\
-    &\dot{Q}_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),
-\end{align}
-$$
+$$\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}),$$
+$$\dot{Q}_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),$$
 
-where $h$ is the convecitive heat transfer coefficient (W/m$^2$/K), $A$ is heat loss area (m$^2$), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm ocv}$ is the open circuit voltage (V) and is a function of soc.
+where $h$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm ocv}$ is the open circuit voltage (V) and is a function of soc.
 
 Finally, the overall cell voltage is
 
-$$
-\begin{equation}
-    V_{\rm cell} = V_{\rm ocv}({\rm soc}) - \sum_j V_j - IR_0,
-\end{equation}
-$$
+$$V_{\rm cell} = V_{\rm ocv}({\rm soc}) - \sum_j V_j - IR_0,$$
 
 where $R_0$ the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of soc and $T_{\rm cell}$.
 
