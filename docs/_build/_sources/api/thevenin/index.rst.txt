@@ -1,0 +1,732 @@
+thevenin
+========
+
+.. py:module:: thevenin
+
+.. autoapi-nested-parse::
+
+   .. rubric:: thevenin
+
+   The Thevenin equivalent circuit model is a common low-fidelity battery model
+   consisting of a single resistor in series with any number of RC pairs, i.e.,
+   parallel resistor-capacitor pairs. This Python package contains an API for
+   building and running experiments using Thevenin models.
+
+   .. rubric:: How to use the documentation
+
+   Documentation is accessible via Python's ``help()`` function which prints
+   docstrings from a package, module, function, class, etc. In addition, you can
+   access the documentation by calling the built-in ``thevenin.docs()`` method to
+   open a local website. The website includes search functionality and examples,
+   beyond the code docstrings.
+
+   .. rubric:: Viewing documentation using IPython
+
+   Start IPython and import ``thevenin``. To see what's available in ``thevenin``,
+   type ``thevenin.<TAB>`` (where ``<TAB>`` is the TAB key). To view type hints
+   and/or brief descriptions, type an open parenthesis ``(`` after any subpacakge,
+   module, class, function, etc. (e.g., ``thevenin.Model(``).
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   thevenin.CycleSolution
+   thevenin.Experiment
+   thevenin.IDASolver
+   thevenin.Model
+   thevenin.StepSolution
+
+
+Package Contents
+----------------
+
+.. py:class:: CycleSolution(*sols)
+
+
+
+   All-step solution.
+
+   A solution instance with all experiment steps stitch together into
+   a single cycle.
+
+   :param \*sols: All unpacked StepSolution instances to stitch together. The given
+                  steps should be given in the same sequential order that they were
+                  run.
+   :type \*sols: StepSolution
+
+
+   .. py:method:: get_steps(idx)
+
+      Return a subset of the solution.
+
+      :param idx: The step index (int) or first/last indices (tuple) to return.
+      :type idx: int | tuple
+
+      :returns: **sol** (*StepSolution | CycleSolution*) -- The returned solution subset. A StepSolution is returned if 'idx'
+                is an int, and a CycleSolution will be returned for the range of
+                requested steps when 'idx' is a tuple.
+
+
+
+   .. py:method:: plot(x, y, **kwargs)
+
+      Plot any two variables in 'vars' against each other.
+
+      :param x: A variable key in 'vars' to be used for the x-axis.
+      :type x: str
+      :param y: A variable key in 'vars' to be used for the y-axis.
+      :type y: str
+
+      :returns: *None.*
+
+
+
+   .. py:property:: errors
+      :type: bool | tuple
+
+      Details regarding whether or not an error stopped the solver.
+
+      :returns: **errors** (*bool | tuple*) -- If an error stopped the solver, this value will be a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the error was triggered. If an error did not
+                stop the solver, this value will be False.
+
+
+   .. py:property:: message
+      :type: str
+
+      Readalbe solver exit message.
+
+      :returns: **message** (*str*) -- Exit message from the IDASolver.
+
+
+   .. py:property:: roots
+      :type: bool | tuple
+
+      Details regarding whether or not a rootfn stopped the solver.
+
+      :returns: **roots** (*bool | tuple*) -- If a rootfn stopped the solver, this value will be a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the root function was triggered. If a root did
+                not stop the solver, this value will be False.
+
+
+   .. py:property:: solvetime
+      :type: str
+
+      Print a statement specifying how long IDASolver spent integrating.
+
+      :returns: **solvetime** (*str*) -- An f-string with the total solver integration time in seconds.
+
+
+   .. py:property:: success
+      :type: bool
+
+      Overall solver exit status.
+
+      :returns: **success** (*bool*) -- True if no errors, False otherwise.
+
+
+   .. py:property:: t
+      :type: numpy.ndarray
+
+      Saved solution times.
+
+      :returns: **t** (*1D np.array*) -- Solution times [s].
+
+
+   .. py:property:: tstop
+      :type: bool | tuple
+
+      Details regarding whether or not the tstop option stopped the solver.
+
+      :returns: **tstop** (*bool | tuple*) -- If the tstop option stopped the solver, this value is a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the tstop function was triggered. If tstop did
+                not stop the solver, this value will be False.
+
+
+   .. py:property:: y
+      :type: numpy.ndarray
+
+      Solution variables [units]. Rows correspond to solution times and
+      columns to state variables, in the same order as y0.
+
+      :returns: **y** (*2D np.array*) -- Solution variables [units].
+
+
+   .. py:property:: ydot
+      :type: numpy.ndarray
+
+      Solution variable time derivatives [units/s]. Rows and columns share
+      the same organization as y.
+
+      :returns: **ydot** (*2D np.array*) -- Solution variable time derivatives [units/s].
+
+
+.. py:class:: Experiment(**kwargs)
+
+   Experiment builder.
+
+   A class to define an experimental protocol. Use the add_step() method
+   to add a series of sequential steps. Each step defines a control mode,
+   a constant or time-dependent load profile, a time span, and optional
+   limiting criteria to stop the step early if a specified event/state is
+   detected.
+
+   :param kwargs: IDASolver keyword arguments that will span all steps.
+   :type kwargs: dict, optional
+
+   .. seealso::
+
+      :obj:`~thevenin.IDASolver`
+          The solver class, with documentation for most keyword arguments that you might want to adjust.
+
+
+   .. py:method:: add_step(mode, value, tspan, limit = None, **kwargs)
+
+      Add a step to the experiment.
+
+      :param mode: Control mode, from {'current_A', 'voltage_V', 'power_W'}.
+      :type mode: str
+      :param value: Value of boundary contion in the appropriate units.
+      :type value: float | Callable
+      :param tspan: Relative times for recording solution [s]. Providing a tuple as
+                    (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
+                    tspan using ``np.linspace`` or ``np.arange``, respectively.
+      :type tspan: tuple
+      :param limit: Stopping criteria for the new step. The first index must be one
+                    of {'soc', 'temperature_K', 'current_A', 'voltage_V', 'power_W',
+                    'capacity_Ah', 'time_s', 'time_min', 'time_h'}. The second is the
+                    value of the stopping criteria in the appropriate units. All of
+                    the time limits represent the total experiment time. The default
+                    is None.
+      :type limit: tuple[str, float], optional
+      :param \*\*kwargs: IDASolver keyword arguments specific to the new step only.
+      :type \*\*kwargs: dict, optional
+
+      :returns: *None.*
+
+      :raises ValueError: 'mode' is invalid.
+      :raises ValueError: 'limit[0]' is invalid.
+      :raises ValueError: 'tspan' tuple must be length 2.
+      :raises TypeError: 'tspan[1]' must be type int or float.
+
+      .. seealso::
+
+         :obj:`~thevenin.IDASolver`
+             The solver class, with documentation for most keyword arguments that you might want to adjust.
+
+      .. rubric:: Notes
+
+      For time-dependent loads, use a Callable for 'value' with a function
+      signature like def load(t: float) -> float, where t is the step's
+      relative time, in seconds.
+
+      The solution times array is constructed depending on the 'tspan'
+      input types:
+
+      * Given (float, int):
+          ``tspan = np.linspace(0., tspan[0], tspan[1])``
+      * Given (float, float):
+          ``tspan = np.arange(0., tspan[0] + tspan[1], tspan[1])``
+
+
+
+   .. py:method:: print_steps()
+
+      Prints a formatted/readable list of steps.
+
+      :returns: *None.*
+
+
+
+   .. py:property:: num_steps
+      :type: int
+
+      Return number of steps.
+
+      :returns: **num_steps** (*int*) -- Number of steps.
+
+
+   .. py:property:: steps
+      :type: list[dict]
+
+      Return steps list.
+
+      :returns: **steps** (*list[dict]*) -- List of the step dictionaries.
+
+
+.. py:class:: IDASolver(residuals, **kwargs)
+
+   ODE/DAE solver.
+
+   This solver supports first-order ODEs and DAEs. The solver requires the
+   problem to be written in terms of a residual function, with a signature
+   ``def residuals(t, y, yp, res, inputs) -> None``. Instead of a return
+   value, the function fills ``res`` (a 1D array sized like ``y``) with
+   expressions from the system of equations, ``res = M(y)*yp - f(t, y)``.
+   Here, ``t`` is time, ``y`` is an array of dependent solution variables,
+   and ``yp`` are time derivatives of ``y``. The ``inputs`` argument allows
+   the user to pass any additional parameters to the residuals function.
+
+   :param residuals: Function like ``def residuals(t, y, yp, res, inputs) -> None``.
+   :type residuals: Callable
+   :param \*\*kwargs: Keywords, descriptions, and defaults given below.
+
+                      =========== =================================================
+                      Key         Description (*type* or {options}, default)
+                      =========== =================================================
+                      atol        absolute tolerance (*float*, 1e-6)
+                      rtol        relative tolerance (*float*, 1e-5)
+                      inputs      optional residual arguments (*tuple*, None)
+                      linsolver   linear solver ({'dense', 'band'}, 'dense')
+                      lband       residual function's lower bandwidth (*int*, 0)
+                      uband       residual function's upper bandwidth (*int*, 0)
+                      rootfn      root/event function (*Callable*, None)
+                      nr_rootfns  number of events in rootfn (*int*, 0)
+                      initcond    uncertain t0 values ({'y0', 'yp0', None}, 'yp0')
+                      algidx      algebraic variable indices (*list[int]*, None)
+                      max_dt      maximum allowable integration step (*float*, 0.)
+                      tstop       maximum integration time (*float*, 0.)
+                      =========== =================================================
+   :type \*\*kwargs: dict, optional
+
+   .. rubric:: Notes
+
+   * IDA stands for Implicit Differential Algebraic solver. The solver is
+     accessed through `scikits-odes`_, a Python wrapper for `SUNDIALS`_.
+   * Not setting ``algidx`` for DAEs will likely result in an instability.
+   * For unrestricted integration steps, use ``max_dt = 0.``.
+   * Root functions require a signature like ``def rootfn(t, y, yp, events,
+     inputs) -> None``. Instead of a return value, the function fills the
+     ``events`` argument (a 1D array with size equal to the number of events
+     to track). If any ``events`` index equals zero during integration, the
+     solver will exit.
+   * If setting ``rootfn``, you also need to set ``nr_rootfns`` to allocate
+     memory for the correct number of expressions (i.e., ``events.size``).
+
+   .. _SUNDIALS: https://sundials.readthedocs.io/
+   .. _scikits-odes: https://bmcage.github.io/odes/dev/
+
+   .. rubric:: Examples
+
+   The following demonstrates solving a system of ODEs. For ODEs, derivative
+   expressions ``yp`` can be written for each ``y``. Therefore, we can write
+   each residual as ``res[i] = yp[i] - f(t, y)`` where ``f(t, y)`` is an
+   expression for the derivative in terms of ``t`` and ``y``.
+
+   Note that even though the solver requires knowing the initial derivatives,
+   we set ``yp0 = np.zeros_like(y0)``, which are not true ``yp0`` values. The
+   default option ``initcond='yp0'`` solves for the correct ``yp0`` values
+   before starting the integration.
+
+   .. code-block:: python
+
+       import thevenin
+       import numpy as np
+       import matplotlib.pyplot as plt
+
+       def residuals(t, y, yp, res):
+           res[0] = yp[0] - y[1]
+           res[1] = yp[1] - 1e3*(1. - y[0]**2)*y[1] + y[0]
+
+       solver = thevenin.IDASolver(residuals)
+
+       y0 = np.array([0.5, 0.5])
+       yp0 = np.zeros_like(y0)
+       tspan = np.linspace(0., 500., 200)
+
+       solution = solver.solve(tspan, y0, yp0)
+
+       plt.plot(solution.t, solution.y)
+       plt.show()
+
+   The next problem solves a DAE system. DAEs arise when systems of governing
+   equations contain both ODEs and algebraic constraints.
+
+   To solve a DAE, you should specify the ``y`` indices that store algebraic
+   variables. In other words, for which ``y`` can you not write a ``yp``
+   expression? In the example below, we have ``yp[0]`` and ``yp[1]`` filling
+   the first two residual expressions. However, ``yp[2]`` does not appear in
+   any of the residuals. Therefore, ``y[2]`` is an algebraic variable, and we
+   tell this to the solver using the keyword argument ``algidx=[2]``. Even
+   though we only have one algebraic variable, this option input must be a
+   list of integers.
+
+   As in the ODE example, we let the solver determine the ``yp0`` values
+   that provide a consistent initial condition. Prior to plotting, ``y[1]``
+   is scaled for visual purposes. You can see the same example provided by
+   `MATLAB`_.
+
+   .. code-block:: python
+
+       import thevenin
+       import numpy as np
+       import matplotlib.pyplot as plt
+
+       def residuals(t, y, yp, res):
+           res[0] = yp[0] + 0.04*y[0] - 1e4*y[1]*y[2]
+           res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2
+           res[2] = y[0] + y[1] + y[2] - 1.
+
+       solver = thevenin.IDASolver(residuals, algidx=[2])
+
+       y0 = np.array([1., 0., 0.])
+       yp0 = np.zeros_like(y0)
+       tspan = np.hstack([0., 4.*np.logspace(-6, 6)])
+
+       solution = solver.solve(tspan, y0, yp0)
+
+       solution.y[:, 1] *= 1e4
+
+       plt.semilogx(solution.t, solution.y)
+       plt.show()
+
+   .. _MATLAB:
+       https://mathworks.com/help/matlab/math/
+       solve-differential-algebraic-equations-daes.html
+
+
+   .. py:method:: init_step(t0, y0, ydot0)
+
+      Solve for a consistent initial condition.
+
+      :param t0: Initial time [s].
+      :type t0: float
+      :param y0: State variables at t0.
+      :type y0: 1D np.array
+      :param yp0: State variable time derivatives at t0.
+      :type yp0: 1D np.array
+
+      :returns: **solution** (*SolverReturn*) -- Solution at time t0.
+
+
+
+   .. py:method:: solve(tspan, y0, ydot0)
+
+      Solve the system over 'tspan'.
+
+      :param tspan: Times [s] to store the solution.
+      :type tspan: 1D np.array
+      :param y0: State variables at tspan[0].
+      :type y0: 1D np.array
+      :param yp0: State variable time derivatives at tspan[0].
+      :type yp0: 1D np.array
+
+      :returns: **solution** (*SolverReturn*) -- Solution at times in tspan.
+
+
+
+   .. py:method:: step(t)
+
+      Solve for a successive time step.
+
+      Before calling step() for the first time, call init_step() to
+      initialize the solver at 't0'.
+
+      :param t: Solution step time [s]. Can be higher or lower than the previous
+                time, however, significantly lower values may return errors.
+      :type t: float
+
+      :returns: **solution** (*SolverReturn*) -- Solution at time t.
+
+
+
+.. py:class:: Model(params = 'params.yaml')
+
+   Circuit model.
+
+   A class to construct and run the model. Provide the parameters using
+   either a dictionary or a '.yaml' file. Note that the number of Rj and
+   Cj attributes must be consistent with the num_RC_pairs value. See the
+   notes for more information on the callable parameters.
+
+   :param params: Mapping of model parameter names to their values. Can be either
+                  a dict or absolute/relateive file path to a yaml file (str). The
+                  keys/value pair descriptions are given below. The default uses a
+                  .yaml file. Use the templates() function to view this file.
+
+                  ============= =========================================
+                  Key           Value (*type*, units)
+                  ============= =========================================
+                  num_RC_pairs  number of RC pairs (*int*, -)
+                  soc0          initial state of charge (*float*, -)
+                  capacity      maximum battery capacity (*float*, Ah)
+                  mass          total battery mass (*float*, kg)
+                  isothermal    flag for isothermal model (*bool*, -)
+                  Cp            specific heat capacity (*float*, J/kg/K)
+                  T_inf         room/air temperature (*float*, K)
+                  h_therm       convective coefficient (*float*, W/m2/K)
+                  A_therm       heat loss area (*float*, m2)
+                  ocv           open circuit voltage (*callable*, V)
+                  R0            series resistance (*callable*, Ohm)
+                  Rj            resistance in RCj (*callable*, Ohm)
+                  Cj            capacity in RCj (*callable*, F)
+                  ============= =========================================
+   :type params: dict | str
+
+   :raises TypeError: 'params' must be type dict or str.
+   :raises ValueError: 'params' contains invalid and/or excess key/value pairs.
+
+   .. warning::
+
+      A pre-processor runs at the end of the model initialization. If you
+      modify any parameters after class instantiation, you will need to
+      manually re-run the pre-processor (i.e., the pre() method) afterward.
+
+   .. rubric:: Notes
+
+   The ocv property should have a signature like f(soc: float) -> float,
+   where soc is the time-dependent state of charged solved for within
+   the model. All R0, Rj, and Cj properties should have signatures like
+   f(soc: float, T_cell: float) -> float, where T_cell is the temperature
+   in K determined in the model.
+
+   Rj and Cj are not true property names. These are just used generally
+   in the documentation. If num_RC_pairs=1 then in addition to R0, you
+   should define R1 and C1. If num_RC_pairs=2 then you should also give
+   values for R2 and C2, etc. For the special case where num_RC_pairs=0,
+   you should not provide any resistance or capacitance values besides
+   the series resistance R0, which is always required.
+
+
+   .. py:method:: pre()
+
+      Pre-process and prepare the model for running experiments.
+
+      This method builds solution pointers, registers algebraic variable
+      indices, stores the mass matrix, and initializes the battery state.
+
+      :returns: *None.*
+
+      .. warning::
+
+         This method runs the first time during the class initialization. It
+         generally does not have to be run again unless you modify any model
+         attributes. You should manually re-run the pre-processor if you alter
+         any properties after initialization. Forgetting to manually re-run the
+         pre-processor may cause inconsistencies between the updated properties
+         and the model's pointers, state, etc.
+
+
+
+   .. py:method:: residuals(t, sv, svdot, inputs)
+
+      Return the DAE residuals.
+
+      The DAE residuals should be near zero at each time step. The solver
+      requires the DAE to be written in terms of its residuals in order to
+      minimize their values.
+
+      :param t: Value of time [s].
+      :type t: float
+      :param sv: State variables at time t.
+      :type sv: 1D np.array
+      :param svdot: State variable time derivatives at time t.
+      :type svdot: 1D np.array
+      :param inputs: Dictionary detailing an experimental step.
+      :type inputs: dict
+
+      :returns: **res** (*1D np.array*) -- DAE residuals, res = M*ydot - rhs(t, y).
+
+
+
+   .. py:method:: rhs_funcs(t, sv, inputs)
+
+      Right hand side functions.
+
+      Returns the right hand side for the DAE system. For any differential
+      variable i, rhs[i] must be equivalent to M[i, i]*y[i]. For algebraic
+      variables rhs[i] must be an expression that equals zero.
+
+      :param t: Value of time [s].
+      :type t: float
+      :param sv: State variables at time t.
+      :type sv: 1D np.array
+      :param inputs: Dictionary detailing an experimental step.
+      :type inputs: dict
+
+      :returns: **rhs** (*1D np.array*) -- The right hand side values of the DAE system.
+
+
+
+   .. py:method:: run(exp)
+
+      Run an experiment.
+
+      :param exp: An experiment instance.
+      :type exp: Experiment
+
+      :returns: **sol** (*CycleSolution*) -- A stitched solution will all experimental steps.
+
+      .. seealso::
+
+         :obj:`Experiment`
+             Build an experiment.
+
+         :obj:`CycleSolution`
+             Wrapper for an all-steps solution.
+
+
+
+   .. py:method:: run_step(exp, stepidx)
+
+      Run a single experimental step.
+
+      :param exp: An experiment instance.
+      :type exp: Experiment
+      :param stepidx: Step index to run. The first step has index 0.
+      :type stepidx: int
+
+      :returns: **sol** (*StepSolution*) -- Solution to the experiment step.
+
+      .. warning::
+
+         The model's internal state is changed at the end of each experiment
+         step. Consequently, you should not run steps out of order. You should
+         always start with ``stepidx = 0`` and then progress to the subsequent
+         steps afterward. After the last step, you should manually run the
+         preprocessor ``pre()`` to reset the model before running additional
+         experiments.
+
+      .. seealso::
+
+         :obj:`Experiment`
+             Build an experiment.
+
+         :obj:`StepSolution`
+             Wrapper for a single-step solution.
+
+      .. rubric:: Notes
+
+      Using the ``run()`` method will automatically run all steps in an
+      experiment and will stitch the solutions together for you. You should
+      only run step by step if you trying to fine tune solver options, or
+      if you have a complex protocol and you can't set an experimental step
+      until interpreting a previous step.
+
+
+
+.. py:class:: StepSolution(model, idasol, timer)
+
+
+
+   Single-step solution.
+
+   A solution instance for a single experimental step.
+
+   :param model: The model instance that was run to produce the solution.
+   :type model: Model
+   :param idasol: The unformatted solution returned by IDASolver.
+   :type idasol: SolverReturn
+   :param timer: Amount of time it took for IDASolver to perform the integration.
+   :type timer: float
+
+
+   .. py:method:: plot(x, y, **kwargs)
+
+      Plot any two variables in 'vars' against each other.
+
+      :param x: A variable key in 'vars' to be used for the x-axis.
+      :type x: str
+      :param y: A variable key in 'vars' to be used for the y-axis.
+      :type y: str
+
+      :returns: *None.*
+
+
+
+   .. py:property:: errors
+      :type: bool | tuple
+
+      Details regarding whether or not an error stopped the solver.
+
+      :returns: **errors** (*bool | tuple*) -- If an error stopped the solver, this value will be a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the error was triggered. If an error did not
+                stop the solver, this value will be False.
+
+
+   .. py:property:: message
+      :type: str
+
+      Readalbe solver exit message.
+
+      :returns: **message** (*str*) -- Exit message from the IDASolver.
+
+
+   .. py:property:: roots
+      :type: bool | tuple
+
+      Details regarding whether or not a rootfn stopped the solver.
+
+      :returns: **roots** (*bool | tuple*) -- If a rootfn stopped the solver, this value will be a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the root function was triggered. If a root did
+                not stop the solver, this value will be False.
+
+
+   .. py:property:: solvetime
+      :type: str
+
+      Print a statement specifying how long IDASolver spent integrating.
+
+      :returns: **solvetime** (*str*) -- An f-string with the solver integration time in seconds.
+
+
+   .. py:property:: success
+      :type: bool
+
+      Overall solver exit status.
+
+      :returns: **success** (*bool*) -- True if no errors, False otherwise.
+
+
+   .. py:property:: t
+      :type: numpy.ndarray
+
+      Saved solution times.
+
+      :returns: **t** (*1D np.array*) -- Solution times [s].
+
+
+   .. py:property:: tstop
+      :type: bool | tuple
+
+      Details regarding whether or not the tstop option stopped the solver.
+
+      :returns: **tstop** (*bool | tuple*) -- If the tstop option stopped the solver, this value is a tuple. The
+                first argument will be True, and the second argument will provide
+                the index within t, y, and ydot that stores the values of time
+                and solution when the tstop function was triggered. If tstop did
+                not stop the solver, this value will be False.
+
+
+   .. py:property:: y
+      :type: numpy.ndarray
+
+      Solution variables [units]. Rows correspond to solution times and
+      columns to state variables, in the same order as y0.
+
+      :returns: **y** (*2D np.array*) -- Solution variables [units].
+
+
+   .. py:property:: ydot
+      :type: numpy.ndarray
+
+      Solution variable time derivatives [units/s]. Rows and columns share
+      the same organization as y.
+
+      :returns: **ydot** (*2D np.array*) -- Solution variable time derivatives [units/s].
+
+

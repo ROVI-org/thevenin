@@ -1,0 +1,1012 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>thevenin._model &#8212; thevenin 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=b2d0f202" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/thevenin/_model';</script>
+    <script src="../../_static/custom.js?v=e2d01366"></script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/light.svg" class="logo__image only-light" alt="thevenin 0.0.1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/dark.svg" class="logo__image only-dark" alt="thevenin 0.0.1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">thevenin._model</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for thevenin._model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sparse</span>
+<span class="kn">from</span> <span class="nn">ruamel.yaml</span> <span class="kn">import</span> <span class="n">YAML</span><span class="p">,</span> <span class="n">add_constructor</span><span class="p">,</span> <span class="n">SafeConstructor</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">._experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
+    <span class="kn">from</span> <span class="nn">._solutions</span> <span class="kn">import</span> <span class="n">StepSolution</span><span class="p">,</span> <span class="n">CycleSolution</span>
+
+
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model">[docs]</a>
+<span class="k">class</span> <span class="nc">Model</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Circuit model.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;params.yaml&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class to construct and run the model. Provide the parameters using</span>
+<span class="sd">        either a dictionary or a &#39;.yaml&#39; file. Note that the number of Rj and</span>
+<span class="sd">        Cj attributes must be consistent with the num_RC_pairs value. See the</span>
+<span class="sd">        notes for more information on the callable parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        params : dict | str</span>
+<span class="sd">            Mapping of model parameter names to their values. Can be either</span>
+<span class="sd">            a dict or absolute/relateive file path to a yaml file (str). The</span>
+<span class="sd">            keys/value pair descriptions are given below. The default uses a</span>
+<span class="sd">            .yaml file. Use the templates() function to view this file.</span>
+
+<span class="sd">            ============= =========================================</span>
+<span class="sd">            Key           Value (*type*, units)</span>
+<span class="sd">            ============= =========================================</span>
+<span class="sd">            num_RC_pairs  number of RC pairs (*int*, -)</span>
+<span class="sd">            soc0          initial state of charge (*float*, -)</span>
+<span class="sd">            capacity      maximum battery capacity (*float*, Ah)</span>
+<span class="sd">            mass          total battery mass (*float*, kg)</span>
+<span class="sd">            isothermal    flag for isothermal model (*bool*, -)</span>
+<span class="sd">            Cp            specific heat capacity (*float*, J/kg/K)</span>
+<span class="sd">            T_inf         room/air temperature (*float*, K)</span>
+<span class="sd">            h_therm       convective coefficient (*float*, W/m2/K)</span>
+<span class="sd">            A_therm       heat loss area (*float*, m2)</span>
+<span class="sd">            ocv           open circuit voltage (*callable*, V)</span>
+<span class="sd">            R0            series resistance (*callable*, Ohm)</span>
+<span class="sd">            Rj            resistance in RCj (*callable*, Ohm)</span>
+<span class="sd">            Cj            capacity in RCj (*callable*, F)</span>
+<span class="sd">            ============= =========================================</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            &#39;params&#39; must be type dict or str.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            &#39;params&#39; contains invalid and/or excess key/value pairs.</span>
+
+<span class="sd">        Warnings</span>
+<span class="sd">        --------</span>
+<span class="sd">        A pre-processor runs at the end of the model initialization. If you</span>
+<span class="sd">        modify any parameters after class instantiation, you will need to</span>
+<span class="sd">        manually re-run the pre-processor (i.e., the pre() method) afterward.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The ocv property should have a signature like f(soc: float) -&gt; float,</span>
+<span class="sd">        where soc is the time-dependent state of charged solved for within</span>
+<span class="sd">        the model. All R0, Rj, and Cj properties should have signatures like</span>
+<span class="sd">        f(soc: float, T_cell: float) -&gt; float, where T_cell is the temperature</span>
+<span class="sd">        in K determined in the model.</span>
+
+<span class="sd">        Rj and Cj are not true property names. These are just used generally</span>
+<span class="sd">        in the documentation. If num_RC_pairs=1 then in addition to R0, you</span>
+<span class="sd">        should define R1 and C1. If num_RC_pairs=2 then you should also give</span>
+<span class="sd">        values for R2 and C2, etc. For the special case where num_RC_pairs=0,</span>
+<span class="sd">        you should not provide any resistance or capacitance values besides</span>
+<span class="sd">        the series resistance R0, which is always required.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">_yaml_reader</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;params&#39; must be type dict or str.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repr_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;num_RC_pairs&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;soc0&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;capacity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mass&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;isothermal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Cp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;T_inf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;h_therm&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;A_therm&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_RC_pairs</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;num_RC_pairs&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">soc0</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;soc0&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;capacity&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isothermal</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isothermal&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Cp</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;Cp&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_inf</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;T_inf&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h_therm</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;h_therm&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A_therm</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;A_therm&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ocv</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ocv&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R0</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;R0&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_RC_pairs</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;R&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;C&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">extra_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;params&#39; contains invalid and/or excess&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; key/value pairs: </span><span class="si">{</span><span class="n">extra_keys</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a readable repr string.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        readable : str</span>
+<span class="sd">            A console-readable instance representation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_keys</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">,&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)])</span>
+
+        <span class="n">readable</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model(</span><span class="se">\n\t</span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="se">\n</span><span class="s2">)&quot;</span>
+
+        <span class="k">return</span> <span class="n">readable</span>
+
+<div class="viewcode-block" id="Model.pre">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model.pre">[docs]</a>
+    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pre-process and prepare the model for running experiments.</span>
+
+<span class="sd">        This method builds solution pointers, registers algebraic variable</span>
+<span class="sd">        indices, stores the mass matrix, and initializes the battery state.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        Warnings</span>
+<span class="sd">        --------</span>
+<span class="sd">        This method runs the first time during the class initialization. It</span>
+<span class="sd">        generally does not have to be run again unless you modify any model</span>
+<span class="sd">        attributes. You should manually re-run the pre-processor if you alter</span>
+<span class="sd">        any properties after initialization. Forgetting to manually re-run the</span>
+<span class="sd">        pre-processor may cause inconsistencies between the updated properties</span>
+<span class="sd">        and the model&#39;s pointers, state, etc.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="mf">0.</span>
+
+        <span class="n">ptr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;soc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;T_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;eta_j&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_RC_pairs</span><span class="p">)</span>
+        <span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_RC_pairs</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_RC_pairs</span> <span class="o">+</span> <span class="mi">3</span>
+
+        <span class="n">algidx</span> <span class="o">=</span> <span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span>
+
+        <span class="n">mass_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+        <span class="n">mass_matrix</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;soc&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">mass_matrix</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;T_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Cp</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_inf</span>
+        <span class="n">mass_matrix</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;eta_j&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="n">sv0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+        <span class="n">sv0</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;soc&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">soc0</span>
+        <span class="n">sv0</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;T_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">sv0</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;eta_j&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">sv0</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soc0</span><span class="p">)</span>
+
+        <span class="n">svdot0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">sv0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span> <span class="o">=</span> <span class="n">ptr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_algidx</span> <span class="o">=</span> <span class="n">algidx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mass_matrix</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="n">mass_matrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">sv0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">svdot0</span></div>
+
+
+<div class="viewcode-block" id="Model.rhs_funcs">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model.rhs_funcs">[docs]</a>
+    <span class="k">def</span> <span class="nf">rhs_funcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Right hand side functions.</span>
+
+<span class="sd">        Returns the right hand side for the DAE system. For any differential</span>
+<span class="sd">        variable i, rhs[i] must be equivalent to M[i, i]*y[i]. For algebraic</span>
+<span class="sd">        variables rhs[i] must be an expression that equals zero.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Value of time [s].</span>
+<span class="sd">        sv : 1D np.array</span>
+<span class="sd">            State variables at time t.</span>
+<span class="sd">        inputs : dict</span>
+<span class="sd">            Dictionary detailing an experimental step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rhs : 1D np.array</span>
+<span class="sd">            The right hand side values of the DAE system.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+        <span class="c1"># state</span>
+        <span class="n">soc</span> <span class="o">=</span> <span class="n">sv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;soc&#39;</span><span class="p">]]</span>
+        <span class="n">T_cell</span> <span class="o">=</span> <span class="n">sv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;T_cell&#39;</span><span class="p">]]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_inf</span>
+        <span class="n">eta_j</span> <span class="o">=</span> <span class="n">sv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;eta_j&#39;</span><span class="p">]]</span>
+        <span class="n">voltage</span> <span class="o">=</span> <span class="n">sv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># state-dependent properties</span>
+        <span class="n">ocv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocv</span><span class="p">(</span><span class="n">soc</span><span class="p">)</span>
+        <span class="n">R0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R0</span><span class="p">(</span><span class="n">soc</span><span class="p">,</span> <span class="n">T_cell</span><span class="p">)</span>
+
+        <span class="c1"># calculated current and power</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">voltage</span> <span class="o">-</span> <span class="n">ocv</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eta_j</span><span class="p">))</span> <span class="o">/</span> <span class="n">R0</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="n">current</span><span class="o">*</span><span class="n">voltage</span>
+
+        <span class="c1"># state of charge (differential)</span>
+        <span class="n">rhs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;soc&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">current</span> <span class="o">/</span> <span class="mf">3600.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span>
+
+        <span class="c1"># temperature (differential)</span>
+        <span class="n">Q_gen</span> <span class="o">=</span> <span class="n">current</span><span class="o">*</span><span class="p">(</span><span class="n">ocv</span> <span class="o">-</span> <span class="n">voltage</span><span class="p">)</span>
+        <span class="n">Q_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h_therm</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">A_therm</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_inf</span> <span class="o">-</span> <span class="n">T_cell</span><span class="p">)</span>
+
+        <span class="n">rhs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;T_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q_gen</span> <span class="o">+</span> <span class="n">Q_conv</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isothermal</span><span class="p">)</span>
+
+        <span class="c1"># RC overpotentials (differential)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;eta_j&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">Rj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">))(</span><span class="n">soc</span><span class="p">,</span> <span class="n">T_cell</span><span class="p">)</span>
+            <span class="n">Cj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">))(</span><span class="n">soc</span><span class="p">,</span> <span class="n">T_cell</span><span class="p">)</span>
+            <span class="n">rhs</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">sv</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">Rj</span><span class="o">*</span><span class="n">Cj</span><span class="p">)</span> <span class="o">+</span> <span class="n">current</span> <span class="o">/</span> <span class="n">Cj</span>
+
+        <span class="c1"># cell voltage (algebraic)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;current&#39;</span><span class="p">:</span>
+            <span class="n">rhs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">current</span> <span class="o">-</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">](</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;voltage&#39;</span><span class="p">:</span>
+            <span class="n">rhs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">voltage</span> <span class="o">-</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">](</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;power&#39;</span><span class="p">:</span>
+            <span class="n">rhs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">[</span><span class="s1">&#39;V_cell&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">power</span> <span class="o">-</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">](</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="c1"># values for rootfns</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">+</span> <span class="n">t</span>
+
+        <span class="n">roots</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;soc&#39;</span><span class="p">:</span> <span class="n">soc</span><span class="p">,</span>
+            <span class="s1">&#39;temperature_K&#39;</span><span class="p">:</span> <span class="n">T_cell</span><span class="p">,</span>
+            <span class="s1">&#39;current_A&#39;</span><span class="p">:</span> <span class="n">current</span><span class="p">,</span>
+            <span class="s1">&#39;voltage_V&#39;</span><span class="p">:</span> <span class="n">voltage</span><span class="p">,</span>
+            <span class="s1">&#39;power_W&#39;</span><span class="p">:</span> <span class="n">power</span><span class="p">,</span>
+            <span class="s1">&#39;capacity_Ah&#39;</span><span class="p">:</span> <span class="n">soc</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">capacity</span><span class="p">,</span>
+            <span class="s1">&#39;time_s&#39;</span><span class="p">:</span> <span class="n">total_time</span><span class="p">,</span>
+            <span class="s1">&#39;time_min&#39;</span><span class="p">:</span> <span class="n">total_time</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">,</span>
+            <span class="s1">&#39;time_h&#39;</span><span class="p">:</span> <span class="n">total_time</span> <span class="o">/</span> <span class="mf">3600.</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;roots&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">roots</span>
+
+        <span class="k">return</span> <span class="n">rhs</span></div>
+
+
+<div class="viewcode-block" id="Model.residuals">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model.residuals">[docs]</a>
+    <span class="k">def</span> <span class="nf">residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">svdot</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the DAE residuals.</span>
+
+<span class="sd">        The DAE residuals should be near zero at each time step. The solver</span>
+<span class="sd">        requires the DAE to be written in terms of its residuals in order to</span>
+<span class="sd">        minimize their values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Value of time [s].</span>
+<span class="sd">        sv : 1D np.array</span>
+<span class="sd">            State variables at time t.</span>
+<span class="sd">        svdot : 1D np.array</span>
+<span class="sd">            State variable time derivatives at time t.</span>
+<span class="sd">        inputs : dict</span>
+<span class="sd">            Dictionary detailing an experimental step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        res : 1D np.array</span>
+<span class="sd">            DAE residuals, res = M*ydot - rhs(t, y).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass_matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">svdot</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rhs_funcs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Model.run_step">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model.run_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">stepidx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StepSolution</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run a single experimental step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        exp : Experiment</span>
+<span class="sd">            An experiment instance.</span>
+<span class="sd">        stepidx : int</span>
+<span class="sd">            Step index to run. The first step has index 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sol : StepSolution</span>
+<span class="sd">            Solution to the experiment step.</span>
+
+<span class="sd">        Warning</span>
+<span class="sd">        -------</span>
+<span class="sd">        The model&#39;s internal state is changed at the end of each experiment</span>
+<span class="sd">        step. Consequently, you should not run steps out of order. You should</span>
+<span class="sd">        always start with ``stepidx = 0`` and then progress to the subsequent</span>
+<span class="sd">        steps afterward. After the last step, you should manually run the</span>
+<span class="sd">        preprocessor ``pre()`` to reset the model before running additional</span>
+<span class="sd">        experiments.</span>
+
+<span class="sd">        See also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Experiment : Build an experiment.</span>
+<span class="sd">        StepSolution : Wrapper for a single-step solution.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Using the ``run()`` method will automatically run all steps in an</span>
+<span class="sd">        experiment and will stitch the solutions together for you. You should</span>
+<span class="sd">        only run step by step if you trying to fine tune solver options, or</span>
+<span class="sd">        if you have a complex protocol and you can&#39;t set an experimental step</span>
+<span class="sd">        until interpreting a previous step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span> <span class="nn">._ida_solver</span> <span class="kn">import</span> <span class="n">IDASolver</span>
+        <span class="kn">from</span> <span class="nn">._solutions</span> <span class="kn">import</span> <span class="n">StepSolution</span>
+
+        <span class="n">step</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="n">stepidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">stepidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">step</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">step</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">value</span>
+
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;algidx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_algidx</span>
+
+        <span class="k">if</span> <span class="n">step</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_setup_rootfn</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">solver</span> <span class="o">=</span> <span class="n">IDASolver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">idasol</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;tspan&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span><span class="p">)</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">StepSolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idasol</span><span class="p">,</span> <span class="n">timer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">ydot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="Model.run">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.Model.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CycleSolution</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run an experiment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        exp : Experiment</span>
+<span class="sd">            An experiment instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sol : CycleSolution</span>
+<span class="sd">            A stitched solution will all experimental steps.</span>
+
+<span class="sd">        See also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Experiment : Build an experiment.</span>
+<span class="sd">        CycleSolution : Wrapper for an all-steps solution.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span> <span class="nn">._solutions</span> <span class="kn">import</span> <span class="n">CycleSolution</span>
+
+        <span class="n">sv0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">svdot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">sols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">num_steps</span><span class="p">):</span>
+            <span class="n">sols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">CycleSolution</span><span class="p">(</span><span class="o">*</span><span class="n">sols</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">sv0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">svdot0</span>
+
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">svdot</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">res</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solver-structured residuals.</span>
+
+<span class="sd">        The IDASolver requires a residuals function in this exact form.</span>
+<span class="sd">        Rather than outputting the residuals, the function returns None,</span>
+<span class="sd">        but fills the &#39;res&#39; input array with the DAE residuals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Value of time [s].</span>
+<span class="sd">        sv : 1D np.array</span>
+<span class="sd">            State variables at time t.</span>
+<span class="sd">        svdot : 1D np.array</span>
+<span class="sd">            State variable time derivatives at time t.</span>
+<span class="sd">        res : 1D np.array</span>
+<span class="sd">            DAE residuals, res = M*ydot - rhs(t, y).</span>
+<span class="sd">        inputs : dict</span>
+<span class="sd">            Dictionary detailing an experimental step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">res</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">svdot</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">_RootFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Root function callables.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class is a generalize root function callable. All possible root</span>
+<span class="sd">        functions only have one event that can be triggered. Therefore, the</span>
+<span class="sd">        &#39;size&#39; property is always unity, and is passed to the IDASolver as</span>
+<span class="sd">        the &#39;nr_rootfns&#39; argument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str</span>
+<span class="sd">            A valid limit type/units from an experiment step.</span>
+<span class="sd">        value : float</span>
+<span class="sd">            The value of the limit that triggers the solver to stop.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">svdot</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">events</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solver-structured root function.</span>
+
+<span class="sd">        The IDASolver requires a root function in this exact form. Rather</span>
+<span class="sd">        than outputting the events array, the function returns None, but</span>
+<span class="sd">        fills the &#39;events&#39; input array with root functions. If any &#39;events&#39;</span>
+<span class="sd">        index equals zero, the solver will exit prior to &#39;tspan[-1]&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Value of time [s].</span>
+<span class="sd">        sv : 1D np.array</span>
+<span class="sd">            State variables at time t.</span>
+<span class="sd">        svdot : 1D np.array</span>
+<span class="sd">            State variable time derivatives at time t.</span>
+<span class="sd">        events : 1D np.array</span>
+<span class="sd">            An array of root/event functions. During integration, the solver</span>
+<span class="sd">            will exit prior to &#39;tspan[-1]&#39; if any &#39;events&#39; index equals zero.</span>
+<span class="sd">        inputs : dict</span>
+<span class="sd">            Dictionary detailing an experimental step, with the &#39;roots&#39; key</span>
+<span class="sd">            added and filled within the `rhs_funcs()&#39; method.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;roots&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Size of the &#39;events&#39; array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        size : int</span>
+<span class="sd">            Number of indices available in the 1D &#39;events&#39; array.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">_setup_rootfn</span><span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up a root function for the IDASolver.</span>
+
+<span class="sd">    The IDASolver requires two keyword arguments to be set when using root</span>
+<span class="sd">    functions. The first is &#39;rootfn&#39; which requires a Callable. The second</span>
+<span class="sd">    is &#39;nr_rootfns&#39; with allocates memory to an array that stores the root</span>
+<span class="sd">    function values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    limit : tuple[str, float]</span>
+<span class="sd">        A tuple from the Experiment class that describes the type of limit,</span>
+<span class="sd">        units, and value required to define the root function.</span>
+<span class="sd">    kwargs : dict</span>
+<span class="sd">        The IDASolver keyword argumnents dictionary. Both the &#39;rootfn&#39; and</span>
+<span class="sd">        &#39;nr_rootfns&#39; keyword arguments must be added to &#39;kwargs&#39;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rootfn</span> <span class="o">=</span> <span class="n">_RootFunction</span><span class="p">(</span><span class="o">*</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;rootfn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootfn</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;nr_rootfns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootfn</span><span class="o">.</span><span class="n">size</span>
+
+
+<span class="k">def</span> <span class="nf">_yaml_reader</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a yaml file.</span>
+
+<span class="sd">    This yaml reader has a custom ``!eval`` constructor, which allows you to</span>
+<span class="sd">    evaluate ``np`` expressions and ``lambda`` functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : str</span>
+<span class="sd">        An absolute or relative path to a &#39;.yaml&#39; file. The extension will</span>
+<span class="sd">        be added if not included.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Invalid file. Only supports &#39;.yaml&#39; files.</span>
+<span class="sd">    FileNotFoundError</span>
+<span class="sd">        File does not exist.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Data dictionary corresponding to the input file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">+=</span> <span class="s1">&#39;.yaml&#39;</span>
+    <span class="k">elif</span> <span class="n">extension</span> <span class="o">!=</span> <span class="s1">&#39;.yaml&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid file. Only supports &#39;.yaml&#39; files.&quot;</span><span class="p">)</span>
+
+    <span class="n">here</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">templates</span> <span class="o">=</span> <span class="n">here</span> <span class="o">+</span> <span class="s1">&#39;/templates&#39;</span>
+
+    <span class="k">if</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">templates</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using the default parameter file &#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">templates</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">file</span>
+
+    <span class="k">def</span> <span class="nf">eval_constructor</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File &#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
+
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+
+    <span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!eval&#39;</span><span class="p">,</span> <span class="n">eval_constructor</span><span class="p">,</span> <span class="n">constructor</span><span class="o">=</span><span class="n">SafeConstructor</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">_showwarning</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[thevenin </span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+          <span class="n">file</span><span class="o">=</span><span class="n">file</span> <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">showwarning</span> <span class="o">=</span> <span class="n">_showwarning</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Corey R. Randall.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

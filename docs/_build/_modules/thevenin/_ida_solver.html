@@ -1,0 +1,854 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>thevenin._ida_solver &#8212; thevenin 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=b2d0f202" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/thevenin/_ida_solver';</script>
+    <script src="../../_static/custom.js?v=e2d01366"></script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/light.svg" class="logo__image only-light" alt="thevenin 0.0.1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/dark.svg" class="logo__image only-dark" alt="thevenin 0.0.1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">thevenin._ida_solver</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for thevenin._ida_solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scikits.odes</span> <span class="kn">import</span> <span class="n">dae</span>
+<span class="kn">from</span> <span class="nn">scikits.odes.sundials</span> <span class="kn">import</span> <span class="n">ida</span>
+
+
+<span class="k">class</span> <span class="nc">SolverReturn</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solver return.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_success&#39;</span><span class="p">,</span> <span class="s1">&#39;_message&#39;</span><span class="p">,</span> <span class="s1">&#39;_t&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_ydot&#39;</span><span class="p">,</span> <span class="s1">&#39;_roots&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_tstop&#39;</span><span class="p">,</span> <span class="s1">&#39;_errors&#39;</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">ida</span><span class="o">.</span><span class="n">SolverReturn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class to wrap the returned arrays and status of the IDASolver.</span>
+<span class="sd">        Attributes are intentionally &quot;hidden&quot; and accessed via read-only</span>
+<span class="sd">        properties to avoid unintentional overwrites.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        solution : ida.SolverReturn</span>
+<span class="sd">            The default SolverReturn class from scikits.odes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_success</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">flag</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_message</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">t</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ydot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">roots</span><span class="o">.</span><span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">tstop</span><span class="o">.</span><span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roots</span><span class="p">:</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;roots&#39;</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">times</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">roots</span><span class="o">.</span><span class="n">t</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tstop</span><span class="p">:</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;tstop&#39;</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">times</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">tstop</span><span class="o">.</span><span class="n">t</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">times</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">t</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sorted_times</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span> <span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_times</span><span class="p">)}</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">]</span>
+
+            <span class="n">sorted_pairs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">sorted_pairs</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+
+                <span class="n">new_line</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">new_line</span><span class="o">.</span><span class="n">t</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span> <span class="n">new_line</span><span class="o">.</span><span class="n">t</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">new_line</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span><span class="p">,</span> <span class="n">new_line</span><span class="o">.</span><span class="n">ydot</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a readable repr string.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        readable : str</span>
+<span class="sd">            A console-readable instance representation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;roots&#39;</span><span class="p">,</span> <span class="s1">&#39;tstop&#39;</span><span class="p">,</span> <span class="s1">&#39;errors&#39;</span><span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">,&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)])</span>
+
+        <span class="n">readable</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SolverReturn(</span><span class="se">\n\t</span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="se">\n</span><span class="s2">)&quot;</span>
+
+        <span class="k">return</span> <span class="n">readable</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overall solver exit status.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        success : bool</span>
+<span class="sd">            True if no errors, False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_success</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Readalbe solver exit message.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        message : str</span>
+<span class="sd">            Exit message from the IDASolver.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saved solution times.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        t : 1D np.array</span>
+<span class="sd">            Solution times [s].</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solution variables [units]. Rows correspond to solution times and</span>
+<span class="sd">        columns to state variables, in the same order as y0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : 2D np.array</span>
+<span class="sd">            Solution variables [units].</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ydot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solution variable time derivatives [units/s]. Rows and columns share</span>
+<span class="sd">        the same organization as y.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ydot : 2D np.array</span>
+<span class="sd">            Solution variable time derivatives [units/s].</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Details regarding whether or not a rootfn stopped the solver.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        roots : bool | tuple</span>
+<span class="sd">            If a rootfn stopped the solver, this value will be a tuple. The</span>
+<span class="sd">            first argument will be True, and the second argument will provide</span>
+<span class="sd">            the index within t, y, and ydot that stores the values of time</span>
+<span class="sd">            and solution when the root function was triggered. If a root did</span>
+<span class="sd">            not stop the solver, this value will be False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tstop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Details regarding whether or not the tstop option stopped the solver.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tstop : bool | tuple</span>
+<span class="sd">            If the tstop option stopped the solver, this value is a tuple. The</span>
+<span class="sd">            first argument will be True, and the second argument will provide</span>
+<span class="sd">            the index within t, y, and ydot that stores the values of time</span>
+<span class="sd">            and solution when the tstop function was triggered. If tstop did</span>
+<span class="sd">            not stop the solver, this value will be False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Details regarding whether or not an error stopped the solver.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        errors : bool | tuple</span>
+<span class="sd">            If an error stopped the solver, this value will be a tuple. The</span>
+<span class="sd">            first argument will be True, and the second argument will provide</span>
+<span class="sd">            the index within t, y, and ydot that stores the values of time</span>
+<span class="sd">            and solution when the error was triggered. If an error did not</span>
+<span class="sd">            stop the solver, this value will be False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span>
+
+
+<div class="viewcode-block" id="IDASolver">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.IDASolver">[docs]</a>
+<span class="k">class</span> <span class="nc">IDASolver</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ODE/DAE solver.</span>
+
+<span class="sd">    This solver supports first-order ODEs and DAEs. The solver requires the</span>
+<span class="sd">    problem to be written in terms of a residual function, with a signature</span>
+<span class="sd">    ``def residuals(t, y, yp, res, inputs) -&gt; None``. Instead of a return</span>
+<span class="sd">    value, the function fills ``res`` (a 1D array sized like ``y``) with</span>
+<span class="sd">    expressions from the system of equations, ``res = M(y)*yp - f(t, y)``.</span>
+<span class="sd">    Here, ``t`` is time, ``y`` is an array of dependent solution variables,</span>
+<span class="sd">    and ``yp`` are time derivatives of ``y``. The ``inputs`` argument allows</span>
+<span class="sd">    the user to pass any additional parameters to the residuals function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residuals : Callable</span>
+<span class="sd">        Function like ``def residuals(t, y, yp, res, inputs) -&gt; None``.</span>
+<span class="sd">    **kwargs : dict, optional</span>
+<span class="sd">        Keywords, descriptions, and defaults given below.</span>
+
+<span class="sd">        =========== =================================================</span>
+<span class="sd">        Key         Description (*type* or {options}, default)</span>
+<span class="sd">        =========== =================================================</span>
+<span class="sd">        atol        absolute tolerance (*float*, 1e-6)</span>
+<span class="sd">        rtol        relative tolerance (*float*, 1e-5)</span>
+<span class="sd">        inputs      optional residual arguments (*tuple*, None)</span>
+<span class="sd">        linsolver   linear solver ({&#39;dense&#39;, &#39;band&#39;}, &#39;dense&#39;)</span>
+<span class="sd">        lband       residual function&#39;s lower bandwidth (*int*, 0)</span>
+<span class="sd">        uband       residual function&#39;s upper bandwidth (*int*, 0)</span>
+<span class="sd">        rootfn      root/event function (*Callable*, None)</span>
+<span class="sd">        nr_rootfns  number of events in rootfn (*int*, 0)</span>
+<span class="sd">        initcond    uncertain t0 values ({&#39;y0&#39;, &#39;yp0&#39;, None}, &#39;yp0&#39;)</span>
+<span class="sd">        algidx      algebraic variable indices (*list[int]*, None)</span>
+<span class="sd">        max_dt      maximum allowable integration step (*float*, 0.)</span>
+<span class="sd">        tstop       maximum integration time (*float*, 0.)</span>
+<span class="sd">        =========== =================================================</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * IDA stands for Implicit Differential Algebraic solver. The solver is</span>
+<span class="sd">      accessed through `scikits-odes`_, a Python wrapper for `SUNDIALS`_.</span>
+<span class="sd">    * Not setting ``algidx`` for DAEs will likely result in an instability.</span>
+<span class="sd">    * For unrestricted integration steps, use ``max_dt = 0.``.</span>
+<span class="sd">    * Root functions require a signature like ``def rootfn(t, y, yp, events,</span>
+<span class="sd">      inputs) -&gt; None``. Instead of a return value, the function fills the</span>
+<span class="sd">      ``events`` argument (a 1D array with size equal to the number of events</span>
+<span class="sd">      to track). If any ``events`` index equals zero during integration, the</span>
+<span class="sd">      solver will exit.</span>
+<span class="sd">    * If setting ``rootfn``, you also need to set ``nr_rootfns`` to allocate</span>
+<span class="sd">      memory for the correct number of expressions (i.e., ``events.size``).</span>
+
+<span class="sd">    .. _SUNDIALS: https://sundials.readthedocs.io/</span>
+<span class="sd">    .. _scikits-odes: https://bmcage.github.io/odes/dev/</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The following demonstrates solving a system of ODEs. For ODEs, derivative</span>
+<span class="sd">    expressions ``yp`` can be written for each ``y``. Therefore, we can write</span>
+<span class="sd">    each residual as ``res[i] = yp[i] - f(t, y)`` where ``f(t, y)`` is an</span>
+<span class="sd">    expression for the derivative in terms of ``t`` and ``y``.</span>
+
+<span class="sd">    Note that even though the solver requires knowing the initial derivatives,</span>
+<span class="sd">    we set ``yp0 = np.zeros_like(y0)``, which are not true ``yp0`` values. The</span>
+<span class="sd">    default option ``initcond=&#39;yp0&#39;`` solves for the correct ``yp0`` values</span>
+<span class="sd">    before starting the integration.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import thevenin</span>
+<span class="sd">        import numpy as np</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        def residuals(t, y, yp, res):</span>
+<span class="sd">            res[0] = yp[0] - y[1]</span>
+<span class="sd">            res[1] = yp[1] - 1e3*(1. - y[0]**2)*y[1] + y[0]</span>
+
+<span class="sd">        solver = thevenin.IDASolver(residuals)</span>
+
+<span class="sd">        y0 = np.array([0.5, 0.5])</span>
+<span class="sd">        yp0 = np.zeros_like(y0)</span>
+<span class="sd">        tspan = np.linspace(0., 500., 200)</span>
+
+<span class="sd">        solution = solver.solve(tspan, y0, yp0)</span>
+
+<span class="sd">        plt.plot(solution.t, solution.y)</span>
+<span class="sd">        plt.show()</span>
+
+<span class="sd">    The next problem solves a DAE system. DAEs arise when systems of governing</span>
+<span class="sd">    equations contain both ODEs and algebraic constraints.</span>
+
+<span class="sd">    To solve a DAE, you should specify the ``y`` indices that store algebraic</span>
+<span class="sd">    variables. In other words, for which ``y`` can you not write a ``yp``</span>
+<span class="sd">    expression? In the example below, we have ``yp[0]`` and ``yp[1]`` filling</span>
+<span class="sd">    the first two residual expressions. However, ``yp[2]`` does not appear in</span>
+<span class="sd">    any of the residuals. Therefore, ``y[2]`` is an algebraic variable, and we</span>
+<span class="sd">    tell this to the solver using the keyword argument ``algidx=[2]``. Even</span>
+<span class="sd">    though we only have one algebraic variable, this option input must be a</span>
+<span class="sd">    list of integers.</span>
+
+<span class="sd">    As in the ODE example, we let the solver determine the ``yp0`` values</span>
+<span class="sd">    that provide a consistent initial condition. Prior to plotting, ``y[1]``</span>
+<span class="sd">    is scaled for visual purposes. You can see the same example provided by</span>
+<span class="sd">    `MATLAB`_.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import thevenin</span>
+<span class="sd">        import numpy as np</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        def residuals(t, y, yp, res):</span>
+<span class="sd">            res[0] = yp[0] + 0.04*y[0] - 1e4*y[1]*y[2]</span>
+<span class="sd">            res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2</span>
+<span class="sd">            res[2] = y[0] + y[1] + y[2] - 1.</span>
+
+<span class="sd">        solver = thevenin.IDASolver(residuals, algidx=[2])</span>
+
+<span class="sd">        y0 = np.array([1., 0., 0.])</span>
+<span class="sd">        yp0 = np.zeros_like(y0)</span>
+<span class="sd">        tspan = np.hstack([0., 4.*np.logspace(-6, 6)])</span>
+
+<span class="sd">        solution = solver.solve(tspan, y0, yp0)</span>
+
+<span class="sd">        solution.y[:, 1] *= 1e4</span>
+
+<span class="sd">        plt.semilogx(solution.t, solution.y)</span>
+<span class="sd">        plt.show()</span>
+
+<span class="sd">    .. _MATLAB:</span>
+<span class="sd">        https://mathworks.com/help/matlab/math/</span>
+<span class="sd">        solve-differential-algebraic-equations-daes.html</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_integrator&#39;</span><span class="p">,</span> <span class="s1">&#39;_kwargs&#39;</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residuals</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Default kwargs</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;atol&#39;</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;rtol&#39;</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;linsolver&#39;</span><span class="p">,</span> <span class="s1">&#39;dense&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;lband&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;uband&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;initcond&#39;</span><span class="p">,</span> <span class="s1">&#39;yp0&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;algidx&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;max_dt&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Map renamed scikits.odes options, and force new api</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;user_data&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;compute_initcond&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;initcond&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;algebraic_vars_idx&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;algidx&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;max_step_size&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_dt&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;old_api&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">options</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
+
+        <span class="n">dae</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ida&#39;</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a readable repr string.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        readable : str</span>
+<span class="sd">            A console-readable instance representation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">,&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">])</span>
+
+        <span class="n">readable</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;IDASolver(</span><span class="se">\n\t</span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="se">\n</span><span class="s2">)&quot;</span>
+
+        <span class="k">return</span> <span class="n">readable</span>
+
+<div class="viewcode-block" id="IDASolver.init_step">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.IDASolver.init_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">ydot0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverReturn</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve for a consistent initial condition.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t0 : float</span>
+<span class="sd">            Initial time [s].</span>
+<span class="sd">        y0 : 1D np.array</span>
+<span class="sd">            State variables at t0.</span>
+<span class="sd">        yp0 : 1D np.array</span>
+<span class="sd">            State variable time derivatives at t0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        solution : SolverReturn</span>
+<span class="sd">            Solution at time t0.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">init_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SolverReturn</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IDASolver.step">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.IDASolver.step">[docs]</a>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverReturn</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve for a successive time step.</span>
+
+<span class="sd">        Before calling step() for the first time, call init_step() to</span>
+<span class="sd">        initialize the solver at &#39;t0&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Solution step time [s]. Can be higher or lower than the previous</span>
+<span class="sd">            time, however, significantly lower values may return errors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        solution : SolverReturn</span>
+<span class="sd">            Solution at time t.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SolverReturn</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IDASolver.solve">
+<a class="viewcode-back" href="../../api/thevenin/index.html#thevenin.IDASolver.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tspan</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+              <span class="n">ydot0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverReturn</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the system over &#39;tspan&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tspan : 1D np.array</span>
+<span class="sd">            Times [s] to store the solution.</span>
+<span class="sd">        y0 : 1D np.array</span>
+<span class="sd">            State variables at tspan[0].</span>
+<span class="sd">        yp0 : 1D np.array</span>
+<span class="sd">            State variable time derivatives at tspan[0].</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        solution : SolverReturn</span>
+<span class="sd">            Solution at times in tspan.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SolverReturn</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Corey R. Randall.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
