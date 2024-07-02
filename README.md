@@ -27,27 +27,33 @@ This package is a wrapper for the well-known Thevenin equivalent circuit model. 
 </p>
 
 This system is governed by the evolution of the state of charge (soc, -), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). soc and $V_j$ evolve in time as
-
-$$\frac{d\rm soc}{dt} = \frac{-I}{3600Q},$$
-
-$$\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},$$
-
+```math
+\begin{align}
+    &\frac{d\rm soc}{dt} = \frac{-I}{3600Q}, \\
+    &\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},
+\end{align}
+```
 where $I$ is the load current (A), $Q$ is the cell capacity (Ah), and $R_j$ and $C_j$ are the resistance (Ohm) and capacitance (F) of each RC pair $j$. Note that the sign convention for $I$ is chosen such that positive $I$ discharges the battery (reduces soc) and negative $I$ charges the battery (increases soc). This convention is consistent with common higher-fidelty models, e.g., the single particle model or pseudo-2D model. While it's not explicitly included in the equations above, $R_j$ and $C_j$ are functions of soc and $T_{\rm cell}$. The temperature increases while the cell is active according to
-
-$$mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},$$
-
+```math
+\begin{equation}
+    mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},
+\end{equation}
+```
 where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $\dot{Q}_{\rm gen}$ is the heat generation (W), and $\dot{Q}_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
-
-$$\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}),$$
-
-$$\dot{Q}_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),$$
-
+```math
+\begin{align}
+    &\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}), \\
+    &\dot{Q}_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),
+\end{align}
+```
 where $h$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm ocv}$ is the open circuit voltage (V) and is a function of soc.
 
 Finally, the overall cell voltage is
-
-$$V_{\rm cell} = V_{\rm ocv}({\rm soc}) - \sum_j V_j - IR_0,$$
-
+```math
+\begin{equation}
+    V_{\rm cell} = V_{\rm ocv}({\rm soc}) - \sum_j V_j - IR_0,
+\end{equation}
+```
 where $R_0$ the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of soc and $T_{\rm cell}$.
 
 ## Installation
@@ -70,7 +76,7 @@ pip install -e .[dev]
 ```
 
 ## Getting Started
-The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To see the documentation for any of the classes or their methods, use Python's built in `help()` function.
+The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To see the documentation for any of the classes or their methods, use Python's built in `help()` function. In addition, you can access the documentation by visiting the [website](https://rovi-org.github.io/thevenin),hosted through GitHub pages. The website includes search functionality and examples, beyond the docstrings.
 
 ```python
 import thevenin
