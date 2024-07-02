@@ -39,7 +39,7 @@ where $I$ is the load current (A), $Q$ is the cell capacity (Ah), and $R_j$ and 
     mC_p\frac{dT_{\rm cell}}{dt} = \dot{Q}_{\rm gen} + \dot{Q}_{\rm conv},
 \end{equation}
 ```
-where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $\dot{Q}_{\rm gen}$ is the heat generation (W), and $\dot{Q}_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
+where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $Q_{\rm gen}$ is the heat generation (W), and $Q_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
 ```math
 \begin{align}
     &\dot{Q}_{\rm gen} = I \times (V_{\rm ocv}({\rm soc}) - V_{\rm cell}), \\
