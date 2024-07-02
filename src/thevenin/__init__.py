@@ -10,9 +10,8 @@ How to use the documentation
 ----------------------------
 Documentation is accessible via Python's ``help()`` function which prints
 docstrings from a package, module, function, class, etc. In addition, you can
-access the documentation by calling the built-in ``thevenin.docs()`` method to
-open a local website. The website includes search functionality and examples,
-beyond the code docstrings.
+access the documentation by visiting the website, hosted through GitHub pages.
+The website includes search functionality and examples, beyond the docstrings.
 
 Viewing documentation using IPython
 -----------------------------------

@@ -54,7 +54,7 @@ Summary
          A great place to learn how to use the package 
          and expand your skills.
 
-         .. image:: _static/examples.svg
+         .. image:: static/examples.svg
             :class: bg-transparent
             :align: center
             :height: 75px
@@ -74,7 +74,7 @@ Summary
          Get detailed documentation on all of the 
          modules, functions, classes, etc.
 
-         .. image:: _static/api_reference.svg
+         .. image:: static/api_reference.svg
             :class: bg-transparent
             :align: center
             :height: 75px
