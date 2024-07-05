@@ -99,7 +99,7 @@ class SolverReturn:
     @property
     def message(self) -> str:
         """
-        Readalbe solver exit message.
+        Readable solver exit message.
 
         Returns
         -------
@@ -236,7 +236,7 @@ class IDASolver:
         initcond    uncertain t0 values ({'y0', 'yp0', None}, 'yp0')
         algidx      algebraic variable indices (*list[int]*, None)
         max_dt      maximum allowable integration step (*float*, 0.)
-        tstop       maximum integration time (*float*, 0.)
+        tstop       maximum integration time (*float*, None)
         =========== =================================================
 
     Notes
@@ -343,18 +343,22 @@ class IDASolver:
         # Default kwargs
         kwargs.setdefault('atol', 1e-6)
         kwargs.setdefault('rtol', 1e-5)
+        kwargs.setdefault('inputs', None)
         kwargs.setdefault('linsolver', 'dense')
         kwargs.setdefault('lband', 0)
         kwargs.setdefault('uband', 0)
+        kwargs.setdefault('rootfn', None)
+        kwargs.setdefault('nr_rootfns', 0)
         kwargs.setdefault('initcond', 'yp0')
         kwargs.setdefault('algidx', None)
         kwargs.setdefault('max_dt', 0.)
+        kwargs.setdefault('tstop', None)
 
         self._kwargs = kwargs.copy()
 
         # Map renamed scikits.odes options, and force new api
         options = {
-            'user_data': kwargs.pop('inputs', None),
+            'user_data': kwargs.pop('inputs'),
             'compute_initcond': kwargs.pop('initcond'),
             'algebraic_vars_idx': kwargs.pop('algidx'),
             'max_step_size': kwargs.pop('max_dt'),
