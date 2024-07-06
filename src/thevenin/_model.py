@@ -600,8 +600,8 @@ def _yaml_reader(file: str) -> dict:
 
 
 def _showwarning(message, category, filename, lineno, file=None, line=None):
-    print(f"\n[thevenin {category.__name__}]: {message}\n",
-          file=file or sys.stderr)
+    file = file or sys.stderr
+    print(f"\n[thevenin {category.__name__}]: {message}\n", file=file)
 
 
 warnings.showwarning = _showwarning

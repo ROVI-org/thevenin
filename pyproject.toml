@@ -42,7 +42,6 @@ thevenin = ["templates/*.yaml", "docs/*"]
 dev = [
     "pytest",
     "pytest-cov",
-    "coverage",
     "genbadge[all]",
     "codespell",
     "sphinx",

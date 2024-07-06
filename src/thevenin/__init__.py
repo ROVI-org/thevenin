@@ -1,24 +1,17 @@
 """
-thevenin
-========
+Summary
+=======
 The Thevenin equivalent circuit model is a common low-fidelity battery model
 consisting of a single resistor in series with any number of RC pairs, i.e.,
 parallel resistor-capacitor pairs. This Python package contains an API for
 building and running experiments using Thevenin models.
 
-How to use the documentation
-----------------------------
+Accessing the documentation
+---------------------------
 Documentation is accessible via Python's ``help()`` function which prints
-docstrings from a package, module, function, class, etc. In addition, you can
-access the documentation by visiting the website, hosted through GitHub pages.
-The website includes search functionality and examples, beyond the docstrings.
-
-Viewing documentation using IPython
------------------------------------
-Start IPython and import ``thevenin``. To see what's available in ``thevenin``,
-type ``thevenin.<TAB>`` (where ``<TAB>`` is the TAB key). To view type hints
-and/or brief descriptions, type an open parenthesis ``(`` after any subpacakge,
-module, class, function, etc. (e.g., ``thevenin.Model(``).
+docstrings from a package, module, function, class, etc. You can also access
+the documentation by visiting the website, hosted through GitHub pages. The
+website includes search functionality and more detailed examples.
 
 """
 
