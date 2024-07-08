@@ -10,6 +10,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+gh-pages/
 sphinx/
 .Python
 build/

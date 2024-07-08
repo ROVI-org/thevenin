@@ -1,2 +1,2 @@
 [codespell]
-skip = .git,docs,reports,images,__pycache__
+skip = .*,__pycache__,build,docs,images,reports,sphinx

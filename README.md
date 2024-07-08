@@ -55,13 +55,23 @@ The overall cell voltage is
 where $R_0$ the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of soc and $T_{\rm cell}$.
 
 ## Installation
-We recommend using [Anaconda](https://anaconda.com) to install this package due to the [scikits.odes](https://scikits-odes.readthedocs.io) dependency, which is installed separately using ``conda install`` to avoid having to download and install C++ and Fortran compilers.
+We recommend using [Anaconda](https://anaconda.com) to install this package due to the [scikits.odes](https://scikits-odes.readthedocs.io) dependency, which is installed separately using `conda install` to avoid having to download and install C++ and Fortran compilers. Please refer to the linked `scikits.odes` documentation if you'd prefer to install their software without using `conda`.
 
 After cloning the repository, or downloading the files, use your terminal (MacOS/Linux) or Anaconda Prompt (Windows) to navigate into the folder with the `pyproject.toml` file. Once in the correct folder, execute the following commands:
 
 ```cmd
 conda create -n rovi python=3.10 scikits.odes -c conda-forge
 conda activate rovi
+pip install .
+```
+
+Note that if you are using a Mac with `arm-64` for `conda`, you will have to force your new environment to use packages built on `osx-64` because `scikits.odes` does not currently have any builds for `arm-64`. You can check if this is the case by running `conda info` and checking the platform value. To set up and force your new environment to `osx-64`, run the following:
+
+```cmd
+conda create -n rovi
+conda activate rovi
+conda config --env --set subdir osx-64
+conda install python=3.10 scikits.odes -c conda-forge
 pip install .
 ```
 
