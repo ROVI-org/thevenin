@@ -1,6 +1,6 @@
-<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/dark.png" style="width: 75%; min-width: 250px; max-width: 500px;"/>
-    <img alt="thevenin logo" src="./images/light.png" style="width: 75%; min-width: 250px; max-width: 500px;"/>
+<picture style="width: 75%; min-width: 250px; max-width: 500px;">
+    <source media="(prefers-color-scheme: dark)" srcset="./images/dark.png"/>
+    <img alt="thevenin logo" src="./images/light.png"/>
 </picture>
 
 <p><br></p>
