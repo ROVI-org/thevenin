@@ -1,3 +1,7 @@
+# Ignoring almost everything
 *
 
-!/docs/
+# Force gitignore and docs to not be ignored
+!.gitignore
+!docs
+!docs/**
