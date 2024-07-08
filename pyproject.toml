@@ -36,7 +36,7 @@ version = {attr = "thevenin.__version__"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-thevenin = ["templates/*.yaml", "docs/*"]
+thevenin = ["templates/*.yaml",]
 
 [project.optional-dependencies]
 dev = [
@@ -44,6 +44,7 @@ dev = [
     "pytest-cov",
     "genbadge[all]",
     "codespell",
+    "flake8",
     "sphinx",
     "sphinx-autoapi",
     "sphinx-design",
