@@ -149,11 +149,11 @@ def test_bad_yaml_inputs():
 
     # only .yaml extensions
     with pytest.raises(ValueError):
-        model = thevenin.Model('fake.fake')
+        _ = thevenin.Model('fake.fake')
 
     # file doesn't exist
     with pytest.raises(FileNotFoundError):
-        model = thevenin.Model('fake')
+        _ = thevenin.Model('fake')
 
 
 def test_run_step(model_2RC, constant_exp):

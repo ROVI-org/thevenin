@@ -85,8 +85,6 @@ class Model:
             params = params.copy()
         elif isinstance(params, str):
             params = _yaml_reader(params)
-        else:
-            raise TypeError("'params' must be type dict or str.")
 
         self._repr_keys = [
             'num_RC_pairs',
