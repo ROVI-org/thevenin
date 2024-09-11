@@ -7,7 +7,7 @@ name = "thevenin"
 readme = "README.md"
 dynamic = ["version"]
 description = "Packaged Thevenin equivalent circuit model."
-requires-python = ">=3.8,<3.12"
+requires-python = ">=3.8,<3.13"
 authors = [{name = "Corey R. Randall", email = "corey.randall@nrel.gov"}]
 maintainers = [{name = "Corey R. Randall", email = "corey.randall@nrel.gov"}]
 classifiers = [
