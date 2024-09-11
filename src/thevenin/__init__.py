@@ -15,18 +15,24 @@ website includes search functionality and more detailed examples.
 
 """
 
+# core package
 from ._ida_solver import IDASolver
 from ._experiment import Experiment
 from ._model import Model
 from ._solutions import StepSolution, CycleSolution
 
+# submodules
+from . import loadfns
+from . import plotutils
+
 __version__ = '0.0.1'
 
 __all__ = [
-    'docs',
     'IDASolver',
     'Experiment',
     'Model',
     'StepSolution',
-    'CycleSolution'
+    'CycleSolution',
+    'loadfns',
+    'plotutils',
 ]

@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest']
-        python-version: ['3.10']
+        python-version: ['3.12']
 
     defaults:
       run:
@@ -46,8 +46,9 @@ jobs:
         run: |
           pip install flake8
           flake8 --config .github/linters/.flake8 src
+          flake8 --config .github/linters/.flake8 tests
 
-  win-lin-tests:
+  tests:
     name: (Test ${{ matrix.python-version }}, ${{ matrix.os }})
 
     runs-on: ${{ matrix.os }}
@@ -55,8 +56,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        python-version: ['3.8', '3.11']
+        os: ['ubuntu-latest', 'windows-latest', 'macos-13', 'macos-latest']
+        python-version: ['3.8', '3.12']
 
     defaults:
       run:
@@ -69,49 +70,9 @@ jobs:
           activate-environment: 'rovi'
           python-version: ${{ matrix.python-version }}
           miniconda-version: 'latest'
-          use-only-tar-bz2: true
           auto-update-conda: true
-          auto-activate-base: true
       - name: Conda dependencies
-        run: conda install scikits.odes -c conda-forge
-      - name: Pip dependencies
-        run: pip install .
-      - name: List packages
-        run: conda list
-      - name: Pytest
-        run: |
-          pip install pytest
-          pytest
-
-  mac-tests:
-    name: (Test ${{ matrix.python-version }}, ${{ matrix.os }})
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ['macos-latest']
-        python-version: ['3.8', '3.11']
-
-    defaults:
-      run:
-        shell: bash -l {0}
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: 'rovi'
-          miniconda-version: 'latest'
-          use-only-tar-bz2: true
-          auto-update-conda: true
-          auto-activate-base: true
-      - name: Make environment
-        run: |
-          conda info
-          conda config --env --set subdir osx-64
-          conda install python=${{ matrix.python-version }} scikits.odes -c conda-forge
+        run: conda install scikits-odes-sundials -c conda-forge
       - name: Pip dependencies
         run: pip install .
       - name: List packages

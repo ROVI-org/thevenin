@@ -1,5 +1,4 @@
 import pytest
-
 import thevenin
 import numpy as np
 
@@ -33,9 +32,18 @@ def test_add_step(exp):
     with pytest.raises(TypeError):
         exp.add_step('current_A', 1., (3600., '1'))
 
-    # wrong limit value
+    # bad limits name
     with pytest.raises(ValueError):
-        exp.add_step('current_A', 1., (3600., 1.), limit=('fake', 3.))
+        exp.add_step('current_A', 1., (3600., 1.), limits=('fake', 3.))
+
+    # bad limits length
+    with pytest.raises(ValueError):
+        exp.add_step('current_A', 1., (3600., 1.),
+                     limits=('voltage_V', 3., 'soc'))
+
+    # bad limits value type
+    with pytest.raises(TypeError):
+        exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', '3'))
 
     # test current and linspace construction
     exp.add_step('current_A', 1., (3600., 150))
@@ -57,9 +65,9 @@ def test_add_step(exp):
     assert exp.num_steps == 3
 
     # test limit keyword
-    exp.add_step('current_A', 1., (3600., 1.), limit=('voltage_V', 3.))
+    exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
 
-    assert exp.steps[-1]['limit'] == ('voltage_V', 3.)
+    assert exp.steps[-1]['limits'] == ('voltage_V', 3.)
 
     # test dynamic load
     exp.add_step('current_A', lambda t: 1., (3600., 1.))

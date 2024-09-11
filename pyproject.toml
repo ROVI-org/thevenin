@@ -4,15 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thevenin"
+readme = "README.md"
 dynamic = ["version"]
 description = "Packaged Thevenin equivalent circuit model."
 requires-python = ">=3.8,<3.12"
-authors = [
-    {name = "Corey R. Randall", email = "corey.randall@nrel.gov"},
-]
-maintainers = [
-    {name = "Corey R. Randall", email = "corey.randall@nrel.gov"},
-]
+authors = [{name = "Corey R. Randall", email = "corey.randall@nrel.gov"}]
+maintainers = [{name = "Corey R. Randall", email = "corey.randall@nrel.gov"}]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
@@ -20,11 +17,12 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "numpy",
+    "scikits-odes-sundials",
     "scipy",
-    "scikits.odes",
     "matplotlib",
     "ruamel.yaml",
 ]
@@ -40,11 +38,13 @@ thevenin = ["templates/*.yaml",]
 
 [project.optional-dependencies]
 dev = [
+    "nox",
     "pytest",
     "pytest-cov",
     "genbadge[all]",
     "codespell",
     "flake8",
+    "autopep8",
     "sphinx",
     "sphinx-autoapi",
     "sphinx-design",

@@ -1,6 +1,6 @@
-import pytest
 import warnings
 
+import pytest
 import thevenin
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ def sol():
     model = thevenin.Model()
 
     exp = thevenin.Experiment()
-    exp.add_step('current_A', 1., (3600., 1.), limit=('voltage_V', 3.))
+    exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     exp.add_step('current_A', 0., (3600., 1.))
 
     sol = model.run(exp)
