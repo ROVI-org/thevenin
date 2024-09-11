@@ -66,7 +66,7 @@ We recommend using [Anaconda](https://anaconda.com) to install this package due 
 After cloning the repository, or downloading the files, use your terminal (MacOS/Linux) or Anaconda Prompt (Windows) to navigate into the folder with the `pyproject.toml` file. Once in the correct folder, execute the following commands:
 
 ```cmd
-conda create -n rovi python=3.12 scikits-odes-sundials -c conda-forge
+conda create -n rovi python=3.12 scikits_odes_sundials -c conda-forge
 conda activate rovi
 pip install .
 ```

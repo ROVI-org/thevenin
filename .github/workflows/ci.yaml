@@ -71,7 +71,7 @@ jobs:
           miniconda-version: 'latest'
           auto-update-conda: true
       - name: Conda dependencies
-        run: conda install scikits-odes-sundials -c conda-forge
+        run: conda install scikits_odes_sundials -c conda-forge
       - name: Pip dependencies
         run: pip install .
       - name: List packages
