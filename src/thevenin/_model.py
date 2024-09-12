@@ -85,8 +85,6 @@ class Model:
             params = params.copy()
         elif isinstance(params, str):
             params = _yaml_reader(params)
-        else:
-            raise TypeError("'params' must be type dict or str.")
 
         self._repr_keys = [
             'num_RC_pairs',
@@ -359,8 +357,8 @@ class Model:
         kwargs['inputs'] = step
         kwargs['algidx'] = self._algidx
 
-        if step['limit'] is not None:
-            _setup_rootfn(step['limit'], kwargs)
+        if step['limits'] is not None:
+            _setup_rootfn(step['limits'], kwargs)
 
         solver = IDASolver(self._residuals, **kwargs)
 
@@ -448,9 +446,9 @@ class Model:
 class _RootFunction:
     """Root function callables."""
 
-    __slots__ = ('key', 'value',)
+    __slots__ = ('keys', 'values', 'size',)
 
-    def __init__(self, key: str, value: float) -> None:
+    def __init__(self, limits: tuple[str, float]) -> None:
         """
         This class is a generalize root function callable. All possible root
         functions only have one event that can be triggered. Therefore, the
@@ -459,15 +457,15 @@ class _RootFunction:
 
         Parameters
         ----------
-        key : str
-            A valid limit type/units from an experiment step.
-        value : float
-            The value of the limit that triggers the solver to stop.
+        limits : tuple[str, float]
+            A tuple of root function criteria arranged as ordered pairs of
+            limit names and values, e.g., ('time_h', 10., 'voltage_V', 4.2).
 
         """
 
-        self.key = key
-        self.value = value
+        self.keys = limits[0::2]
+        self.values = limits[1::2]
+        self.size = len(self.keys)
 
     def __call__(self, t: float, sv: np.ndarray, svdot: np.ndarray,
                  events: np.ndarray, inputs: dict) -> None:
@@ -500,23 +498,11 @@ class _RootFunction:
 
         """
 
-        events[0] = self.value - inputs['roots'][self.key]
-
-    @property
-    def size(self) -> int:
-        """
-        Size of the 'events' array.
-
-        Returns
-        -------
-        size : int
-            Number of indices available in the 1D 'events' array.
-
-        """
-        return 1
+        for i, (key, value) in enumerate(zip(self.keys, self.values)):
+            events[i] = inputs['roots'][key] - value
 
 
-def _setup_rootfn(limit: tuple[str, float], kwargs: dict) -> None:
+def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
     """
     Set up a root function for the IDASolver.
 
@@ -527,16 +513,16 @@ def _setup_rootfn(limit: tuple[str, float], kwargs: dict) -> None:
 
     Parameters
     ----------
-    limit : tuple[str, float]
-        A tuple from the Experiment class that describes the type of limit,
-        units, and value required to define the root function.
+    limits : tuple[str, float]
+        A tuple of root function criteria arranged as ordered pairs of limit
+        names and values, e.g., ('time_h', 10., 'voltage_V', 4.2).
     kwargs : dict
         The IDASolver keyword argumnents dictionary. Both the 'rootfn' and
         'nr_rootfns' keyword arguments must be added to 'kwargs'.
 
     """
 
-    rootfn = _RootFunction(*limit)
+    rootfn = _RootFunction(limits)
 
     kwargs['rootfn'] = rootfn
     kwargs['nr_rootfns'] = rootfn.size
@@ -604,4 +590,4 @@ def _showwarning(message, category, filename, lineno, file=None, line=None):
     print(f"\n[thevenin {category.__name__}]: {message}\n", file=file)
 
 
-warnings.showwarning = _showwarning
+# warnings.showwarning = _showwarning

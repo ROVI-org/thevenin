@@ -1,9 +1,8 @@
 import pytest
-
 import thevenin
 import numpy as np
-from scikits.odes import dae
-from scikits.odes.sundials import ida
+
+from scikits_odes_sundials import ida
 from thevenin._ida_solver import SolverReturn
 
 
@@ -12,7 +11,7 @@ def idasol():
     def residuals(t, y, yp, res):
         res[0] = yp[0]
 
-    solver = dae('ida', residuals)
+    solver = ida.IDA(residuals)
     dummysol = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return dummysol
@@ -26,7 +25,7 @@ def roots():
     def residuals(t, y, yp, res):
         res[0] = yp[0] + 0.1
 
-    solver = dae('ida', residuals, rootfn=rootfn, nr_rootfns=1)
+    solver = ida.IDA(residuals, rootfn=rootfn, nr_rootfns=1)
     rootsol = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return rootsol
@@ -37,7 +36,7 @@ def tstop():
     def residuals(t, y, yp, res):
         res[0] = yp[0]
 
-    solver = dae('ida', residuals, tstop=4.5)
+    solver = ida.IDA(residuals, tstop=4.5)
     tstopsol = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return tstopsol
@@ -48,7 +47,7 @@ def errors():
     def residuals(t, y, yp, res):
         res[0] = 0.
 
-    solver = dae('ida', residuals)
+    solver = ida.IDA(residuals)
     errorsol = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return errorsol

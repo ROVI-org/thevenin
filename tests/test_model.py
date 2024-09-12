@@ -65,18 +65,18 @@ def model_2RC(dict_params):
 @pytest.fixture(scope='function')
 def constant_exp():
     exp = thevenin.Experiment()
-    exp.add_step('current_A', 1., (3600., 1.), limit=('voltage_V', 3.))
+    exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     exp.add_step('current_A', 0., (600., 1.))
-    exp.add_step('current_A', -1., (3600., 1.), limit=('voltage_V', 4.3))
+    exp.add_step('current_A', -1., (3600., 1.), limits=('voltage_V', 4.3))
     exp.add_step('voltage_V', 4.3, (600., 1.))
-    exp.add_step('power_W', 1., (600., 1.), limit=('voltage_V', 3.))
+    exp.add_step('power_W', 1., (600., 1.), limits=('voltage_V', 3.))
 
     return exp
 
 
 @pytest.fixture(scope='function')
 def dynamic_current():
-    load = lambda t: np.sin(2.*np.pi*t / 120.)
+    def load(t): return np.sin(2.*np.pi*t / 120.)
 
     exp = thevenin.Experiment()
     exp.add_step('current_A', load, (600., 1.))
@@ -86,7 +86,7 @@ def dynamic_current():
 
 @pytest.fixture(scope='function')
 def dynamic_voltage():
-    load = lambda t: 3.8 + 10e-3*np.sin(2.*np.pi*t / 120.)
+    def load(t): return 3.8 + 10e-3*np.sin(2.*np.pi*t / 120.)
 
     exp = thevenin.Experiment()
     exp.add_step('voltage_V', load, (600., 1.))
@@ -96,7 +96,7 @@ def dynamic_voltage():
 
 @pytest.fixture(scope='function')
 def dynamic_power():
-    load = lambda t: np.sin(2.*np.pi*t / 120.)
+    def load(t): return np.sin(2.*np.pi*t / 120.)
 
     exp = thevenin.Experiment()
     exp.add_step('power_W', load, (600., 1.))
@@ -149,11 +149,11 @@ def test_bad_yaml_inputs():
 
     # only .yaml extensions
     with pytest.raises(ValueError):
-        model = thevenin.Model('fake.fake')
+        _ = thevenin.Model('fake.fake')
 
     # file doesn't exist
     with pytest.raises(FileNotFoundError):
-        model = thevenin.Model('fake')
+        _ = thevenin.Model('fake')
 
 
 def test_run_step(model_2RC, constant_exp):

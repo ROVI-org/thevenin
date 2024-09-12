@@ -2,8 +2,7 @@ from __future__ import annotations
 from typing import Callable
 
 import numpy as np
-from scikits.odes import dae
-from scikits.odes.sundials import ida
+from scikits_odes_sundials import ida
 
 
 class SolverReturn:
@@ -367,7 +366,7 @@ class IDASolver:
 
         options = {**options, **kwargs}
 
-        dae.__init__(self, 'ida', residuals, **options)
+        self._integrator = ida.IDA(residuals, **options)
 
     def __repr__(self) -> str:  # pragma: no cover
         """
@@ -409,7 +408,7 @@ class IDASolver:
 
         """
 
-        solution = dae.init_step(self, t0, y0, ydot0)
+        solution = self._integrator.init_step(t0, y0, ydot0)
         return SolverReturn(solution)
 
     def step(self, t: float) -> SolverReturn:
@@ -432,7 +431,7 @@ class IDASolver:
 
         """
 
-        solution = dae.step(self, t)
+        solution = self._integrator.step(t)
         return SolverReturn(solution)
 
     def solve(self, tspan: np.ndarray, y0: np.ndarray,
@@ -456,5 +455,5 @@ class IDASolver:
 
         """
 
-        solution = dae.solve(self, tspan, y0, ydot0)
+        solution = self._integrator.solve(tspan, y0, ydot0)
         return SolverReturn(solution)

@@ -96,7 +96,7 @@ class Experiment:
                     print(key, ":", f"{value!r}")
 
     def add_step(self, mode: str, value: float | Callable, tspan: tuple,
-                 limit: tuple[str, float] = None, **kwargs) -> None:
+                 limits: tuple[str, float] = None, **kwargs) -> None:
         """
         Add a step to the experiment.
 
@@ -110,11 +110,12 @@ class Experiment:
             Relative times for recording solution [s]. Providing a tuple as
             (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
             tspan using ``np.linspace`` or ``np.arange``, respectively.
-        limit : tuple[str, float], optional
-            Stopping criteria for the new step. The first index must be one
-            of {'soc', 'temperature_K', 'current_A', 'voltage_V', 'power_W',
-            'capacity_Ah', 'time_s', 'time_min', 'time_h'}. The second is the
-            value of the stopping criteria in the appropriate units. All of
+        limits : tuple[str, float], optional
+            Stopping criteria for the new step, must be entered in sequential
+            name/value pairs. Allowable names are {'soc', 'temperature_K',
+            'current_A', 'voltage_V', 'power_W', 'capacity_Ah', 'time_s',
+            'time_min', 'time_h'}. Values for each limit should immediately
+            follow a corresponding name and be the appropriate units. All of
             the time limits represent the total experiment time. The default
             is None.
         **kwargs : dict, optional
@@ -129,7 +130,7 @@ class Experiment:
         ValueError
             'mode' is invalid.
         ValueError
-            'limit[0]' is invalid.
+            A 'limits' name is invalid.
         ValueError
             'tspan' tuple must be length 2.
         TypeError
@@ -158,7 +159,7 @@ class Experiment:
         """
 
         _check_mode(mode)
-        _check_limit(limit)
+        _check_limits(limits)
 
         mode, units = mode.split('_')
 
@@ -179,7 +180,7 @@ class Experiment:
         step['value'] = value
         step['units'] = units
         step['tspan'] = tspan
-        step['limit'] = limit
+        step['limits'] = limits
 
         self._steps.append(step)
         self._kwargs.append({**self._options, **kwargs})
@@ -211,7 +212,7 @@ def _check_mode(mode: str) -> None:
         raise ValueError(f"{mode=} is invalid; valid values are {valid}.")
 
 
-def _check_limit(limit: tuple[str, float]) -> None:
+def _check_limits(limits: tuple[str, float]) -> None:
     """
     Check the limit criteria.
 
@@ -227,14 +228,28 @@ def _check_limit(limit: tuple[str, float]) -> None:
     Raises
     ------
     ValueError
-        'limit[0]' is invalid.
+        'limits' length must be even.
+    ValueError
+        A 'limits' name is invalid.
 
     """
 
     valid = ['soc', 'temperature_K', 'current_A', 'voltage_V', 'power_W',
              'capacity_Ah', 'time_s', 'time_min', 'time_h']
 
-    if limit is None:
+    if limits is None:
         pass
-    elif limit[0] not in valid:
-        raise ValueError(f"{limit[0]=} is invalid; valid values are {valid}.")
+    elif len(limits) % 2 != 0:
+        raise ValueError("'limits' length must be even.")
+    else:
+
+        for i in range(len(limits) // 2):
+            name = limits[2*i]
+            value = limits[2*i + 1]
+
+            if name not in valid:
+                raise ValueError(f"The limit name '{name}' is invalid; valid"
+                                 f" values are {valid}.")
+
+            elif not isinstance(value, (int, float)):
+                raise TypeError(f"Limit '{name}' value must be type float.")

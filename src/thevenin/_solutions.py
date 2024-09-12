@@ -217,7 +217,7 @@ class CycleSolution(BaseSolution):
 
         for sol in sols:
             if self._t.size > 0:
-                shifted_times = self._t[-1] + sol.t
+                shifted_times = self._t[-1] + sol.t + 1e-3
             else:
                 shifted_times = sol.t
 
