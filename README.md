@@ -1,7 +1,7 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/dark.svg"
+  <source media="(prefers-color-scheme: dark)" srcset="./images/dark.png"
    style="width: 75%; min-width: 250px; max-width: 500px;"/>
-  <img alt="thevenin logo" src="./images/light.svg"
+  <img alt="thevenin logo" src="./images/light.png"
    style="width: 75%; min-width: 250px; max-width: 500px;"/>
 </picture>
 
@@ -22,7 +22,7 @@
 [pep-l]: https://www.python.org/dev/peps/pep-0008
 
 ## Summary
-This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series reistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC paris; however, the model can be run with as few as zero, and as many as $N$.
+This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series reistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC pairs; however, the model can be run with as few as zero, and as many as $N$.
 
 <p align="center">
   <img alt="2RC Thevenin circuit." src="./images/thevenin_circuit.png"
@@ -98,7 +98,9 @@ sol.plot('capacity_Ah', 'voltage_V')
 * If you are new to Python, check out [Spyder IDE](https://www.spyder-ide.org/). Spyder is a powerful interactive development environment (IDE) that can make programming in Python more approachable to new users.
 
 ## Contributing
-If you'd like to contribute to this package, please look through the existing [issues](). If the bug you've caught or the feature you'd like to add isn't already being worked on, please submit a new issue before getting started. You should also read through the [developer guidelines]().
+If you'd like to contribute to this package, please look through the existing [issues](https://github.com/ROVI-org/thevenin/issues). If the bug you've caught or the feature you'd like to add isn't already being worked on, please submit a new issue before getting started. You should also read through the [developer guidelines](https://rovi-org.github.io/thevenin/development).
 
 ## Acknowledgements
 This work was authored by the National Renewable Energy Laboratory (NREL), operated by Alliance for Sustainable Energy, LLC, for the U.S. Department of Energy (DOE). The views expressed in the repository do not necessarily represent the views of the DOE or the U.S. Government.
+
+The motivation and funding for this project came from the Rapid Operational Validation Initiative (ROVI) sponsored by the Office of Electricity. The focus of ROVI is "to greatly reduce time required for emerging energy storage technologies to go from lab to market by developing new tools that will accelerate the testing and validation process needed to ensure commercial success." If interested, you can read more about ROVI [here](https://www.energy.gov/oe/rapid-operational-validation-initiative-rovi).

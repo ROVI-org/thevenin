@@ -134,7 +134,9 @@ class RampedSteps:
 
         See also
         --------
-        StepFunction
+        StepFunction : 
+            Uses hard discontinuous steps rather than ramped steps. Generally
+            non-ideal for simulations, but may be useful elsewhere.
 
         """
 
