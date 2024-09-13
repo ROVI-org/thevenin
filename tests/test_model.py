@@ -1,8 +1,6 @@
-import io
-import pytest
 import warnings
-import contextlib
 
+import pytest
 import thevenin
 import numpy as np
 
