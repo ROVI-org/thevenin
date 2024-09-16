@@ -1,11 +1,9 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/dark.png"
-   style="width: 75%; min-width: 250px; max-width: 500px;"/>
-  <img alt="thevenin logo" src="./images/light.png"
-   style="width: 75%; min-width: 250px; max-width: 500px;"/>
-</picture>
+<img alt='Logo' style='width: 75%; min-width: 250px; max-width: 500px;' 
+ src='https://github.com/ROVI-org/thevenin/blob/main/images/dark.png?raw=true#gh-dark-mode-only'/>
+<img alt='Logo' style='width: 75%; min-width: 250px; max-width: 500px;' 
+ src='https://github.com/ROVI-org/thevenin/blob/main/images/light.png?raw=true#gh-light-mode-only'/>
 
-<p><br></p>
+ <br>
 
 [![CI][ci-b]][ci-l] &nbsp;
 ![tests][test-b] &nbsp;
@@ -15,8 +13,8 @@
 [ci-b]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml/badge.svg
 [ci-l]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml
 
-[test-b]: ./images/tests.svg
-[cov-b]: ./images/coverage.svg
+[test-b]: https://raw.githubusercontent.com/ROVI-org/thevenin/1f2d5c206f2656163823352cbbf4459c4cb327ec/images/tests.svg
+[cov-b]: https://raw.githubusercontent.com/ROVI-org/thevenin/1f2d5c206f2656163823352cbbf4459c4cb327ec/images/coverage.svg
 
 [pep-b]: https://img.shields.io/badge/code%20style-pep8-orange.svg
 [pep-l]: https://www.python.org/dev/peps/pep-0008
@@ -25,8 +23,9 @@
 This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series reistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC pairs; however, the model can be run with as few as zero, and as many as $N$.
 
 <p align="center">
-  <img alt="2RC Thevenin circuit." src="./images/thevenin_circuit.png"
-   style="width: 75%; min-width: 300px; max-width: 500px;"/></br>
+  <img alt="2RC Thevenin circuit." style="width: 75%; min-width: 250px; max-width: 500px;" 
+   src="https://github.com/ROVI-org/thevenin/blob/main/images/example_circuit.png?raw=true"/>
+  </br>
   Figure 1: 2RC Thevenin circuit.
 </p>
 
@@ -65,7 +64,7 @@ We recommend using [Anaconda](https://anaconda.com) to install this package due 
 
 After cloning the repository, or downloading the files, use your terminal (MacOS/Linux) or Anaconda Prompt (Windows) to navigate into the folder with the `pyproject.toml` file. Once in the correct folder, execute the following commands:
 
-```cmd
+```command
 conda create -n rovi python=3.12 scikits_odes_sundials -c conda-forge
 conda activate rovi
 pip install .
@@ -75,7 +74,7 @@ The first command will create a new Python environment named `rovi`. The environ
 
 If you plan to make changes to the package, you may also want to consider installing in "editable" mode using the `-e` flag, and including the optional developer dependencies, using `[dev]`, as shown below. If you plan to push any changes back into this repository, you should see the [contributing](#contributing) section first.
 
-```cmd
+```command
 pip install -e .[dev]
 ```
 
