@@ -19,5 +19,6 @@ Please add a line in the relevant section of [CHANGELOG.md](https://github.com/R
 The optional `-- format` and `-- write` arguments (see above) attempt to correct formatting issues prior to running the linter, and spelling mistakes prior to running the spellcheck, respectively. You can also run all of the above checks using `$ nox -s pre-commit` instead of running them individually.
 
 ## Further checks:
-- [ ] Code is commented, particularly in hard-to-understand areas
-- [ ] Tests are added that prove fix is effective or that feature works
+- [ ] The documentation builds: `$ nox -s docs`.
+- [ ] Code is commented, particularly in hard-to-understand areas.
+- [ ] Tests are added that prove fix is effective or that feature works.
