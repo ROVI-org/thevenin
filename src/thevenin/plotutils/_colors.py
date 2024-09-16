@@ -32,7 +32,7 @@ def get_colors(size: int, data: ndarray = None, norm: ndarray = None,
 
     Returns
     -------
-    list
+    colors : list
         A list of (r, g, b, a) color codes.
 
     Raises

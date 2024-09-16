@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import os
-import sys
 import time
 import warnings
 
@@ -566,7 +565,7 @@ def _yaml_reader(file: str) -> dict:
     templates = here + '/templates'
 
     if file in os.listdir(templates):
-        warnings.warn(f"Using the default parameter file '{file}'.")
+        short_warn(f"Using the default parameter file '{file}'.")
         file = templates + '/' + file
 
     def eval_constructor(loader, node):
@@ -585,9 +584,14 @@ def _yaml_reader(file: str) -> dict:
     return data
 
 
-def _showwarning(message, category, filename, lineno, file=None, line=None):
-    file = file or sys.stderr
-    print(f"\n[thevenin {category.__name__}]: {message}\n", file=file)
+def formatwarning(message, category, filename, lineno, line=None):
+    return f"\n[thevenin {category.__name__}]: {message}\n\n"
 
 
-# warnings.showwarning = _showwarning
+def short_warn(message, category=None, stacklevel=1, source=None):
+    original_format = warnings.formatwarning
+
+    warnings.formatwarning = formatwarning
+    warnings.warn(message, category, stacklevel, source)
+
+    warnings.formatwarning = original_format

@@ -25,7 +25,7 @@ from ._solutions import StepSolution, CycleSolution
 from . import loadfns
 from . import plotutils
 
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
 __all__ = [
     'IDASolver',

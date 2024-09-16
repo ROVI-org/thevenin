@@ -6,8 +6,7 @@ labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
+      value: Thanks for taking the time to fill out this bug report!
 
   - type: input
     id: version
@@ -40,11 +39,7 @@ body:
     attributes:
       label: Steps to Reproduce
       description: |
-        Provide clear steps to reproduce the bug. Ideally, include a code block
-        that demonstrates the issue. Aim for a minimal, easy-to-understand example
-        by simplifying or removing unnecessary parts of your code. Only include
-        code leading up to where the error occurs—for instance, if the error is
-        thrown on line 30, do not include any lines after that.
+        Provide clear steps to reproduce the bug. Ideally, include a code block that demonstrates the issue. Aim for a minimal, easy-to-understand example by simplifying or removing unnecessary parts of your code. Only include code leading up to where the error occurs—for instance, if the error is thrown on line 30, do not include any lines after that.
     validations:
       required: true
 
@@ -53,6 +48,5 @@ body:
     attributes:
       label: Relevant log output
       description: |
-        Copy and paste any relevant log output. Your log will automatically be
-        formatted into code, so there is no need for backticks.
+        Copy and paste any relevant log output. Your log will automatically be formatted into code, so there is no need for backticks.
       render: shell

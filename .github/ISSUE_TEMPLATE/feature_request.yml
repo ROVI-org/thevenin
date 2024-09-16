@@ -5,8 +5,7 @@ labels: ["feature"]
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time to fill out this form!
+      value: Thanks for taking the time to fill out this form!
 
   - type: textarea
     id: description
@@ -20,8 +19,9 @@ body:
     id: motivation
     attributes:
       label: Motivation
-      description: |
-        How does the feature improve the package? What is the expected outcome?
+      description: How does the feature improve the package? What is the expected outcome?
+    validations:
+      required: true
 
   - type: textarea
     id: additional-context
