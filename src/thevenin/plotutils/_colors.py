@@ -25,7 +25,7 @@ def get_colors(size: int, data: ndarray = None, norm: ndarray = None,
         An array-like (min, max) pair that normalizes the colormap to 'data'.
         By default (0, size) if 'data=None' or min/max of 'data' otherwise.
     alpha : float, optional
-        Transparancy to apply over the colormap. Must be in the range [0, 1].
+        Transparency to apply over the colormap. Must be in the range [0, 1].
         The default is 1.
     cmap : str, optional
         A valid matplotlib colormap name. The default is 'jet'.

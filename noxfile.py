@@ -55,7 +55,7 @@ def run_codespell(session):
 @nox.session(name='spellcheck', python=False)
 def run_spellcheck(session):
     """
-    Run codespell with some docs files indcluded
+    Run codespell with docs files included
 
     Use the optional 'write' argument to write the corrections directly into
     the files. Otherwise, you will only see a summary of the found errors.
@@ -63,14 +63,13 @@ def run_spellcheck(session):
     """
 
     command = ['codespell']
-
+    
     if 'write' in session.posargs:
         command.append('-w')
 
     run_codespell(session)
 
-    session.run(*command, 'sphinx/index.html')
-    session.run(*command, 'sphinx/source/examples')
+    session.run(*command, 'sphinx/source')
 
 
 @nox.session(name='tests', python=False)

@@ -101,6 +101,10 @@ def test_step_function():
 
     assert np.isnan(load(np.nan))
     assert np.allclose(load(t_test), y_test, equal_nan=True)
+    
+    load = thev.loadfns.StepFunction(tp, yp, -np.inf, ignore_nan=True)
+    
+    assert load(np.nan) == yp[-1]
 
 
 def test_ramped_steps():

@@ -1,2 +1,3 @@
 [codespell]
-skip = .*,__pycache__,build,docs,images,reports,sphinx
+skip = build,docs,images,reports,sphinx
+ignore-words-list = thev

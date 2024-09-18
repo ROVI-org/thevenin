@@ -64,7 +64,7 @@ We recommend using [Anaconda](https://anaconda.com) to install this package due 
 
 After cloning the repository, or downloading the files, use your terminal (MacOS/Linux) or Anaconda Prompt (Windows) to navigate into the folder with the `pyproject.toml` file. Once in the correct folder, execute the following commands:
 
-```command
+```console
 conda create -n rovi python=3.12 scikits_odes_sundials -c conda-forge
 conda activate rovi
 pip install .
@@ -74,7 +74,7 @@ The first command will create a new Python environment named `rovi`. The environ
 
 If you plan to make changes to the package, you may also want to consider installing in "editable" mode using the `-e` flag, and including the optional developer dependencies, using `[dev]`, as shown below. If you plan to push any changes back into this repository, you should see the [contributing](#contributing) section first.
 
-```command
+```console
 pip install -e .[dev]
 ```
 
