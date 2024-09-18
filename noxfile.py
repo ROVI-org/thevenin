@@ -63,7 +63,7 @@ def run_spellcheck(session):
     """
 
     command = ['codespell']
-    
+
     if 'write' in session.posargs:
         command.append('-w')
 

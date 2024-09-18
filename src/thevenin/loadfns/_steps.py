@@ -20,7 +20,7 @@ class StepFunction:
             yp = np.array([-1, 1])
 
             y = StepFunction(tp, yp, np.nan)
- 
+
         Corresponds to
 
         .. code-block:: python
@@ -82,19 +82,19 @@ class StepFunction:
         self._yp = np.concatenate(([y0], yp, [yp[-1]]))
 
         def func(t):
-    
+
             t = np.asarray(t)
             if t.size == 1:
                 t = np.atleast_1d(t)
-            
+
             idx = np.searchsorted(tp, t, side='right')
             idx = np.clip(idx, 0, tp.size)
-            
+
             y = self._yp[idx]
-            
+
             if not ignore_nan:
                 y[np.isnan(t)] = np.nan
-                
+
             if y.size == 1:
                 return y.item()
             else:
@@ -141,10 +141,10 @@ class RampedSteps:
             non-ideal for simulations, but may be useful elsewhere.
 
         """
-        
+
         tp = np.concatenate((tp, tp + t_ramp))
         yp = np.concatenate(([y0], yp[:-1], yp))
-        
+
         argsort = np.argsort(tp)
 
         self._tp = tp[argsort]
