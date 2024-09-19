@@ -117,7 +117,7 @@ def test_ramped_steps():
 
     # t_ramp must be strictly positive
     with pytest.raises(ValueError):
-        tp = np.array([0, 1])
+        tp = np.array([0, 1, 5])
         yp = np.array([-1, 0, 1])
         _ = thev.loadfns.RampedSteps(tp, yp, 0.)
 
