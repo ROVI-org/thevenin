@@ -48,11 +48,9 @@ class StepFunction:
         Raises
         ------
         ValueError
-            tp and tp must both be 1D.
+            tp and yp must both be 1D.
         ValueError
             tp and yp must be same size.
-        TypeError
-            y0 must be type float.
         ValueError
             tp must be strictly increasing.
 
@@ -71,9 +69,6 @@ class StepFunction:
 
         if tp.size != yp.size:
             raise ValueError("tp and yp must be same size.")
-
-        if not isinstance(y0, (int, float)):
-            raise TypeError("y0 must be type float.")
 
         if any(np.diff(tp) <= 0.):
             raise ValueError("tp must be strictly increasing.")
@@ -117,10 +112,9 @@ class RampedSteps:
     def __init__(self, tp: np.ndarray, yp: np.ndarray, t_ramp: float,
                  y0: float = 0.) -> None:
         """
-        This class constructs a StepFunction with the same tp, yp, and y0,
-        but "smooths" the transitions between steps using the t_ramp value
-        Generally, this profile will be more stable to run compared to the
-        hard steps in StepFunction.
+        This class acts like StepFunction, with the same tp, yp, and y0, but
+        step transitions include ramps with duration t_ramp. Generally, this
+        profile will be more stable compared to a StepFunction profile.
 
         Parameters
         ----------
@@ -134,6 +128,17 @@ class RampedSteps:
             Value to return when t < tp[0]. In addition to standard float
             values, np.nan and np.inf are supported. The default is 0.
 
+        Raises
+        ------
+        ValueError
+            tp and yp must both be 1D.
+        ValueError
+            tp and yp must be same size.
+        ValueError
+            t_ramp must be strictly positive.
+        ValueError
+            tp must be strictly increasing.
+
         See also
         --------
         StepFunction :
@@ -141,6 +146,18 @@ class RampedSteps:
             non-ideal for simulations, but may be useful elsewhere.
 
         """
+
+        if tp.ndim != 1 or yp.ndim != 1:
+            raise ValueError("tp and yp must both be 1D.")
+
+        if tp.size != yp.size:
+            raise ValueError("tp and yp must be same size.")
+
+        if t_ramp <= 0.:
+            raise ValueError("t_ramp must be strictly positive.")
+
+        if any(np.diff(tp) <= 0.):
+            raise ValueError("tp must be strictly increasing.")
 
         tp = np.concatenate((tp, tp + t_ramp))
         yp = np.concatenate(([y0], yp[:-1], yp))

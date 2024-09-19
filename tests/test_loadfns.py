@@ -79,12 +79,6 @@ def test_step_function():
         yp = np.array([-1, 0, 1])
         _ = thev.loadfns.StepFunction(tp, yp)
 
-    # y0 must be float
-    with pytest.raises(TypeError):
-        tp = np.array([0, 1, 5])
-        yp = np.array([-1, 0, 1])
-        _ = thev.loadfns.StepFunction(tp, yp, None)
-
     # tp must be strictly increasing
     with pytest.raises(ValueError):
         tp = np.array([0, -1, 5])
@@ -108,6 +102,30 @@ def test_step_function():
 
 
 def test_ramped_steps():
+
+    # Inputs must be 1D
+    with pytest.raises(ValueError):
+        tp = np.array([[0, 1, 5]])
+        yp = np.array([-1, 0, 1])
+        _ = thev.loadfns.RampedSteps(tp, yp, 1.)
+
+    # Inputs must be same length
+    with pytest.raises(ValueError):
+        tp = np.array([0, 1])
+        yp = np.array([-1, 0, 1])
+        _ = thev.loadfns.RampedSteps(tp, yp, 1.)
+
+    # t_ramp must be strictly positive
+    with pytest.raises(ValueError):
+        tp = np.array([0, 1])
+        yp = np.array([-1, 0, 1])
+        _ = thev.loadfns.RampedSteps(tp, yp, 0.)
+
+    # tp must be strictly increasing
+    with pytest.raises(ValueError):
+        tp = np.array([0, -1, 5])
+        yp = np.array([-1, 0, 1])
+        _ = thev.loadfns.RampedSteps(tp, yp, 1.)
 
     tp = np.array([0, 1, 5])
     yp = np.array([-1, 5, 10])
