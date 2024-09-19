@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2. Step functions &#8212; thevenin 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d09b1075" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/step_functions';</script>
+    <script src="../_static/custom.js?v=e2d01366"></script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development" href="../development/index.html" />
+    <link rel="prev" title="1. Ramping" href="ramping.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../development/index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../development/index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Basic tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML file inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dict_inputs.html">2. Dictionary inputs</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dynamic loads</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ramping.html">1. Ramping</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Step functions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="step-functions">
+<h1><span class="section-number">2. </span>Step functions<a class="headerlink" href="#step-functions" title="Link to this heading">#</a></h1>
+<p>In many experimental setups, dynamic loads are applied to simulate realistic operating conditions. Experimental platforms often handle these dynamic loads effectively, interpolating between data points if necessary to create smooth profiles. However, while interpolation is a convenient tool, there are situations where it might not be the best approach for simulating system behavior. Therefore, we also supply helper functions to construct step-based load profiles.</p>
+<section id="why-not-interpolate">
+<h2><span class="section-number">2.1. </span>Why not interpolate?<a class="headerlink" href="#why-not-interpolate" title="Link to this heading">#</a></h2>
+<p>Interpolating data can introduce a level of artificial smoothness that doesn’t always reflect the abrupt changes seen in real-world systems. For example, interpolated loads are often used to ease solver convergence, but they may not capture the behavior of systems that respond rapidly to changes. This is particularly important for systems that exhibit stepwise or discrete changes in load, where instantaneous shifts between levels are more appropriate than a continuous curve.</p>
+<p>While writing an interpolation function is typically straightforward—requiring little more than a call to a standard library, the complexity increases when building a function that implements stepwise behavior. A step function requires more careful attention to correctly represent when and where the system load changes instantaneously. Consequently, we provide this functionality within the <code class="docutils literal notranslate"><span class="pre">loadfns</span></code> modeule to reduce the users’ burden to have to develop their own.</p>
+</section>
+<section id="overview">
+<h2><span class="section-number">2.2. </span>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>When dealing with numerical simulations, introducing ramps between load changes can significantly improve the stability of the solver, reducing the risk of failure during abrupt transitions. Sudden, instantaneous changes in load can sometimes cause solvers to struggle, especially with stiff systems, leading to crashes or errors. That’s why in Thevenin, we offer two classes for defining stepped load profiles: <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> and <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> class is designed for scenarios where immediate, instantaneous changes in load are appropriate, while the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class helps transition between steps by applying an interpolation ramps over a specified time interval at the start of each new step. These two approaches cover a wide range of scenarios, from systems that can handle rapid shifts to those that require more stable transitions.</p>
+<p>Below, we will cover:</p>
+<ol class="arabic simple">
+<li><p>Building load profiles using interpolated data.</p></li>
+<li><p>Setting up multi-step experiments using for loops.</p></li>
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">StepFunctio</span></code> class to create instantaneous stepped loads.</p></li>
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class to create stable transitions between load steps.</p></li>
+</ol>
+</section>
+<section id="dynamic-experiments">
+<h2><span class="section-number">2.3. </span>Dynamic experiments<a class="headerlink" href="#dynamic-experiments" title="Link to this heading">#</a></h2>
+<p>To create dynamic load profiles, especially for more complex experiments, there are many approaches you can take. The <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> class allows users to pass in any Python <code class="docutils literal notranslate"><span class="pre">Callable</span></code> like <code class="docutils literal notranslate"><span class="pre">f(t:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code> to control each step. Therefore, if you have data, you can easily interpolate the data to create a load profile, or you can automate the construction of load steps using a for loop. Below we demonstrate both approaches.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">thevenin</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="n">model</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1"># Fake hour-by-hour load data</span>
+<span class="linenos"> 7</span><span class="n">time_s</span> <span class="o">=</span> <span class="mf">3600.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">])</span>
+<span class="linenos"> 8</span><span class="n">current_A</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">capacity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">])</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1"># Interpolating the data</span>
+<span class="linenos">11</span><span class="n">interp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">14</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">17</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
+<span class="linenos">18</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[thevenin UserWarning]: Using the default parameter file &#39;params.yaml&#39;.
+</pre></div>
+</div>
+<img alt="../_images/0e1ac83fa495aaf6166e3c42ffe52b67a80feb137b63b30cf10a104b4ea00dc3.png" src="../_images/0e1ac83fa495aaf6166e3c42ffe52b67a80feb137b63b30cf10a104b4ea00dc3.png" />
+<img alt="../_images/6e8bb01372ee244a66128a702d9178f02f560b0f69ae348160eedafc71e231f3.png" src="../_images/6e8bb01372ee244a66128a702d9178f02f560b0f69ae348160eedafc71e231f3.png" />
+</div>
+</div>
+<p>In the script above, the data represents hour-by-hour constant-current loads, which might represent some stationary storage system. Since the current is constant across each hour, interpolating between points poorly approximates the actual system behavior. However, interpolation might be more relevant for other dynamic systems like electric vehicles, where data is resolved on shorter timescales, such as seconds.</p>
+<p>A better approach for modeling constant-step experiments, rather than using interpolation, is to manually construct the steps using a for loop. In the code block below, we demonstrate how to create a new experiment with multiple steps, where each step lasts one hour, and the current is set by the values in the <code class="docutils literal notranslate"><span class="pre">current_A</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Looping over constant steps</span>
+<span class="linenos">2</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">3</span><span class="k">for</span> <span class="n">load</span> <span class="ow">in</span> <span class="n">current_A</span><span class="p">:</span>
+<span class="linenos">4</span>    <span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">7</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
+<span class="linenos">8</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/5e3f2af20ecd1cc65e59efa847be883aae3634cacf3ba80649702c11ba235731.png" src="../_images/5e3f2af20ecd1cc65e59efa847be883aae3634cacf3ba80649702c11ba235731.png" />
+<img alt="../_images/6f6d61c2e2a9e61bde545b17612082e336dbf12657fed44464f81392ef08bcd3.png" src="../_images/6f6d61c2e2a9e61bde545b17612082e336dbf12657fed44464f81392ef08bcd3.png" />
+</div>
+</div>
+<p>This loop-based method significantly improves the accuracy of the results in this case. You can see how different the two voltage profiles are when the load profile is applied correctly, instead of using interpolation. This loop-based approach offers the most flexibility and is recommended when users need precise control over each step. For example, using the <code class="docutils literal notranslate"><span class="pre">add_step</span></code> method allows you to add different limits to each step, which can be incorporated into the loop. This level of control is not always possible with other methods.</p>
+</section>
+<section id="instantaneous-load-steps">
+<h2><span class="section-number">2.4. </span>Instantaneous load steps<a class="headerlink" href="#instantaneous-load-steps" title="Link to this heading">#</a></h2>
+<p>For scenarios involving abrupt changes in load, the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> class can also be useful. It allows users to define a series of instantaneous steps at specific time points, simulating conditions where the load jumps suddenly between levels. However, depending on your model’s parameters, using this class can sometimes lead to instabilities that are not present with the loop-based approach described above.</p>
+<p>In the example below, we use the same time and current data to create a <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> instance. You’ll see that the model crashes after the second step, which is due to the stiff nature of the instantaneous load changes. The loop-based approach avoids this by recalculating and correcting initial conditions at the start of each step. In contrast, the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> method applies the entire load profile as a single experimental load, meaning the model can only correct the initial conditions once, at the beginning of the simulation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Automatted instantaneous steps</span>
+<span class="linenos"> 2</span><span class="n">load</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">StepFunction</span><span class="p">(</span><span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">)</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos"> 5</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">soln</span><span class="o">.</span><span class="n">success</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
+<span class="linenos">10</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>soln.success=[False]
+</pre></div>
+</div>
+<img alt="../_images/92a4ae3ce66c5787a093e68727ab74ca41566ea2b8988989bc9e1587d73270c4.png" src="../_images/92a4ae3ce66c5787a093e68727ab74ca41566ea2b8988989bc9e1587d73270c4.png" />
+<img alt="../_images/a1c914a09baf612351952bef7dab8607f206e4878de799a68b08abcc88b54752.png" src="../_images/a1c914a09baf612351952bef7dab8607f206e4878de799a68b08abcc88b54752.png" />
+</div>
+</div>
+<p>Aside from causing crashes, this approach is also less flexible in terms of setting limits or adjusting solver settings, as the entire profile is handled as a single experimental step rather than multiple, individual ones. Due to occasional crashes and reduced flexibility, we don’t generally recommend the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> class, though it’s included in the module for completeness. Instead, for instantaneous steps, we suggest using the loop-based approach, even if it requires writing a few more lines of code.</p>
+<p>Alternatively, when a true instantaneous step can be avoided and approximated with a rapid ramp between steps, we offer the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class. This option is simple, quick to use, and provides improved stability compared to <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code>.</p>
+</section>
+<section id="ramped-load-transitions">
+<h2><span class="section-number">2.5. </span>Ramped load transitions<a class="headerlink" href="#ramped-load-transitions" title="Link to this heading">#</a></h2>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code>, the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class introduces “smooth” transitions between load steps by ramping up or down over a specified time period. This method is especially useful when dealing with stiff systems, where abrupt changes might otherwise cause solver instability. Below we demonstrate this using the same hour-by-hour profile from above. We set the ramp between steps to be just one millisecond so that the transitions are still quick and approximate an instantaneous change. In this case, the added ramps improve the stability and the full simulation is run, as shown in the figure. Overall, the results are nearly identical to the loop-based approach since the ramps are set to occur over such a small time scale. In particular, the main difference is shown in the current profile, where you can briefly see the first ramp (starting from zero current at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Stabilize the solver with ramped steps</span>
+<span class="linenos">2</span><span class="n">load</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">RampedSteps</span><span class="p">(</span><span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">5</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">6</span>
+<span class="linenos">7</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">8</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
+<span class="linenos">9</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7c8f57f652261b4bf928ccf71909dbf3c0315193407a671f723e581b531ebbfe.png" src="../_images/7c8f57f652261b4bf928ccf71909dbf3c0315193407a671f723e581b531ebbfe.png" />
+<img alt="../_images/de5e972375fe7cd173b51f678e6e3618ea3e5dccef27d7d271e594eac2d6adec.png" src="../_images/de5e972375fe7cd173b51f678e6e3618ea3e5dccef27d7d271e594eac2d6adec.png" />
+</div>
+</div>
+<p>While the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class improves solver stability, it still lacks flexibility for setting limits on each individual step. For instance, you could apply limits to stop the simulation if the voltage goes outside a specific window (e.g., [3, 4.2]), but this would simply end the entire simulation prematurely. In most cases, you wouldn’t want to stop the simulation completely but instead transition to the next step early. To achieve this behavior, you would need to use loops, or alternatively, set up multiple instances of the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class if you want to transition between groups of steps based on specific limits rather than between individual steps.</p>
+<p>In general, if maximum flexibility is needed, more manual setup is required for multi-step experiments. However, if you can work within the limitations of <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code>, it is a powerful tool for quickly constructing step-like profiles while maintaining some degree of stability.</p>
+</section>
+<section id="conclusion">
+<h2><span class="section-number">2.6. </span>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>In this tutorial, we explored various methods for constructing dynamic load profiles using Thevenin’s <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> and <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> classes. We’ve shown how both instantaneous steps and ramps between steps can be modeled and discussed the trade-offs between flexibility, stability, and ease of use. While loop-based approaches offer the greatest control, <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> provides a simple and effective way to ensure stability in simulations, making it a valuable option for many users. Ultimately, the best method depends on the complexity of the load profile you need and the requirements of your specific experiment or model.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-not-interpolate">2.1. Why not interpolate?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">2.2. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-experiments">2.3. Dynamic experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instantaneous-load-steps">2.4. Instantaneous load steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramped-load-transitions">2.5. Ramped load transitions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">2.6. Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Corey R. Randall.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

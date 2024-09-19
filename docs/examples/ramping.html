@@ -1,0 +1,582 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1. Ramping &#8212; thevenin 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d09b1075" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/ramping';</script>
+    <script src="../_static/custom.js?v=e2d01366"></script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Step functions" href="step_functions.html" />
+    <link rel="prev" title="2. Dictionary inputs" href="dict_inputs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../development/index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../development/index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Basic tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML file inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dict_inputs.html">2. Dictionary inputs</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dynamic loads</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Ramping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="step_functions.html">2. Step functions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="ramping">
+<h1><span class="section-number">1. </span>Ramping<a class="headerlink" href="#ramping" title="Link to this heading">#</a></h1>
+<p>Even with robust numerical solvers and thoughtfully chosen default tolerances, simulations may occasionally fail under certain conditions. This is often due to either inconsistent initial conditions or stiffness issues that prevent proper initialization from a rested state. While our solvers are designed to handle many scenarios effectively, the following issues may still arise:</p>
+<ol class="arabic">
+<li><p><strong>Inconsistent initial conditions:</strong></p>
+<p>Many solvers are capable of detecting and resolving inconsistent initial conditions before taking the first step. However, this feature can be disabled, allowing bad initial conditions to be passed to the solver, and generally resulting in failures.</p>
+</li>
+<li><p><strong>Stiff problems:</strong></p>
+<p>Some problems are inherently stiff and cannot be initialized effectively, even with a solver’s initialization correction schemes. In such cases, the solver may have difficulty determining a stable solution.</p>
+</li>
+</ol>
+<p>To address these issues, introducing a ramped load can stabilize the simulation. By default, Thevenin models are set to always ask the solver to correct the initial condition. The starting guess that gets passed to the solver is always a rested condition. Therefore, ramped loads can gradually adjust from the initial state to the desired load, making them easier for the solver to handle. This technique helps avoid the solver crashing due to an abrupt change in load.</p>
+<p>In this tutorial, we will demonstrate how to use the <code class="docutils literal notranslate"><span class="pre">loadfns</span></code> module to create a ramped load profile. While we will focus one specific function, other useful helper functions are available in the <code class="docutils literal notranslate"><span class="pre">loadfns</span></code> module, and we encourage you to explore the full documentation for more information.</p>
+<section id="creating-a-ramped-load">
+<h2><span class="section-number">1.1. </span>Creating a ramped load<a class="headerlink" href="#creating-a-ramped-load" title="Link to this heading">#</a></h2>
+<p>Thevenin supports both constant and dynamic load profiles for each experimental step. For example, below we make a profile that discharges the battery at a constant current until 3.5 V and then charges the battery by ramping the voltage until 4.2 V.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">import</span> <span class="nn">thevenin</span>
+<span class="linenos">2</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="k">def</span> <span class="nf">voltage_ramp</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos">5</span>    <span class="k">return</span> <span class="mf">3.5</span> <span class="o">+</span> <span class="mf">5e-3</span><span class="o">*</span><span class="n">t</span>
+<span class="linenos">6</span>
+<span class="linenos">7</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">8</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">75.</span><span class="p">,</span> <span class="p">(</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="linenos">9</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="n">voltage_ramp</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This general approach provides the most flexibility so users can write any constant or dynamic load, including interpolations of data. However, we also provide select loads in the <code class="docutils literal notranslate"><span class="pre">loadfns</span></code> module that help with both solver stability and reduce the amount of code users need to write out for simple profiles. For instance, the same experiment above can also be constructed using the <code class="docutils literal notranslate"><span class="pre">Ramp</span></code> class, as shown below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">voltage_ramp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">Ramp</span><span class="p">(</span><span class="mf">5e-3</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">)</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">4</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">75.</span><span class="p">,</span> <span class="p">(</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="linenos">5</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="n">voltage_ramp</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Below, we demonstrate running this experimental protocol so we can see that it is doing what we expect.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">model</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">4</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_min&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[thevenin UserWarning]: Using the default parameter file &#39;params.yaml&#39;.
+</pre></div>
+</div>
+<img alt="../_images/bf30186108bc72343f3c33fecefe9277e36392192a96c309f071cfd5b3eb4d56.png" src="../_images/bf30186108bc72343f3c33fecefe9277e36392192a96c309f071cfd5b3eb4d56.png" />
+</div>
+</div>
+</section>
+<section id="stability-ramps">
+<h2><span class="section-number">1.2. </span>Stability ramps<a class="headerlink" href="#stability-ramps" title="Link to this heading">#</a></h2>
+<p>Aside from a constant ramp, like <code class="docutils literal notranslate"><span class="pre">Ramp</span></code> demonstrated above, ramps are also commonly used to quickly move from a rested state to a constant load. This can help with solver stability over trying to instantaneously pull a load. To build this type of provile, use the <code class="docutils literal notranslate"><span class="pre">Ramp2Constant</span></code> class. Below, we ramp up to a 20 C discharge in one millisecond and then hold the 20 C discharge rate until 3 V.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">load</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">Ramp2Constant</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="mi">75</span><span class="o">/</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="mi">75</span><span class="p">)</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">4</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="p">(</span><span class="mf">180.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">7</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_s&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
+<span class="linenos">8</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_s&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\crandall\Documents\THEVENIN\src\thevenin\loadfns\_ramps.py:97: RuntimeWarning: overflow encountered in exp
+  sigmoid = 1. / (1. + np.exp(-self._sharpness*(linear - self._step)))
+</pre></div>
+</div>
+<img alt="../_images/8db22403485fbe4480d0cc5e13fce4bc93180755628bfd2c02b35bb41cd17f4d.png" src="../_images/8db22403485fbe4480d0cc5e13fce4bc93180755628bfd2c02b35bb41cd17f4d.png" />
+<img alt="../_images/ace90a46b8d4203d119c06825097951c42852339047cb26f73d78b1637a42f43.png" src="../_images/ace90a46b8d4203d119c06825097951c42852339047cb26f73d78b1637a42f43.png" />
+</div>
+</div>
+<p>These types of “stability” ramps become more and more helpful (or needed) as loads become more demanding. They can also depend on the model’s parameter set, i.e., for one set of parameters the model may start crashing at a 5 C discharge whereas another set is stable up to 50 C.</p>
+</section>
+<section id="comparing-to-instantaneous-loads">
+<h2><span class="section-number">1.3. </span>Comparing to instantaneous loads<a class="headerlink" href="#comparing-to-instantaneous-loads" title="Link to this heading">#</a></h2>
+<p>The default model parameters, and the Thevenin model in general, is typically fairly stable compared to other higher-fidelity models (e.g., the single particle model or pseudo-2D model). Therefore, here we can also demonstrate that when we run an instantaneous 20 C discharge profile that the results are not significantly impacted. See the figure below that compares the voltage profile above to one obtained without the ramped profile.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos"> 2</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mi">75</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span> <span class="p">(</span><span class="mf">180.</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="n">soln2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;time_s&#39;</span><span class="p">],</span> <span class="n">soln</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">],</span> <span class="s1">&#39;-k&#39;</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">soln2</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;time_s&#39;</span><span class="p">],</span> <span class="n">soln2</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">],</span> <span class="s1">&#39;ok&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<span class="linenos"> 8</span>    
+<span class="linenos"> 9</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">);</span>
+<span class="linenos">10</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage [V]&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7bdc777046c1c114be028beeaf78b078b852f3f468d81e5de44497baa0098529.png" src="../_images/7bdc777046c1c114be028beeaf78b078b852f3f468d81e5de44497baa0098529.png" />
+</div>
+</div>
+<p>Due to the ramp the initial conditions are obviously a bit different. However, since the ramp occurs over just one millisecond, the profile from the ramped case (solid line) very quickly adjusts to the same voltage as the case where current is instantaneous (open markers). The solutions maintain good agreement throughout the rest of discharge.</p>
+</section>
+<section id="conclusion">
+<h2><span class="section-number">1.4. </span>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>In this tutorial, you’ve seen how ramped loads can stabilize simulations that struggle with abrupt load changes. By using the loadfns module, you can easily implement these profiles, ensuring smoother transitions for the solver. For more advanced load functions, check out the full documentation to optimize your simulations further.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-ramped-load">1.1. Creating a ramped load</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stability-ramps">1.2. Stability ramps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-to-instantaneous-loads">1.3. Comparing to instantaneous loads</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">1.4. Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Corey R. Randall.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

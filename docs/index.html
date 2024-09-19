@@ -2,19 +2,19 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="./" data-theme="light">
+<html lang="en" data-content_root="./" data-theme="dark">
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Summary &#8212; thevenin 0.0.1 documentation</title>
+    <title>Summary &#8212; thevenin 0.1.0 documentation</title>
   
   
   
   <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=d09b1075" />
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/documentation_options.js?v=01f34227"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,13 +53,13 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="examples/index.html" />
+    <link rel="next" title="User guide" href="user_guide/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
   
   
@@ -131,8 +131,8 @@
     
     
     
-    <img src="_static/light.png" class="logo__image only-light" alt="thevenin 0.0.1 documentation - Home"/>
-    <script>document.write(`<img src="_static/dark.png" class="logo__image only-dark" alt="thevenin 0.0.1 documentation - Home"/>`);</script>
+    <img src="_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -148,8 +148,8 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="examples/index.html">
-    Examples
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User guide
   </a>
 </li>
 
@@ -160,6 +160,20 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development/index.html">
+    Development
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -167,6 +181,20 @@
     
     
     <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
       
       
         <div class="navbar-item">
@@ -186,6 +214,19 @@ document.write(`
   </div>
   
   
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
 
   
 </div>
@@ -200,7 +241,7 @@ document.write(`
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
   
@@ -216,8 +257,8 @@ document.write(`
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="examples/index.html">
-    Examples
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User guide
   </a>
 </li>
 
@@ -225,6 +266,20 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="api/thevenin/index.html">
     API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development/index.html">
+    Development
   </a>
 </li>
 
@@ -254,26 +309,6 @@ document.write(`
     
   </div>
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         id="search-input"
-         placeholder="Search..."
-         aria-label="Search..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-    </div>
-  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
@@ -299,24 +334,24 @@ document.write(`
                   
   <embed>
    </br>
-   <img alt='thevenin logo' class='onlight bg-transparent' src='_static/light.png'
+   <img alt='logo' class='onlight bg-transparent' src='_static/light.png'
     style='width: 75%; min-width: 250px; max-width: 500px;'>
-   <img alt='thevenin logo' class='ondark bg-transparent' src='_static/dark.png'
+   <img alt='logo' class='ondark bg-transparent' src='_static/dark.png'
     style='width: 75%; min-width: 250px; max-width: 500px;'>
    </br>
    </br>
 </embed><section id="summary">
 <h1>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h1>
-<p>
-The Thevenin equivalent circuit model is a common low-fidelity battery model
-consisting of a single resistor in series with any number of RC pairs, i.e.,
-parallel resistor-capacitor pairs. This Python package contains an API for
-building and running experiments using Thevenin models.
-</p><div class="toctree-wrapper compound">
+<p>The Thevenin equivalent circuit model is a common low-fidelity battery model consisting of a single resistor in series with any number of RC pairs, i.e., parallel resistor-capacitor pairs. This Python package contains an API for building and running experiments using Thevenin models.</p>
+<div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
 </div>
-<p><strong>Version:</strong> 0.0.1</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<p><strong>Version:</strong> 0.1.0</p>
 <p><strong>Useful links:</strong>
 <a class="reference external" href="https://www.anaconda.com/download">anaconda</a> |
 <a class="reference external" href="https://www.spyder-ide.org/">spyder</a> |
@@ -329,10 +364,41 @@ building and running experiments using Thevenin models.
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
+User guide</div>
+<p class="sd-card-text">Access installation instructions and in-depth
+information on solver concepts and settings.</p>
+<a class="bg-transparent reference internal image-reference" href="_images/user_guide.svg"><img alt="_images/user_guide.svg" class="bg-transparent align-center" src="_images/user_guide.svg" style="height: 75px;" />
+</a>
+</div>
+<div class="sd-card-footer border-0 docutils">
+<p class="sd-card-text"><span class="sd-d-grid"><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-stretched-link reference internal" href="user_guide/index.html"><span class="doc">To the user guide</span></a></span></p>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row sd-p-2 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+API Reference</div>
+<p class="sd-card-text">Get detailed documentation on all of the modules,
+functions, classes, etc.</p>
+<a class="bg-transparent reference internal image-reference" href="_images/api_reference.svg"><img alt="_images/api_reference.svg" class="bg-transparent align-center" src="_images/api_reference.svg" style="height: 75px;" />
+</a>
+</div>
+<div class="sd-card-footer border-0 docutils">
+<p class="sd-card-text"><span class="sd-d-grid"><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-stretched-link reference internal" href="api/thevenin/index.html"><span class="doc">Go to the docs</span></a></span></p>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row sd-p-2 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
 Examples</div>
-<p class="sd-card-text">A great place to learn how to use the package
-and expand your skills.</p>
-<a class="bg-transparent reference internal image-reference" href="_images/examples.svg"><img alt="_images/examples.svg" class="bg-transparent align-center" height="75px" src="_images/examples.svg" /></a>
+<p class="sd-card-text">A great place to learn how to use the package and
+expand your skills.</p>
+<a class="bg-transparent reference internal image-reference" href="_images/examples.svg"><img alt="_images/examples.svg" class="bg-transparent align-center" src="_images/examples.svg" style="height: 75px;" />
+</a>
 </div>
 <div class="sd-card-footer border-0 docutils">
 <p class="sd-card-text"><span class="sd-d-grid"><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-stretched-link reference internal" href="examples/index.html"><span class="doc">See some examples</span></a></span></p>
@@ -343,13 +409,14 @@ and expand your skills.</p>
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-API Reference</div>
-<p class="sd-card-text">Get detailed documentation on all of the
-modules, functions, classes, etc.</p>
-<a class="bg-transparent reference internal image-reference" href="_images/api_reference.svg"><img alt="_images/api_reference.svg" class="bg-transparent align-center" height="75px" src="_images/api_reference.svg" /></a>
+Development</div>
+<p class="sd-card-text">Trying to fix a typo in the documentation? Looking
+to improve or add a new feature?</p>
+<a class="bg-transparent reference internal image-reference" href="_images/development.svg"><img alt="_images/development.svg" class="bg-transparent align-center" src="_images/development.svg" style="height: 75px;" />
+</a>
 </div>
 <div class="sd-card-footer border-0 docutils">
-<p class="sd-card-text"><span class="sd-d-grid"><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-stretched-link reference internal" href="api/thevenin/index.html"><span class="doc">Go to the docs</span></a></span></p>
+<p class="sd-card-text"><span class="sd-d-grid"><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary sd-stretched-link reference internal" href="development/index.html"><span class="doc">Read contributor guidelines</span></a></span></p>
 </div>
 </div>
 </div>
@@ -406,7 +473,7 @@ modules, functions, classes, etc.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
     <br/>
   </p>
 </div>

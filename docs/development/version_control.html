@@ -1,0 +1,660 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Version control &#8212; thevenin 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d09b1075" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'development/version_control';</script>
+    <script src="../_static/custom.js?v=e2d01366"></script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Code style and linting" href="code_style_and_linting.html" />
+    <link rel="prev" title="Patterns and conventions" href="patterns_and_conventions.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/thevenin/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Before you contribute</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development environments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code structure</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and conventions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflow</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Version control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code style and linting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review process</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Development</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Version control</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="version-control">
+<h1>Version control<a class="headerlink" href="#version-control" title="Link to this heading">#</a></h1>
+<p>Version control is essential to managing the development process, allowing multiple developers to work on code simultaneously, track changes, and maintain a history of the project. It enables collaboration, safeguards against errors, and helps manage releases and bug fixes effectively.</p>
+<p>This project follows the GitHub Flow branching strategy. This lightweight workflow is both simple and fast. Below, we will explain the key steps for contributing to this project using GitHub Flow, as well as references to other branching strategies, their pros, and cons. You’ll also find instructions for handling longer feature development, merge conflicts, and patches to maintenance branches.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We assume developers are already at least a little familiar with using git and GitHub. If this is not the case for you, there are many online tutorials to help you <a class="reference external" href="https://www.w3schools.com/git/default.asp?remote=github">learn git</a>.</p>
+</div>
+<section id="branching-strategies">
+<h2>Branching strategies<a class="headerlink" href="#branching-strategies" title="Link to this heading">#</a></h2>
+<p>Several branching strategies are used in software development, each with its pros and cons. Below are a few common ones:</p>
+<ul>
+<li><p><strong>Git Flow:</strong> Git Flow is a comprehensive branching strategy with separate branches for features, releases, hotfixes, and development. It’s well-suited for larger projects with multiple releases but can be overly complex for smaller teams.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pros: Clear separation between development, releases, and hotfixes.</p></li>
+<li><p>Cons: Complicated branching structure, especially for smaller projects.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Trunk-Based Development:</strong> This approach involves a single main branch with frequent small merges directly to it. Developers create short-lived feature branches and merge back quickly.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pros: Simplifies version control, encourages continuous integration.</p></li>
+<li><p>Cons: Requires careful management to avoid breaking changes on main.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>GitHub Flow:</strong> A simpler model, ideal for projects using continuous delivery. Development happens in short-lived feature or bug branches that are merged back into <code class="docutils literal notranslate"><span class="pre">main</span></code> via pull requests.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pros: Simple, easy to use, integrates well with CI/CD.</p></li>
+<li><p>Cons: Lacks formal support for maintaining multiple concurrent releases.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>For this project, we use GitHub Flow, which is explained in detail below. Interested parties can read more about any of these branching strategies <a class="reference external" href="https://blog.programster.org/git-workflows">here</a>.</p>
+</section>
+<section id="thevenin-workflow">
+<h2>Thevenin workflow<a class="headerlink" href="#thevenin-workflow" title="Link to this heading">#</a></h2>
+<p>The Thevenin project uses GitHub Flow as its version control model due to its simplicity and proven success in other scientific packages like <a class="reference external" href="https://scipy.org/">SciPy</a> and <a class="reference external" href="https://cantera.org/">Cantera</a>. The workflow emphasizes short-lived feature branches, as shown in the figure below, that each address a single bug fix or feature addition.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/github_flow.png"><img alt="Two-RC-pair Thevenin circuit." src="../_images/github_flow.png" style="width: 75%;" />
+</a>
+</figure>
+<section id="key-features">
+<h3>Key features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><dl class="simple">
+<dt>Main Branch:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">main</span></code> is the default branch that contains the latest stable developer code. It reflects the current state of development and should always be functional.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Release Branches:</dt><dd><p>Each release has its own maintenance branch, e.g., <code class="docutils literal notranslate"><span class="pre">v1.1.x</span></code>. These branches should only receive bug fixes and are not meant for new feature development.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Feature and Bugfix Branches:</dt><dd><p>New features or bug fixes should be developed on separate branches off main. The naming conventions are:</p>
+<p>Feature branches: <code class="docutils literal notranslate"><span class="pre">description_issue#</span></code>
+Bugfix branches: <code class="docutils literal notranslate"><span class="pre">[bug]-description_issue#</span></code></p>
+</dd>
+</dl>
+</li>
+</ol>
+<p>Note that only bug fixes should have a prefix, but all branches should reference an issue number. Use underscores between works as needed and try to keep to shorter names. The issue can always be referenced in cases where more information is needed.</p>
+<p>The main Thevenin repo only hosts the main and release branches. Users should fork the main repo and clone the fork to get a local copy:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/&lt;username&gt;/thevenin.git</span>
+</pre></div>
+</div>
+<p>You will likely also want to setup a remote to the upstream repository for dealing with merge conflicts and version patches, as discussed below. To set up an <code class="docutils literal notranslate"><span class="pre">upstream</span></code> remote use:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote add upstream https://github.com/ROVI-org/thevenin.git</span>
+</pre></div>
+</div>
+</section>
+<section id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<p>Always prioritize fixing bugs in the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch first. Older releases should only be patched on a case-by-case basis, primarily focusing on the most recent releases. It is possible that known bugs will not be patched for versions that are more than three releases old. If you are patching <code class="docutils literal notranslate"><span class="pre">main</span></code>, follow the directions in the <a class="reference internal" href="#new-features"><span class="std std-ref">New features</span></a> section. Otherwise, to patch a bug on a previous release, follow these steps:</p>
+<ol class="arabic">
+<li><p>Fetch the release branches and create a new branch off the release:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git fetch upstream</span>
+<span class="go">git checkout -b [bug]-description_#123 upstream/v1.1.x</span>
+</pre></div>
+</div>
+</li>
+<li><p>Work on your local branch to fix the bug. Commit and push back to your fork as needed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git add .</span>
+<span class="go">git commit -m &quot;Resolved bug causing ... (#123)&quot;</span>
+<span class="go">git push origin [bug]-description_#123</span>
+</pre></div>
+</div>
+</li>
+<li><p>Submit a pull request (PR) targeting the specific release branch (e.g., <code class="docutils literal notranslate"><span class="pre">v1.1.x</span></code>). Only bug fixes should be submitted to release branches – no new features. Make sure you fill out the pull request template and include more detail than was provided in your commit messages. After all continuous integration (CI) checks are passing, a reviewer will be assigned and will follow up according to the <a class="reference internal" href="review_process.html"><span class="doc">review process</span></a>.</p></li>
+<li><p>If you opened a PR and any CI checks are failing, simply continue working on your branch and committing. All extra commits will automatically be added to the PR.</p></li>
+</ol>
+<ol class="arabic simple" start="6">
+<li><p>Repeat this processes as necessary to patch additional older versions. Unfortunately, each version needs to be patched individually, which creates more work for developers, and is the reason we prioritize which versions get patched and which do not. At a minimum, patches should always be applied to all versions between the original patched release and main. For example, patches to <code class="docutils literal notranslate"><span class="pre">v1.1.x</span></code> should also be applied for <code class="docutils literal notranslate"><span class="pre">v1.2.x</span></code> and above, including <code class="docutils literal notranslate"><span class="pre">main</span></code>, but do not necessarily need to be submitted for <code class="docutils literal notranslate"><span class="pre">v1.0.x</span></code>.</p></li>
+</ol>
+</section>
+<section id="new-features">
+<span id="id1"></span><h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
+<p>New features should be added to branches off <code class="docutils literal notranslate"><span class="pre">main</span></code>. Before you branch off your local branch, make sure it is up-to-date with the upstream repo. You can either use the GitHub web interface to sync your fork with the upstream repository and then run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout main</span>
+<span class="go">git pull</span>
+</pre></div>
+</div>
+<p>or, if you setup the <code class="docutils literal notranslate"><span class="pre">upstream</span></code> remote, you can do this all in the command line using:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git fetch upstream</span>
+<span class="go">git checkout main</span>
+<span class="go">git merge upstream/main</span>
+<span class="go">git push origin main</span>
+</pre></div>
+</div>
+<p>You should never commit directly to a <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, even including your local or forked <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. Instead, your <code class="docutils literal notranslate"><span class="pre">main</span></code> branch should always either be synced with the upstream repo, or should simply be behind by some number of commits depending on the last time it was synced. After syncing, create a new branch. Your new branch should be named according to the directions above depending on whether it is a bug fix or for a new feature. Here we demonstrate a new feature:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout -b branch_name_#456</span>
+</pre></div>
+</div>
+<p>Once the new branch is created, follow the steps below to add your new feature:</p>
+<ol class="arabic">
+<li><p>Work on your local branch to add the feature. Commit and push back to your fork as needed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git add .</span>
+<span class="go">git commit -m &quot;Working new feature (#456)&quot;</span>
+<span class="go">git push origin branch_name_#456</span>
+</pre></div>
+</div>
+</li>
+<li><p>Submit a pull request targeting the upstream <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. Make sure you fill out the pull request template and include more detail than was provided in your commit messages.  After all CI checks are passing, a reviewer will be assigned and will follow up according to the <a class="reference internal" href="review_process.html"><span class="doc">review process</span></a>.</p></li>
+<li><p>If you opened a PR and any CI checks are failing, simply continue working on your branch and committing. All extra commits will automatically be added to the PR.</p></li>
+<li><p>After the PR is accepted and merged into the upstream repository, delete your new branch locally and in your GitHub repo:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout main</span>
+<span class="go">git branch -d branch_name_#456</span>
+<span class="go">git push origin --delete branch_name_#456</span>
+<span class="go">git fetch --prune</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="merge-conflicts">
+<h2>Merge conflicts<a class="headerlink" href="#merge-conflicts" title="Link to this heading">#</a></h2>
+<p>If you’ve submitted a PR and are seeing merge conflicts you should take the following steps:</p>
+<ol class="arabic">
+<li><p>Make sure your <code class="docutils literal notranslate"><span class="pre">main</span></code> branch is synced with the <code class="docutils literal notranslate"><span class="pre">upstream</span></code> remote:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git fetch upstream</span>
+<span class="go">git checkout main</span>
+<span class="go">git merge upstream/main</span>
+<span class="go">git push main</span>
+</pre></div>
+</div>
+</li>
+<li><p>Rebase your local bug/feature branch onto <code class="docutils literal notranslate"><span class="pre">main</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout branch_name_#456</span>
+<span class="go">git rebase main</span>
+</pre></div>
+</div>
+</li>
+<li><p>Address merge conflicts as needed and continue the rebase:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git rebase --continue</span>
+</pre></div>
+</div>
+</li>
+<li><p>Recommit and push as normal and verify the merge conflict in the PR gets removed. At this point, if you are still having issues, please leave a comment in the PR asking a core developer to help out.</p></li>
+</ol>
+</section>
+<section id="continuous-integration">
+<h2>Continuous integration<a class="headerlink" href="#continuous-integration" title="Link to this heading">#</a></h2>
+<p>Every pull request is automatically tested using GitHub Actions. The CI workflow runs linting, spellchecking, and tests against all major operating systems and supported Python versions. Pull requests should only be merged when all tests pass unless a core developer explicitly makes an exception (e.g., for a soon-to-be-unsupported Python version).</p>
+<p>Running tests locally is encouraged during development:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nox -s tests</span>
+</pre></div>
+</div>
+<p>Prior to commits and pushes, we also include a <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> session using <code class="docutils literal notranslate"><span class="pre">nox</span></code> that will run through these same tests AND will check for linting and misspellings. Use this prior to pushes and/or pull requests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nox -s pre-commit</span>
+</pre></div>
+</div>
+<p>This ensures all tests pass before pushing any changes.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#branching-strategies">Branching strategies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thevenin-workflow">Thevenin workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-conflicts">Merge conflicts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-integration">Continuous integration</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Corey R. Randall.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
