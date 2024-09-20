@@ -445,8 +445,6 @@ class Model:
 class _RootFunction:
     """Root function callables."""
 
-    __slots__ = ('keys', 'values', 'size',)
-
     def __init__(self, limits: tuple[str, float]) -> None:
         """
         This class is a generalize root function callable. All possible root

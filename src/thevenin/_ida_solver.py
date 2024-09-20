@@ -2,7 +2,8 @@ from __future__ import annotations
 from typing import Callable
 
 import numpy as np
-from scikits_odes_sundials import ida
+from sksundae import ida
+# from scikits_odes_sundials import ida
 
 
 class SolverReturn:
@@ -21,43 +22,15 @@ class SolverReturn:
 
         """
 
-        self._success = solution.flag >= 0
-        self._message = solution.message
-        self._t = solution.values.t
-        self._y = solution.values.y
-        self._ydot = solution.values.ydot
-        self._roots = solution.roots.t is not None
-        self._tstop = solution.tstop.t is not None
-        self._errors = solution.errors.t is not None
-
-        labels = []
-        times = np.array([])
-
-        if self.roots:
-            labels.append('roots')
-            times = np.hstack([times, solution.roots.t])
-        if self.tstop:
-            labels.append('tstop')
-            times = np.hstack([times, solution.tstop.t])
-        if self.errors:
-            labels.append('errors')
-            times = np.hstack([times, solution.errors.t])
-
-        if len(labels) != 0:
-            sorted_times = sorted(set(times), reverse=True)
-            mapping = {t: -i-1 for i, t in enumerate(sorted_times)}
-            order = [mapping[t] for t in times]
-
-            sorted_pairs = sorted(zip(order, labels))
-
-            for i, label in sorted_pairs:
-                setattr(self, '_' + label, (True, i))
-
-                new_line = getattr(solution, label)
-                if self.t[-1] < new_line.t:
-                    self._t = np.hstack([self._t, new_line.t])
-                    self._y = np.vstack([self._y, new_line.y])
-                    self._ydot = np.vstack([self._ydot, new_line.ydot])
+        self.success = solution.success
+        self.message = solution.message
+        self.t = solution.t
+        self.y = solution.y
+        self.ydot = solution.yp
+        self.roots = solution.t_events is not None
+        self.tstop = solution.status == 1
+        self.errors = False
+        self._repr = solution
 
     def __repr__(self) -> str:  # pragma: no cover
         """
@@ -70,132 +43,9 @@ class SolverReturn:
 
         """
 
-        keys = ['success', 'message', 'roots', 'tstop', 'errors']
-        values = [getattr(self, k) for k in keys]
-
-        summary = "\n\t".join([f"{k}={v!r}," for k, v in zip(keys, values)])
-
-        readable = f"SolverReturn(\n\t{summary}\n)"
+        readable = f"SolverReturn(\n\t{self._repr.__repr__}\n)"
 
         return readable
-
-    @property
-    def success(self) -> bool:
-        """
-        Overall solver exit status.
-
-        Returns
-        -------
-        success : bool
-            True if no errors, False otherwise.
-
-        """
-        return self._success
-
-    @property
-    def message(self) -> str:
-        """
-        Readable solver exit message.
-
-        Returns
-        -------
-        message : str
-            Exit message from the IDASolver.
-
-        """
-        return self._message
-
-    @property
-    def t(self) -> np.ndarray:
-        """
-        Saved solution times.
-
-        Returns
-        -------
-        t : 1D np.array
-            Solution times [s].
-
-        """
-        return self._t
-
-    @property
-    def y(self) -> np.ndarray:
-        """
-        Solution variables [units]. Rows correspond to solution times and
-        columns to state variables, in the same order as y0.
-
-        Returns
-        -------
-        y : 2D np.array
-            Solution variables [units].
-
-        """
-        return self._y
-
-    @property
-    def ydot(self) -> np.ndarray:
-        """
-        Solution variable time derivatives [units/s]. Rows and columns share
-        the same organization as y.
-
-        Returns
-        -------
-        ydot : 2D np.array
-            Solution variable time derivatives [units/s].
-
-        """
-        return self._ydot
-
-    @property
-    def roots(self) -> bool | tuple:
-        """
-        Details regarding whether or not a rootfn stopped the solver.
-
-        Returns
-        -------
-        roots : bool | tuple
-            If a rootfn stopped the solver, this value will be a tuple. The
-            first argument will be True, and the second argument will provide
-            the index within t, y, and ydot that stores the values of time
-            and solution when the root function was triggered. If a root did
-            not stop the solver, this value will be False.
-
-        """
-        return self._roots
-
-    @property
-    def tstop(self) -> bool | tuple:
-        """
-        Details regarding whether or not the tstop option stopped the solver.
-
-        Returns
-        -------
-        tstop : bool | tuple
-            If the tstop option stopped the solver, this value is a tuple. The
-            first argument will be True, and the second argument will provide
-            the index within t, y, and ydot that stores the values of time
-            and solution when the tstop function was triggered. If tstop did
-            not stop the solver, this value will be False.
-
-        """
-        return self._tstop
-
-    @property
-    def errors(self) -> bool | tuple:
-        """
-        Details regarding whether or not an error stopped the solver.
-
-        Returns
-        -------
-        errors : bool | tuple
-            If an error stopped the solver, this value will be a tuple. The
-            first argument will be True, and the second argument will provide
-            the index within t, y, and ydot that stores the values of time
-            and solution when the error was triggered. If an error did not
-            stop the solver, this value will be False.
-
-        """
-        return self._errors
 
 
 class IDASolver:
@@ -341,24 +191,26 @@ class IDASolver:
         kwargs.setdefault('rtol', 1e-5)
         kwargs.setdefault('inputs', None)
         kwargs.setdefault('linsolver', 'dense')
-        kwargs.setdefault('lband', 0)
-        kwargs.setdefault('uband', 0)
+        kwargs.setdefault('lband', None)
+        kwargs.setdefault('uband', None)
         kwargs.setdefault('rootfn', None)
         kwargs.setdefault('nr_rootfns', 0)
         kwargs.setdefault('initcond', 'yp0')
         kwargs.setdefault('algidx', None)
         kwargs.setdefault('max_dt', 0.)
-        kwargs.setdefault('tstop', None)
+        # kwargs.setdefault('tstop', None)
 
         self._kwargs = kwargs.copy()
 
-        # Map renamed scikits.odes options, and force new api
+        # Map renamed scikits.odes options, and force new api        
         options = {
-            'user_data': kwargs.pop('inputs'),
-            'compute_initcond': kwargs.pop('initcond'),
-            'algebraic_vars_idx': kwargs.pop('algidx'),
-            'max_step_size': kwargs.pop('max_dt'),
-            'old_api': False,
+            'eventsfn': kwargs.pop('rootfn'),
+            'num_events': kwargs.pop('nr_rootfns'),
+            'userdata': kwargs.pop('inputs'),
+            'calc_initcond': kwargs.pop('initcond'),
+            'algebraic_idx': kwargs.pop('algidx'),
+            'max_step': kwargs.pop('max_dt'),
+            # 'old_api': False,
         }
 
         options = {**options, **kwargs}

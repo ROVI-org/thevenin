@@ -199,14 +199,14 @@ class CycleSolution(BaseSolution):
 
         sv_size = self._model._sv0.size
 
-        self._success = []
-        self._message = []
-        self._t = np.empty([0])
-        self._y = np.empty([0, sv_size])
-        self._ydot = np.empty([0, sv_size])
-        self._roots = []
-        self._tstop = []
-        self._errors = []
+        self.success = []
+        self.message = []
+        self.t = np.empty([0])
+        self.y = np.empty([0, sv_size])
+        self.ydot = np.empty([0, sv_size])
+        self.roots = []
+        self.tstop = []
+        self.errors = []
         self._timers = []
 
         for soln in self._solns:
