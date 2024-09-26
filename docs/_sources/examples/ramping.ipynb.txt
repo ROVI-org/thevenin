@@ -30,7 +30,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 1,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -40,9 +40,9 @@
     "def voltage_ramp(t: float) -> float:\n",
     "    return 3.5 + 5e-3*t\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
-    "exp.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
+    "demand.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
    ]
   },
   {
@@ -54,15 +54,15 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
     "voltage_ramp = thevenin.loadfns.Ramp(5e-3, 3.5)\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
-    "exp.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
+    "demand.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
    ]
   },
   {
@@ -80,7 +80,7 @@
    "source": [
     "model = thevenin.Model()\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "soln.plot('time_min', 'voltage_V')"
    ]
   },
@@ -98,12 +98,12 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "load = thevenin.loadfns.Ramp2Constant(20*75/1e-3, 20*75)\n",
+    "dynamic_load = thevenin.loadfns.Ramp2Constant(20*75/1e-3, 20*75)\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', load, (180., 0.5), limits=('voltage_V', 3.))\n",
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', dynamic_load, (180., 0.5), limits=('voltage_V', 3.))\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "soln.plot('time_s', 'current_A')\n",
     "soln.plot('time_s', 'voltage_V')"
    ]
@@ -124,10 +124,10 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', 75*20, (180., 75), limits=('voltage_V', 3.))\n",
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', 75*20, (180., 75), limits=('voltage_V', 3.))\n",
     "\n",
-    "soln2 = model.run(exp)\n",
+    "soln2 = model.run(demand)\n",
     "\n",
     "plt.plot(soln.vars['time_s'], soln.vars['voltage_V'], '-k')\n",
     "plt.plot(soln2.vars['time_s'], soln2.vars['voltage_V'], 'ok', markerfacecolor='none')\n",

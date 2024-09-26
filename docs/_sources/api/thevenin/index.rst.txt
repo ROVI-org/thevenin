@@ -46,7 +46,7 @@ Classes
 Package Contents
 ----------------
 
-.. py:class:: CycleSolution(*sols)
+.. py:class:: CycleSolution(*soln)
 
 
 
@@ -55,10 +55,10 @@ Package Contents
    A solution instance with all experiment steps stitch together into
    a single cycle.
 
-   :param \*sols: All unpacked StepSolution instances to stitch together. The given
+   :param \*soln: All unpacked StepSolution instances to stitch together. The given
                   steps should be given in the same sequential order that they were
                   run.
-   :type \*sols: StepSolution
+   :type \*soln: StepSolution
 
 
    .. py:method:: get_steps(idx)
@@ -68,7 +68,7 @@ Package Contents
       :param idx: The step index (int) or first/last indices (tuple) to return.
       :type idx: int | tuple
 
-      :returns: **sol** (*StepSolution | CycleSolution*) -- The returned solution subset. A StepSolution is returned if 'idx'
+      :returns: **soln** (*StepSolution | CycleSolution*) -- The returned solution subset. A StepSolution is returned if 'idx'
                 is an int, and a CycleSolution will be returned for the range of
                 requested steps when 'idx' is a tuple.
 
@@ -568,7 +568,7 @@ Package Contents
       :param exp: An experiment instance.
       :type exp: Experiment
 
-      :returns: **sol** (*CycleSolution*) -- A stitched solution will all experimental steps.
+      :returns: **soln** (*CycleSolution*) -- A stitched solution will all experimental steps.
 
       .. seealso::
 
@@ -589,7 +589,7 @@ Package Contents
       :param stepidx: Step index to run. The first step has index 0.
       :type stepidx: int
 
-      :returns: **sol** (*StepSolution*) -- Solution to the experiment step.
+      :returns: **soln** (*StepSolution*) -- Solution to the experiment step.
 
       .. warning::
 
@@ -618,7 +618,7 @@ Package Contents
 
 
 
-.. py:class:: StepSolution(model, idasol, timer)
+.. py:class:: StepSolution(model, ida_soln, timer)
 
 
 
@@ -628,8 +628,8 @@ Package Contents
 
    :param model: The model instance that was run to produce the solution.
    :type model: Model
-   :param idasol: The unformatted solution returned by IDASolver.
-   :type idasol: SolverReturn
+   :param ida_soln: The unformatted solution returned by IDASolver.
+   :type ida_soln: SolverReturn
    :param timer: Amount of time it took for IDASolver to perform the integration.
    :type timer: float
 

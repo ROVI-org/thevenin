@@ -93,9 +93,9 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', 75., (4000., 60.), limits=('voltage_V', 3.))\n",
-    "exp.add_step('current_A', 0., (600., 60.))"
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', 75., (4000., 60.), limits=('voltage_V', 3.))\n",
+    "demand.add_step('current_A', 0., (600., 60.))"
    ]
   },
   {
@@ -119,8 +119,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "soln_0 = model.run_step(exp, 0)\n",
-    "soln_1 = model.run_step(exp, 1)"
+    "soln_0 = model.run_step(demand, 0)\n",
+    "soln_1 = model.run_step(demand, 1)"
    ]
   },
   {
@@ -140,7 +140,7 @@
    "source": [
     "model.pre()\n",
     "\n",
-    "soln = model.run(exp)"
+    "soln = model.run(demand)"
    ]
   },
   {
@@ -161,7 +161,7 @@
      "output_type": "stream",
      "text": [
       "success = [True, True]\n",
-      "Solve time: 0.019 s\n"
+      "Solve time: 0.007 s\n"
      ]
     }
    ],

@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d09b1075" />
@@ -689,7 +689,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sol : StepSolution</span>
+<span class="sd">        soln : StepSolution</span>
 <span class="sd">            Solution to the experiment step.</span>
 
 <span class="sd">        Warning</span>
@@ -735,16 +735,16 @@ document.write(`
         <span class="n">solver</span> <span class="o">=</span> <span class="n">IDASolver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">idasol</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;tspan&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span><span class="p">)</span>
+        <span class="n">ida_soln</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;tspan&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span><span class="p">)</span>
         <span class="n">timer</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">StepSolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idasol</span><span class="p">,</span> <span class="n">timer</span><span class="p">)</span>
+        <span class="n">soln</span> <span class="o">=</span> <span class="n">StepSolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ida_soln</span><span class="p">,</span> <span class="n">timer</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">ydot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">ydot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">sol</span></div>
+        <span class="k">return</span> <span class="n">soln</span></div>
 
 
 <div class="viewcode-block" id="Model.run">
@@ -760,7 +760,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sol : CycleSolution</span>
+<span class="sd">        soln : CycleSolution</span>
 <span class="sd">            A stitched solution will all experimental steps.</span>
 
 <span class="sd">        See also</span>
@@ -775,17 +775,17 @@ document.write(`
         <span class="n">sv0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">svdot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="n">sols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">solns</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">num_steps</span><span class="p">):</span>
-            <span class="n">sols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="n">solns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
 
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">CycleSolution</span><span class="p">(</span><span class="o">*</span><span class="n">sols</span><span class="p">)</span>
+        <span class="n">soln</span> <span class="o">=</span> <span class="n">CycleSolution</span><span class="p">(</span><span class="o">*</span><span class="n">solns</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sv0</span> <span class="o">=</span> <span class="n">sv0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_svdot0</span> <span class="o">=</span> <span class="n">svdot0</span>
 
-        <span class="k">return</span> <span class="n">sol</span></div>
+        <span class="k">return</span> <span class="n">soln</span></div>
 
 
     <span class="k">def</span> <span class="nf">_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">svdot</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>

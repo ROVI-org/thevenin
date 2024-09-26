@@ -45,10 +45,10 @@
     "# Interpolating the data\n",
     "interp = lambda t: np.interp(t, time_s, current_A)\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', interp, (3600*6, 60.))\n",
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', interp, (3600*6, 60.))\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')\n"
    ]
@@ -69,11 +69,11 @@
    "outputs": [],
    "source": [
     "# Looping over constant steps\n",
-    "exp = thevenin.Experiment()\n",
-    "for load in current_A:\n",
-    "    exp.add_step('current_A', load, (3600, 60.))\n",
+    "demand = thevenin.Experiment()\n",
+    "for amps in current_A:\n",
+    "    demand.add_step('current_A', amps, (3600, 60.))\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')"
    ]
@@ -97,12 +97,12 @@
    "outputs": [],
    "source": [
     "# Automatted instantaneous steps\n",
-    "load = thevenin.loadfns.StepFunction(time_s, current_A)\n",
+    "dynamic_load = thevenin.loadfns.StepFunction(time_s, current_A)\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', load, (3600*6, 60.))\n",
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', dynamic_load, (3600*6, 60.))\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "print(f\"{soln.success=}\")\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')"
@@ -127,12 +127,12 @@
    "outputs": [],
    "source": [
     "# Stabilize the solver with ramped steps\n",
-    "load = thevenin.loadfns.RampedSteps(time_s, current_A, 1e-3)\n",
+    "dynamic_load = thevenin.loadfns.RampedSteps(time_s, current_A, 1e-3)\n",
     "\n",
-    "exp = thevenin.Experiment()\n",
-    "exp.add_step('current_A', load, (3600*6, 60.))\n",
+    "demand = thevenin.Experiment()\n",
+    "demand.add_step('current_A', dynamic_load, (3600*6, 60.))\n",
     "\n",
-    "soln = model.run(exp)\n",
+    "soln = model.run(demand)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')"
    ]

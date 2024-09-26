@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d09b1075" />
@@ -490,10 +490,7 @@ document.write(`
 <span class="k">class</span> <span class="nc">StepSolution</span><span class="p">(</span><span class="n">BaseSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Single-step solution.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vars&#39;</span><span class="p">,</span> <span class="s1">&#39;_model&#39;</span><span class="p">,</span> <span class="s1">&#39;_timer&#39;</span><span class="p">,</span> <span class="s1">&#39;_success&#39;</span><span class="p">,</span> <span class="s1">&#39;_message&#39;</span><span class="p">,</span> <span class="s1">&#39;_t&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_ydot&#39;</span><span class="p">,</span> <span class="s1">&#39;_roots&#39;</span><span class="p">,</span> <span class="s1">&#39;_tstop&#39;</span><span class="p">,</span> <span class="s1">&#39;_events&#39;</span><span class="p">,</span> <span class="s1">&#39;_errors&#39;</span><span class="p">,)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">idasol</span><span class="p">:</span> <span class="n">SolverReturn</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">ida_soln</span><span class="p">:</span> <span class="n">SolverReturn</span><span class="p">,</span>
                  <span class="n">timer</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A solution instance for a single experimental step.</span>
@@ -502,7 +499,7 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        model : Model</span>
 <span class="sd">            The model instance that was run to produce the solution.</span>
-<span class="sd">        idasol : SolverReturn</span>
+<span class="sd">        ida_soln : SolverReturn</span>
 <span class="sd">            The unformatted solution returned by IDASolver.</span>
 <span class="sd">        timer : float</span>
 <span class="sd">            Amount of time it took for IDASolver to perform the integration.</span>
@@ -513,14 +510,14 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_success</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">success</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_message</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">t</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">ydot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">roots</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">tstop</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">idasol</span><span class="o">.</span><span class="n">errors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_success</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">success</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_message</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">t</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">ydot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">roots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">tstop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">ida_soln</span><span class="o">.</span><span class="n">errors</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">timer</span>
 
@@ -546,17 +543,14 @@ document.write(`
 <span class="k">class</span> <span class="nc">CycleSolution</span><span class="p">(</span><span class="n">BaseSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All-step solution.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vars&#39;</span><span class="p">,</span> <span class="s1">&#39;_sols&#39;</span><span class="p">,</span> <span class="s1">&#39;_model&#39;</span><span class="p">,</span> <span class="s1">&#39;_timers&#39;</span><span class="p">,</span> <span class="s1">&#39;_success&#39;</span><span class="p">,</span> <span class="s1">&#39;_message&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_t&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_ydot&#39;</span><span class="p">,</span> <span class="s1">&#39;_roots&#39;</span><span class="p">,</span> <span class="s1">&#39;_tstop&#39;</span><span class="p">,</span> <span class="s1">&#39;_events&#39;</span><span class="p">,</span> <span class="s1">&#39;_errors&#39;</span><span class="p">,)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sols</span><span class="p">:</span> <span class="n">StepSolution</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">soln</span><span class="p">:</span> <span class="n">StepSolution</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A solution instance with all experiment steps stitch together into</span>
 <span class="sd">        a single cycle.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        *sols : StepSolution</span>
+<span class="sd">        *soln : StepSolution</span>
 <span class="sd">            All unpacked StepSolution instances to stitch together. The given</span>
 <span class="sd">            steps should be given in the same sequential order that they were</span>
 <span class="sd">            run.</span>
@@ -565,8 +559,8 @@ document.write(`
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sols</span> <span class="o">=</span> <span class="n">sols</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">sols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solns</span> <span class="o">=</span> <span class="n">soln</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">soln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_model</span>
 
         <span class="n">sv_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_sv0</span><span class="o">.</span><span class="n">size</span>
 
@@ -580,21 +574,21 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timers</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">sols</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">soln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solns</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">shifted_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">sol</span><span class="o">.</span><span class="n">t</span> <span class="o">+</span> <span class="mf">1e-3</span>
+                <span class="n">shifted_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">soln</span><span class="o">.</span><span class="n">t</span> <span class="o">+</span> <span class="mf">1e-3</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">shifted_times</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">t</span>
+                <span class="n">shifted_times</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">t</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_success</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">success</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_message</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_success</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">success</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_message</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span> <span class="n">shifted_times</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">ydot</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">roots</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">tstop</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_timers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">_timer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ydot</span><span class="p">,</span> <span class="n">soln</span><span class="o">.</span><span class="n">ydot</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">roots</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tstop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">tstop</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">_timer</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_to_dict</span><span class="p">()</span>
 
@@ -624,7 +618,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sol : StepSolution | CycleSolution</span>
+<span class="sd">        soln : StepSolution | CycleSolution</span>
 <span class="sd">            The returned solution subset. A StepSolution is returned if &#39;idx&#39;</span>
 <span class="sd">            is an int, and a CycleSolution will be returned for the range of</span>
 <span class="sd">            requested steps when &#39;idx&#39; is a tuple.</span>
@@ -632,10 +626,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sols</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_solns</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-            <span class="n">sols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sols</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">CycleSolution</span><span class="p">(</span><span class="o">*</span><span class="n">sols</span><span class="p">)</span></div>
+            <span class="n">solns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solns</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">CycleSolution</span><span class="p">(</span><span class="o">*</span><span class="n">solns</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

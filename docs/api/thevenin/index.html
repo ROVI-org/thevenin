@@ -420,13 +420,13 @@ website includes search functionality and more detailed examples.</p>
 <h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="thevenin.CycleSolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thevenin.</span></span><span class="sig-name descname"><span class="pre">CycleSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">sols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thevenin/_solutions.html#CycleSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thevenin.CycleSolution" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thevenin.</span></span><span class="sig-name descname"><span class="pre">CycleSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">soln</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thevenin/_solutions.html#CycleSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thevenin.CycleSolution" title="Link to this definition">#</a></dt>
 <dd><p>All-step solution.</p>
 <p>A solution instance with all experiment steps stitch together into
 a single cycle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>*sols</strong> (<a class="reference internal" href="#thevenin.StepSolution" title="thevenin.StepSolution"><em>StepSolution</em></a>) – All unpacked StepSolution instances to stitch together. The given
+<dd class="field-odd"><p><strong>*soln</strong> (<a class="reference internal" href="#thevenin.StepSolution" title="thevenin.StepSolution"><em>StepSolution</em></a>) – All unpacked StepSolution instances to stitch together. The given
 steps should be given in the same sequential order that they were
 run.</p>
 </dd>
@@ -440,7 +440,7 @@ run.</p>
 <dd class="field-odd"><p><strong>idx</strong> (<em>int</em><em> | </em><em>tuple</em>) – The step index (int) or first/last indices (tuple) to return.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>sol</strong> (<em>StepSolution | CycleSolution</em>) – The returned solution subset. A StepSolution is returned if ‘idx’
+<dd class="field-even"><p><strong>soln</strong> (<em>StepSolution | CycleSolution</em>) – The returned solution subset. A StepSolution is returned if ‘idx’
 is an int, and a CycleSolution will be returned for the range of
 requested steps when ‘idx’ is a tuple.</p>
 </dd>
@@ -1062,7 +1062,7 @@ variables rhs[i] must be an expression that equals zero.</p>
 <dd class="field-odd"><p><strong>exp</strong> (<a class="reference internal" href="#thevenin.Experiment" title="thevenin.Experiment"><em>Experiment</em></a>) – An experiment instance.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>sol</strong> (<em>CycleSolution</em>) – A stitched solution will all experimental steps.</p>
+<dd class="field-even"><p><strong>soln</strong> (<em>CycleSolution</em>) – A stitched solution will all experimental steps.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1088,7 +1088,7 @@ variables rhs[i] must be an expression that equals zero.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>sol</strong> (<em>StepSolution</em>) – Solution to the experiment step.</p>
+<dd class="field-even"><p><strong>soln</strong> (<em>StepSolution</em>) – Solution to the experiment step.</p>
 </dd>
 </dl>
 <div class="admonition warning">
@@ -1121,14 +1121,14 @@ until interpreting a previous step.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="thevenin.StepSolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thevenin.</span></span><span class="sig-name descname"><span class="pre">StepSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idasol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thevenin/_solutions.html#StepSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thevenin.StepSolution" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thevenin.</span></span><span class="sig-name descname"><span class="pre">StepSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ida_soln</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thevenin/_solutions.html#StepSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thevenin.StepSolution" title="Link to this definition">#</a></dt>
 <dd><p>Single-step solution.</p>
 <p>A solution instance for a single experimental step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<a class="reference internal" href="#thevenin.Model" title="thevenin.Model"><em>Model</em></a>) – The model instance that was run to produce the solution.</p></li>
-<li><p><strong>idasol</strong> (<em>SolverReturn</em>) – The unformatted solution returned by IDASolver.</p></li>
+<li><p><strong>ida_soln</strong> (<em>SolverReturn</em>) – The unformatted solution returned by IDASolver.</p></li>
 <li><p><strong>timer</strong> (<em>float</em>) – Amount of time it took for IDASolver to perform the integration.</p></li>
 </ul>
 </dd>

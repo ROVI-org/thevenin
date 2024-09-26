@@ -442,9 +442,9 @@ document.write(`
 <p>Below we construct an experiment instance with two simple steps. The first step discharges the battery at a constant current until it reaches 3 V. Afterward, the battery rests for 10 minutes. Note that the sign convention for current and power are such that positive values discharge the cell and negative values charge the cell.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">exp</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
-<span class="linenos">2</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">75.</span><span class="p">,</span> <span class="p">(</span><span class="mf">4000.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
-<span class="linenos">3</span><span class="n">exp</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">2</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">75.</span><span class="p">,</span> <span class="p">(</span><span class="mf">4000.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+<span class="linenos">3</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -461,8 +461,8 @@ document.write(`
 <p>As mentioned above, the model contains two methods to run an experiment. You can either run the entire series of experiment steps by calling <code class="docutils literal notranslate"><span class="pre">run()</span></code>, or you can run one step at a time by calling <code class="docutils literal notranslate"><span class="pre">run_step()</span></code>. The most important difference between the two is that the model’s internal state is changed and saved at the end of each step when using <code class="docutils literal notranslate"><span class="pre">run_step()</span></code> so that it is ready for the following step. Therefore, steps should only ever be run in sequential order, and steps between multiple experiments should not be mixed. For example, to run the above two steps one at a time, run the following code.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">soln_0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="linenos">2</span><span class="n">soln_1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">soln_0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">demand</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="linenos">2</span><span class="n">soln_1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run_step</span><span class="p">(</span><span class="n">demand</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -473,7 +473,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">model</span><span class="o">.</span><span class="n">pre</span><span class="p">()</span>
 <span class="linenos">2</span>
-<span class="linenos">3</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="linenos">3</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -491,7 +491,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>success = [True, True]
-Solve time: 0.007 s
+Solve time: 0.008 s
 </pre></div>
 </div>
 </div>
