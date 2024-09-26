@@ -128,10 +128,7 @@ class BaseSolution(SolverReturn):
 class StepSolution(BaseSolution):
     """Single-step solution."""
 
-    __slots__ = ('vars', '_model', '_timer', '_success', '_message', '_t',
-                 '_y', '_ydot', '_roots', '_tstop', '_events', '_errors',)
-
-    def __init__(self, model: Model, idasol: SolverReturn,
+    def __init__(self, model: Model, ida_soln: SolverReturn,
                  timer: float) -> None:
         """
         A solution instance for a single experimental step.
@@ -140,7 +137,7 @@ class StepSolution(BaseSolution):
         ----------
         model : Model
             The model instance that was run to produce the solution.
-        idasol : SolverReturn
+        ida_soln : SolverReturn
             The unformatted solution returned by IDASolver.
         timer : float
             Amount of time it took for IDASolver to perform the integration.
@@ -151,14 +148,14 @@ class StepSolution(BaseSolution):
 
         self._model = deepcopy(model)
 
-        self._success = idasol.success
-        self._message = idasol.message
-        self._t = idasol.t
-        self._y = idasol.y
-        self._ydot = idasol.ydot
-        self._roots = idasol.roots
-        self._tstop = idasol.tstop
-        self._errors = idasol.errors
+        self._success = ida_soln.success
+        self._message = ida_soln.message
+        self._t = ida_soln.t
+        self._y = ida_soln.y
+        self._ydot = ida_soln.ydot
+        self._roots = ida_soln.roots
+        self._tstop = ida_soln.tstop
+        self._errors = ida_soln.errors
 
         self._timer = timer
 
@@ -181,17 +178,14 @@ class StepSolution(BaseSolution):
 class CycleSolution(BaseSolution):
     """All-step solution."""
 
-    __slots__ = ('vars', '_sols', '_model', '_timers', '_success', '_message',
-                 '_t', '_y', '_ydot', '_roots', '_tstop', '_events', '_errors',)
-
-    def __init__(self, *sols: StepSolution) -> None:
+    def __init__(self, *soln: StepSolution) -> None:
         """
         A solution instance with all experiment steps stitch together into
         a single cycle.
 
         Parameters
         ----------
-        *sols : StepSolution
+        *soln : StepSolution
             All unpacked StepSolution instances to stitch together. The given
             steps should be given in the same sequential order that they were
             run.
@@ -200,8 +194,8 @@ class CycleSolution(BaseSolution):
 
         super().__init__()
 
-        self._sols = sols
-        self._model = sols[0]._model
+        self._solns = soln
+        self._model = soln[0]._model
 
         sv_size = self._model._sv0.size
 
@@ -215,21 +209,21 @@ class CycleSolution(BaseSolution):
         self._errors = []
         self._timers = []
 
-        for sol in sols:
+        for soln in self._solns:
             if self._t.size > 0:
-                shifted_times = self._t[-1] + sol.t + 1e-3
+                shifted_times = self._t[-1] + soln.t + 1e-3
             else:
-                shifted_times = sol.t
+                shifted_times = soln.t
 
-            self._success.append(sol.success)
-            self._message.append(sol.message)
+            self._success.append(soln.success)
+            self._message.append(soln.message)
             self._t = np.hstack([self._t, shifted_times])
-            self._y = np.vstack([self._y, sol.y])
-            self._ydot = np.vstack([self._ydot, sol.ydot])
-            self._roots.append(sol.roots)
-            self._tstop.append(sol.tstop)
-            self._errors.append(sol.errors)
-            self._timers.append(sol._timer)
+            self._y = np.vstack([self._y, soln.y])
+            self._ydot = np.vstack([self._ydot, soln.ydot])
+            self._roots.append(soln.roots)
+            self._tstop.append(soln.tstop)
+            self._errors.append(soln.errors)
+            self._timers.append(soln._timer)
 
         self._to_dict()
 
@@ -257,7 +251,7 @@ class CycleSolution(BaseSolution):
 
         Returns
         -------
-        sol : StepSolution | CycleSolution
+        soln : StepSolution | CycleSolution
             The returned solution subset. A StepSolution is returned if 'idx'
             is an int, and a CycleSolution will be returned for the range of
             requested steps when 'idx' is a tuple.
@@ -265,7 +259,7 @@ class CycleSolution(BaseSolution):
         """
 
         if isinstance(idx, int):
-            return deepcopy(self._sols[idx])
+            return deepcopy(self._solns[idx])
         elif isinstance(idx, (tuple, list)):
-            sols = self._sols[idx[0]:idx[1] + 1]
-            return CycleSolution(*sols)
+            solns = self._solns[idx[0]:idx[1] + 1]
+            return CycleSolution(*solns)

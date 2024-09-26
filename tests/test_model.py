@@ -61,45 +61,45 @@ def model_2RC(dict_params):
 
 
 @pytest.fixture(scope='function')
-def constant_exp():
-    exp = thevenin.Experiment()
-    exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
-    exp.add_step('current_A', 0., (600., 1.))
-    exp.add_step('current_A', -1., (3600., 1.), limits=('voltage_V', 4.3))
-    exp.add_step('voltage_V', 4.3, (600., 1.))
-    exp.add_step('power_W', 1., (600., 1.), limits=('voltage_V', 3.))
+def constant_demand():
+    demand = thevenin.Experiment()
+    demand.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
+    demand.add_step('current_A', 0., (600., 1.))
+    demand.add_step('current_A', -1., (3600., 1.), limits=('voltage_V', 4.3))
+    demand.add_step('voltage_V', 4.3, (600., 1.))
+    demand.add_step('power_W', 1., (600., 1.), limits=('voltage_V', 3.))
 
-    return exp
+    return demand
 
 
 @pytest.fixture(scope='function')
 def dynamic_current():
     def load(t): return np.sin(2.*np.pi*t / 120.)
 
-    exp = thevenin.Experiment()
-    exp.add_step('current_A', load, (600., 1.))
+    demand = thevenin.Experiment()
+    demand.add_step('current_A', load, (600., 1.))
 
-    return exp
+    return demand
 
 
 @pytest.fixture(scope='function')
 def dynamic_voltage():
     def load(t): return 3.8 + 10e-3*np.sin(2.*np.pi*t / 120.)
 
-    exp = thevenin.Experiment()
-    exp.add_step('voltage_V', load, (600., 1.))
+    demand = thevenin.Experiment()
+    demand.add_step('voltage_V', load, (600., 1.))
 
-    return exp
+    return demand
 
 
 @pytest.fixture(scope='function')
 def dynamic_power():
     def load(t): return np.sin(2.*np.pi*t / 120.)
 
-    exp = thevenin.Experiment()
-    exp.add_step('power_W', load, (600., 1.))
+    demand = thevenin.Experiment()
+    demand.add_step('power_W', load, (600., 1.))
 
-    return exp
+    return demand
 
 
 def test_bad_initialization(dict_params):
@@ -114,7 +114,7 @@ def test_bad_initialization(dict_params):
         _ = thevenin.Model(dict_params)
 
 
-def test_model_w_yaml_input(constant_exp, dynamic_current, dynamic_voltage,
+def test_model_w_yaml_input(constant_demand, dynamic_current, dynamic_voltage,
                             dynamic_power):
 
     # using default file
@@ -129,18 +129,18 @@ def test_model_w_yaml_input(constant_exp, dynamic_current, dynamic_voltage,
     with pytest.warns(UserWarning):
         model = thevenin.Model('params.yaml')
 
-    sol = model.run(constant_exp)
-    assert sol.success
-    assert any(sol.roots)
+    soln = model.run(constant_demand)
+    assert soln.success
+    assert any(soln.roots)
 
-    sol = model.run(dynamic_current)
-    assert sol.success
+    soln = model.run(dynamic_current)
+    assert soln.success
 
-    sol = model.run(dynamic_voltage)
-    assert sol.success
+    soln = model.run(dynamic_voltage)
+    assert soln.success
 
-    sol = model.run(dynamic_power)
-    assert sol.success
+    soln = model.run(dynamic_power)
+    assert soln.success
 
 
 def test_bad_yaml_inputs():
@@ -154,14 +154,14 @@ def test_bad_yaml_inputs():
         _ = thevenin.Model('fake')
 
 
-def test_run_step(model_2RC, constant_exp):
+def test_run_step(model_2RC, constant_demand):
 
     sv0 = model_2RC._sv0.copy()
     svdot0 = model_2RC._svdot0.copy()
 
-    stepsol = model_2RC.run_step(constant_exp, 0)
+    stepsoln = model_2RC.run_step(constant_demand, 0)
 
-    assert stepsol.success
+    assert stepsoln.success
     assert not np.allclose(sv0, model_2RC._sv0)
     assert not np.allclose(svdot0, model_2RC._svdot0)
 
@@ -171,115 +171,115 @@ def test_run_step(model_2RC, constant_exp):
     assert np.allclose(svdot0, model_2RC._svdot0)
 
 
-def test_model_w_multistep_exp(model_0RC, model_1RC, model_2RC,
-                               constant_exp):
+def test_model_w_multistep_demand(model_0RC, model_1RC, model_2RC,
+                                  constant_demand):
 
-    sol = model_0RC.run(constant_exp)
-    assert sol.success
-    assert any(sol.roots)
+    soln = model_0RC.run(constant_demand)
+    assert soln.success
+    assert any(soln.roots)
 
-    sol = model_1RC.run(constant_exp)
-    assert sol.success
-    assert any(sol.roots)
+    soln = model_1RC.run(constant_demand)
+    assert soln.success
+    assert any(soln.roots)
 
-    sol = model_2RC.run(constant_exp)
-    assert sol.success
-    assert any(sol.roots)
+    soln = model_2RC.run(constant_demand)
+    assert soln.success
+    assert any(soln.roots)
 
 
 def test_model_w_dynamic_current(model_0RC, model_1RC, model_2RC,
                                  dynamic_current):
 
-    sol = model_0RC.run(dynamic_current)
-    assert sol.success
+    soln = model_0RC.run(dynamic_current)
+    assert soln.success
 
-    sol = model_1RC.run(dynamic_current)
-    assert sol.success
+    soln = model_1RC.run(dynamic_current)
+    assert soln.success
 
-    sol = model_2RC.run(dynamic_current)
-    assert sol.success
+    soln = model_2RC.run(dynamic_current)
+    assert soln.success
 
 
 def test_model_w_dynamic_voltage(model_0RC, model_1RC, model_2RC,
                                  dynamic_voltage):
 
-    sol = model_0RC.run(dynamic_voltage)
-    assert sol.success
+    soln = model_0RC.run(dynamic_voltage)
+    assert soln.success
 
-    sol = model_1RC.run(dynamic_voltage)
-    assert sol.success
+    soln = model_1RC.run(dynamic_voltage)
+    assert soln.success
 
-    sol = model_2RC.run(dynamic_voltage)
-    assert sol.success
+    soln = model_2RC.run(dynamic_voltage)
+    assert soln.success
 
 
 def test_model_w_dynamic_power(model_0RC, model_1RC, model_2RC,
                                dynamic_power):
 
-    sol = model_0RC.run(dynamic_power)
-    assert sol.success
+    soln = model_0RC.run(dynamic_power)
+    assert soln.success
 
-    sol = model_1RC.run(dynamic_power)
-    assert sol.success
+    soln = model_1RC.run(dynamic_power)
+    assert soln.success
 
-    sol = model_2RC.run(dynamic_power)
-    assert sol.success
+    soln = model_2RC.run(dynamic_power)
+    assert soln.success
 
 
 def test_resting_experiment(model_2RC):
 
-    exp = thevenin.Experiment()
-    exp.add_step('current_A', 0., (100., 1.))
+    demand = thevenin.Experiment()
+    demand.add_step('current_A', 0., (100., 1.))
 
-    sol = model_2RC.run(exp)
+    soln = model_2RC.run(demand)
 
-    assert sol.success
-    assert np.allclose(sol.vars['voltage_V'], sol.vars['voltage_V'][0])
+    assert soln.success
+    assert np.allclose(soln.vars['voltage_V'], soln.vars['voltage_V'][0])
 
 
-def test_current_sign_convention(model_2RC, constant_exp):
+def test_current_sign_convention(model_2RC, constant_demand):
 
-    sol = model_2RC.run(constant_exp)
+    soln = model_2RC.run(constant_demand)
 
-    discharge = sol.get_steps(0)
+    discharge = soln.get_steps(0)
     assert all(np.diff(discharge.vars['voltage_V']) < 0.)
 
-    charge = sol.get_steps(2)
+    charge = soln.get_steps(2)
     assert all(np.diff(charge.vars['voltage_V']) > 0.)
 
 
-def test_constant_V_shift_w_constant_R0(model_0RC, constant_exp):
+def test_constant_V_shift_w_constant_R0(model_0RC, constant_demand):
 
     model_0RC.R0 = lambda soc, T_cell: 1e-2
     model_0RC.pre()
 
-    sol = model_0RC.run(constant_exp)
+    soln = model_0RC.run(constant_demand)
 
-    discharge = sol.get_steps(0)
+    discharge = soln.get_steps(0)
     ocv = model_0RC.ocv(discharge.vars['soc'])
     assert np.allclose(ocv - 1e-2, discharge.vars['voltage_V'])
 
-    charge = sol.get_steps(2)
+    charge = soln.get_steps(2)
     ocv = model_0RC.ocv(charge.vars['soc'])
     assert np.allclose(ocv + 1e-2, charge.vars['voltage_V'])
 
 
-def test_isothermal_flag(model_2RC, constant_exp):
+def test_isothermal_flag(model_2RC, constant_demand):
 
     # with heat on
     model_2RC.isothermal = False
     model_2RC.pre()
 
-    sol = model_2RC.run(constant_exp)
-    assert sol.vars['temperature_K'].max() > model_2RC.T_inf
-    assert all(sol.vars['temperature_K'] >= model_2RC.T_inf)
+    soln = model_2RC.run(constant_demand)
+    assert soln.vars['temperature_K'].max() > model_2RC.T_inf
+    assert all(soln.vars['temperature_K'] >= model_2RC.T_inf)
 
     # with heat off
     model_2RC.isothermal = True
     model_2RC.pre()
 
-    sol = model_2RC.run(constant_exp)
-    assert np.allclose(sol.vars['temperature_K'], model_2RC.T_inf)
+    soln = model_2RC.run(constant_demand)
+    assert np.allclose(soln.vars['temperature_K'], model_2RC.T_inf)
 
 
 def test_mutable_warning():

@@ -7,46 +7,46 @@ import matplotlib.pyplot as plt
 
 
 @pytest.fixture(scope='function')
-def sol():
+def soln():
 
     warnings.filterwarnings('ignore')
 
     model = thevenin.Model()
 
-    exp = thevenin.Experiment()
-    exp.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
-    exp.add_step('current_A', 0., (3600., 1.))
+    demand = thevenin.Experiment()
+    demand.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
+    demand.add_step('current_A', 0., (3600., 1.))
 
-    sol = model.run(exp)
+    soln = model.run(demand)
 
-    return sol
+    return soln
 
 
-def test_step_and_cycle_solutions(sol):
+def test_step_and_cycle_solutions(soln):
 
     # solvetime works
-    stepsol = sol.get_steps(0)
-    assert stepsol.solvetime
+    step_soln = soln.get_steps(0)
+    assert step_soln.solvetime
 
     # bad plot
     with pytest.raises(KeyError):
-        stepsol.plot('fake', 'plot')
+        step_soln.plot('fake', 'plot')
 
     # plots w/ and w/o units
-    stepsol.plot('soc', 'soc')
-    stepsol.plot('time_h', 'voltage_V')
+    step_soln.plot('soc', 'soc')
+    step_soln.plot('time_h', 'voltage_V')
     plt.close('all')
 
     # solvetime works and times stacked correctly
-    cyclesol = sol.get_steps((0, 1))
-    assert cyclesol.solvetime
-    assert all(np.diff(cyclesol.t) >= 0.)
+    cycle_soln = soln.get_steps((0, 1))
+    assert cycle_soln.solvetime
+    assert all(np.diff(cycle_soln.t) >= 0.)
 
     # bad plot
     with pytest.raises(KeyError):
-        cyclesol.plot('fake', 'plot')
+        cycle_soln.plot('fake', 'plot')
 
     # plots w/ and w/o units
-    cyclesol.plot('soc', 'soc')
-    cyclesol.plot('time_h', 'voltage_V')
+    cycle_soln.plot('soc', 'soc')
+    cycle_soln.plot('time_h', 'voltage_V')
     plt.close('all')

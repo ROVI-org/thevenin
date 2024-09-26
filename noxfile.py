@@ -22,8 +22,7 @@ def run_flake8(session):
     """
     Run flake8 with the github config file
 
-    Use the optional 'format' argument to run autopep8 on the src and tests
-    directories prior to running the linter.
+    Use the optional 'format' argument to run autopep8 prior to the linter.
 
     """
 
@@ -78,8 +77,8 @@ def run_pytest(session):
     Run pytest and generate test/coverage reports
 
     Use the optional 'parallel' argument to run the tests in parallel. As just
-    a flag, the number of workers will be determined automatically. Otherwise
-    you can specify the number of workers as an int.
+    a flag, the number of workers will be determined automatically. Otherwise,
+    you can specify the number of workers using an int, e.g., parallel=4.
 
     """
 
@@ -122,7 +121,15 @@ def run_genbadge(session):
 
 @nox.session(name='docs', python=False)
 def run_sphinx(session):
-    """Run spellcheck and then use sphinx to build docs"""
+    """
+    Run spellcheck and then use sphinx to build docs
+
+    Use the optional 'clean' argument to remove everything under the 'build'
+    and 'source/api' folders prior to re-building the docs. This is important
+    in cases where the api module names have been changed or when some navbars
+    are not showing new pages. In general, try without 'clean' first.
+
+    """
 
     if 'clean' in session.posargs:
         os.chdir('sphinx')
