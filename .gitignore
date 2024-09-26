@@ -1,5 +1,5 @@
-# Local developer tools
-dev.bat
+# OSX
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -7,11 +7,15 @@ __pycache__/
 *$py.class
 
 # C extensions
+*.c
 *.so
+*.pyd
+*.pxi
+
+# VSCode
+.vscode/
 
 # Distribution / packaging
-docs/
-sphinx/
 .Python
 build/
 develop-eggs/
@@ -25,11 +29,11 @@ parts/
 sdist/
 var/
 wheels/
+wheelhouse/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -42,6 +46,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+references/
 reports/
 htmlcov/
 .tox/
@@ -74,6 +79,10 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+
+# Sphinx documentation
+docs/
+sphinx/
 
 # PyBuilder
 .pybuilder/
@@ -112,6 +121,8 @@ ipython_config.py
 #   in version control.
 #   https://pdm.fming.dev/#use-with-ide
 .pdm.toml
+.pdm-python
+.pdm-build/
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
@@ -135,9 +146,6 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
-
-# VSCode 
-.vscode
 
 # Rope project settings
 .ropeproject

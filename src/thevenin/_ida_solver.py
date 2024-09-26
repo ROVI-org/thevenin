@@ -8,9 +8,6 @@ from scikits_odes_sundials import ida
 class SolverReturn:
     """Solver return."""
 
-    __slots__ = ('_success', '_message', '_t', '_y', '_ydot', '_roots',
-                 '_tstop', '_errors',)
-
     def __init__(self, solution: ida.SolverReturn) -> None:
         """
         A class to wrap the returned arrays and status of the IDASolver.

@@ -316,7 +316,7 @@ class Model:
 
         Returns
         -------
-        sol : StepSolution
+        soln : StepSolution
             Solution to the experiment step.
 
         Warning
@@ -362,16 +362,16 @@ class Model:
         solver = IDASolver(self._residuals, **kwargs)
 
         start = time.time()
-        idasol = solver.solve(step['tspan'], self._sv0, self._svdot0)
+        ida_soln = solver.solve(step['tspan'], self._sv0, self._svdot0)
         timer = time.time() - start
 
-        sol = StepSolution(self, idasol, timer)
+        soln = StepSolution(self, ida_soln, timer)
 
-        self._t0 = sol.t[-1]
-        self._sv0 = sol.y[-1]
-        self._svdot0 = sol.ydot[-1]
+        self._t0 = soln.t[-1]
+        self._sv0 = soln.y[-1].copy()
+        self._svdot0 = soln.ydot[-1].copy()
 
-        return sol
+        return soln
 
     def run(self, exp: Experiment) -> CycleSolution:
         """
@@ -384,7 +384,7 @@ class Model:
 
         Returns
         -------
-        sol : CycleSolution
+        soln : CycleSolution
             A stitched solution will all experimental steps.
 
         See also
@@ -399,17 +399,17 @@ class Model:
         sv0 = self._sv0.copy()
         svdot0 = self._svdot0.copy()
 
-        sols = []
+        solns = []
         for i in range(exp.num_steps):
-            sols.append(self.run_step(exp, i))
+            solns.append(self.run_step(exp, i))
 
-        sol = CycleSolution(*sols)
+        soln = CycleSolution(*solns)
 
         self._t0 = 0.
         self._sv0 = sv0
         self._svdot0 = svdot0
 
-        return sol
+        return soln
 
     def _residuals(self, t: float, sv: np.ndarray, svdot: np.ndarray,
                    res: np.ndarray, inputs: dict) -> None:

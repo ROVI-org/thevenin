@@ -41,6 +41,7 @@ dev = [
     "nox",
     "pytest",
     "pytest-cov",
+    "pytest-xdist",
     "genbadge[all]",
     "codespell",
     "flake8",
@@ -53,3 +54,9 @@ dev = [
     "myst-nb",
     "pydata-sphinx-theme",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ROVI-org/thevenin"
+Documentation = "https://rovi-org.github.io/thevenin/"
+Repository = "https://github.com/ROVI-org/thevenin"
+Issues = "https://github.com/ROVI-org/thevenin/issues"
