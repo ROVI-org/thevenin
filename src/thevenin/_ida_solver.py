@@ -202,7 +202,7 @@ class IDASolver:
 
         self._kwargs = kwargs.copy()
 
-        # Map renamed scikits.odes options, and force new api        
+        # Map renamed scikits.odes options, and force new api
         options = {
             'eventsfn': kwargs.pop('rootfn'),
             'num_events': kwargs.pop('nr_rootfns'),

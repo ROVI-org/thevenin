@@ -148,14 +148,14 @@ class StepSolution(BaseSolution):
 
         self._model = deepcopy(model)
 
-        self._success = ida_soln.success
-        self._message = ida_soln.message
-        self._t = ida_soln.t
-        self._y = ida_soln.y
-        self._ydot = ida_soln.ydot
-        self._roots = ida_soln.roots
-        self._tstop = ida_soln.tstop
-        self._errors = ida_soln.errors
+        self.success = ida_soln.success
+        self.message = ida_soln.message
+        self.t = ida_soln.t
+        self.y = ida_soln.y
+        self.ydot = ida_soln.ydot
+        self.roots = ida_soln.roots
+        self.tstop = ida_soln.tstop
+        self.errors = ida_soln.errors
 
         self._timer = timer
 
@@ -210,19 +210,19 @@ class CycleSolution(BaseSolution):
         self._timers = []
 
         for soln in self._solns:
-            if self._t.size > 0:
-                shifted_times = self._t[-1] + soln.t + 1e-3
+            if self.t.size > 0:
+                shifted_times = self.t[-1] + soln.t + 1e-3
             else:
                 shifted_times = soln.t
 
-            self._success.append(soln.success)
-            self._message.append(soln.message)
-            self._t = np.hstack([self._t, shifted_times])
-            self._y = np.vstack([self._y, soln.y])
-            self._ydot = np.vstack([self._ydot, soln.ydot])
-            self._roots.append(soln.roots)
-            self._tstop.append(soln.tstop)
-            self._errors.append(soln.errors)
+            self.success.append(soln.success)
+            self.message.append(soln.message)
+            self.t = np.hstack([self.t, shifted_times])
+            self.y = np.vstack([self.y, soln.y])
+            self.ydot = np.vstack([self.ydot, soln.ydot])
+            self.roots.append(soln.roots)
+            self.tstop.append(soln.tstop)
+            self.errors.append(soln.errors)
             self._timers.append(soln._timer)
 
         self._to_dict()
