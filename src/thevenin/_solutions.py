@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-
 from copy import deepcopy
+import textwrap
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -38,7 +38,33 @@ class BaseSolution(IDAResult):
             A console-readable instance representation.
 
         """
-        return repr(self.vars.keys())
+
+        def wrap_string(value: list, width: int, indent: int):
+            if not isinstance(value, list):
+                value = list(value)
+
+            indent = ' '*indent
+
+            text = ", ".join(f"'{v}'" for v in value)
+
+            return textwrap.fill(text, width=width, subsequent_indent=indent)
+
+        vars = wrap_string(self.vars.keys(), 70, len('    vars: '))
+
+        data = {
+            'solvetime': self.solvetime,
+            'success': self.success,
+            'status': self.status,
+            'nfev': self.nfev,
+            'njev': self.njev,
+            'vars': vars,
+        }
+
+        summary = "\n\t".join(f"{k}: {v}," for k, v in data.items())
+
+        readable = f"{self.__class__.__name__}(\n\t{summary}\n)"
+
+        return readable
 
     def plot(self, x: str, y: str, **kwargs) -> None:
         """
@@ -148,11 +174,21 @@ class StepSolution(BaseSolution):
 
         self._model = deepcopy(model)
 
-        self.success = ida_soln.success
         self.message = ida_soln.message
+        self.success = ida_soln.success
+        self.status = ida_soln.status
+
         self.t = ida_soln.t
         self.y = ida_soln.y
-        self.ydot = ida_soln.yp
+        self.yp = ida_soln.yp
+
+        self.i_events = ida_soln.i_events
+        self.t_events = ida_soln.t_events
+        self.y_events = ida_soln.y_events
+        self.yp_events = ida_soln.yp_events
+
+        self.nfev = ida_soln.nfev
+        self.njev = ida_soln.njev
 
         self._timer = timer
 
@@ -169,7 +205,7 @@ class StepSolution(BaseSolution):
             An f-string with the solver integration time in seconds.
 
         """
-        return f"Solve time: {self._timer:.3f} s"
+        return f"{self._timer:.3f} s"
 
 
 class CycleSolution(BaseSolution):
@@ -196,24 +232,55 @@ class CycleSolution(BaseSolution):
 
         sv_size = self._model._sv0.size
 
-        self.success = []
         self.message = []
+        self.success = []
+        self.status = []
+
         self.t = np.empty([0])
         self.y = np.empty([0, sv_size])
-        self.ydot = np.empty([0, sv_size])
+        self.yp = np.empty([0, sv_size])
+
+        self.t_events = None
+        self.y_events = None
+        self.yp_events = None
+
+        self.nfev = []
+        self.njev = []
+
         self._timers = []
 
         for soln in self._solns:
             if self.t.size > 0:
-                shifted_times = self.t[-1] + soln.t + 1e-3
+                shift_t = self.t[-1] + soln.t + 1e-3
             else:
-                shifted_times = soln.t
+                shift_t = soln.t
 
-            self.success.append(soln.success)
+            if soln.t_events and self.t.size > 0:
+                shift_t_events = self.t[-1] + soln.t_events + 1e-3
+            elif soln.t_events:
+                shift_t_events = soln.t_events
+
             self.message.append(soln.message)
-            self.t = np.hstack([self.t, shifted_times])
+            self.success.append(soln.success)
+            self.status.append(soln.status)
+
+            self.t = np.hstack([self.t, shift_t])
             self.y = np.vstack([self.y, soln.y])
-            self.ydot = np.vstack([self.ydot, soln.ydot])
+            self.yp = np.vstack([self.yp, soln.yp])
+
+            if soln.t_events:
+                if self.t_events is None:
+                    self.t_events = shift_t_events
+                    self.y_events = soln.y_events
+                    self.yp_events = soln.yp_events
+                else:
+                    self.t_events = np.hstack([self.t_events, shift_t_events])
+                    self.y_events = np.vstack([soln.y_events])
+                    self.yp_events = np.vstack([soln.yp_events])
+
+            self.nfev.append(soln.nfev)
+            self.njev.append(soln.njev)
+
             self._timers.append(soln._timer)
 
         self._to_dict()
@@ -229,7 +296,7 @@ class CycleSolution(BaseSolution):
             An f-string with the total solver integration time in seconds.
 
         """
-        return f"Solve time: {sum(self._timers):.3f} s"
+        return f"{sum(self._timers):.3f} s"
 
     def get_steps(self, idx: int | tuple) -> StepSolution | CycleSolution:
         """

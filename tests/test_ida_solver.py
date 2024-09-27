@@ -2,7 +2,7 @@ import pytest
 import thevenin
 import numpy as np
 
-from thevenin._ida_solver import IDAResult, IDASolver
+from thevenin._ida_solver import IDASolver
 
 
 @pytest.fixture(scope='function')

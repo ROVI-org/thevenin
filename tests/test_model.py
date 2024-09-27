@@ -176,15 +176,15 @@ def test_model_w_multistep_experiment(model_0RC, model_1RC, model_2RC,
 
     soln = model_0RC.run(constant_steps)
     assert soln.success
-    # assert any(soln.i_events)
+    assert any(status == 2 for status in soln.status)
 
     soln = model_1RC.run(constant_steps)
     assert soln.success
-    # assert any(soln.i_events)
+    assert any(status == 2 for status in soln.status)
 
     soln = model_2RC.run(constant_steps)
     assert soln.success
-    # assert any(soln.i_events)
+    assert any(status == 2 for status in soln.status)
 
 
 def test_model_w_dynamic_current(model_0RC, model_1RC, model_2RC,

@@ -298,7 +298,7 @@ class Model:
         Returns
         -------
         res : 1D np.array
-            DAE residuals, res = M*ydot - rhs(t, y).
+            DAE residuals, res = M*yp - rhs(t, y).
 
         """
         return self._mass_matrix.dot(svdot) - self.rhs_funcs(t, sv, inputs)
@@ -370,7 +370,7 @@ class Model:
 
         self._t0 = soln.t[-1]
         self._sv0 = soln.y[-1].copy()
-        self._svdot0 = soln.ydot[-1].copy()
+        self._svdot0 = soln.yp[-1].copy()
 
         return soln
 
@@ -430,7 +430,7 @@ class Model:
         svdot : 1D np.array
             State variable time derivatives at time t.
         res : 1D np.array
-            DAE residuals, res = M*ydot - rhs(t, y).
+            DAE residuals, res = M*yp - rhs(t, y).
         inputs : dict
             Dictionary detailing an experimental step.
 

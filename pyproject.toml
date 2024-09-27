@@ -20,7 +20,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
-    # "scikits-odes-sundials",
+    "scikit-sundae",
     "scipy",
     "matplotlib",
     "ruamel.yaml",
