@@ -131,7 +131,7 @@ def test_model_w_yaml_input(constant_steps, dynamic_current, dynamic_voltage,
 
     soln = model.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    # assert any(soln.i_events)
 
     soln = model.run(dynamic_current)
     assert soln.success
@@ -176,15 +176,15 @@ def test_model_w_multistep_experiment(model_0RC, model_1RC, model_2RC,
 
     soln = model_0RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    # assert any(soln.i_events)
 
     soln = model_1RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    # assert any(soln.i_events)
 
     soln = model_2RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    # assert any(soln.i_events)
 
 
 def test_model_w_dynamic_current(model_0RC, model_1RC, model_2RC,

@@ -2,8 +2,7 @@ import pytest
 import thevenin
 import numpy as np
 
-from sksundae import ida
-from thevenin._ida_solver import SolverReturn
+from thevenin._ida_solver import IDAResult, IDASolver
 
 
 @pytest.fixture(scope='function')
@@ -11,7 +10,7 @@ def dummy_soln():
     def residuals(t, y, yp, res):
         res[0] = yp[0]
 
-    solver = ida.IDA(residuals)
+    solver = IDASolver(residuals)
     dummy_soln = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return dummy_soln
@@ -25,32 +24,22 @@ def events_soln():
     def residuals(t, y, yp, res):
         res[0] = yp[0] + 0.1
 
-    solver = ida.IDA(residuals, eventsfn=eventsfn, num_events=1)
+    solver = IDASolver(residuals, eventsfn=eventsfn, num_events=1)
     events_soln = solver.solve(np.linspace(0., 10., 11), [1.], [0.])
 
     return events_soln
 
 
 def test_solver_return(dummy_soln):
-    solution = SolverReturn(dummy_soln)
 
-    assert solution.success
-    assert not solution.roots
-    assert solution.tstop
-    assert not solution.errors
-
-    assert solution.message == dummy_soln.message
-    assert np.allclose(solution.t, dummy_soln.t)
-    assert np.allclose(solution.y, dummy_soln.y)
-    assert np.allclose(solution.ydot, dummy_soln.yp)
+    assert dummy_soln.success
+    assert not dummy_soln.t_events
 
 
 def test_solver_return_roots(events_soln):
-    solution = SolverReturn(events_soln)
 
-    assert solution.success
-    assert solution.roots
-    assert np.allclose(solution.y[-1], events_soln.y_events)
+    assert events_soln.success
+    assert events_soln.t_events
 
 
 def test_ida_solver_with_ode():
@@ -83,7 +72,7 @@ def test_ida_solver_with_dae():
         res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2
         res[2] = y[0] + y[1] + y[2] - 1.
 
-    solver = thevenin.IDASolver(residuals, max_dt=0.)
+    solver = thevenin.IDASolver(residuals, max_step=0.)
 
     y0 = np.array([1., 0., 0.])
     yp0 = np.zeros_like(y0)

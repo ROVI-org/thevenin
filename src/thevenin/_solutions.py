@@ -7,13 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-from ._ida_solver import SolverReturn
+from ._ida_solver import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
 
 
-class BaseSolution(SolverReturn):
+class BaseSolution(IDAResult):
     """Base solution."""
 
     def __init__(self) -> None:
@@ -128,7 +128,7 @@ class BaseSolution(SolverReturn):
 class StepSolution(BaseSolution):
     """Single-step solution."""
 
-    def __init__(self, model: Model, ida_soln: SolverReturn,
+    def __init__(self, model: Model, ida_soln: IDAResult,
                  timer: float) -> None:
         """
         A solution instance for a single experimental step.
@@ -152,10 +152,7 @@ class StepSolution(BaseSolution):
         self.message = ida_soln.message
         self.t = ida_soln.t
         self.y = ida_soln.y
-        self.ydot = ida_soln.ydot
-        self.roots = ida_soln.roots
-        self.tstop = ida_soln.tstop
-        self.errors = ida_soln.errors
+        self.ydot = ida_soln.yp
 
         self._timer = timer
 
@@ -204,9 +201,6 @@ class CycleSolution(BaseSolution):
         self.t = np.empty([0])
         self.y = np.empty([0, sv_size])
         self.ydot = np.empty([0, sv_size])
-        self.roots = []
-        self.tstop = []
-        self.errors = []
         self._timers = []
 
         for soln in self._solns:
@@ -220,9 +214,6 @@ class CycleSolution(BaseSolution):
             self.t = np.hstack([self.t, shifted_times])
             self.y = np.vstack([self.y, soln.y])
             self.ydot = np.vstack([self.ydot, soln.ydot])
-            self.roots.append(soln.roots)
-            self.tstop.append(soln.tstop)
-            self.errors.append(soln.errors)
             self._timers.append(soln._timer)
 
         self._to_dict()

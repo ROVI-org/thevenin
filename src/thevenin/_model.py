@@ -353,8 +353,9 @@ class Model:
             value = step['value']
             step['value'] = lambda t: value
 
-        kwargs['inputs'] = step
-        kwargs['algidx'] = self._algidx
+        kwargs['userdata'] = step
+        kwargs['calc_initcond'] = 'yp0'
+        kwargs['algebraic_idx'] = self._algidx
 
         if step['limits'] is not None:
             _setup_rootfn(step['limits'], kwargs)
@@ -521,8 +522,8 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
 
     rootfn = _RootFunction(limits)
 
-    kwargs['rootfn'] = rootfn
-    kwargs['nr_rootfns'] = rootfn.size
+    kwargs['eventsfn'] = rootfn
+    kwargs['num_events'] = rootfn.size
 
 
 def _yaml_reader(file: str) -> dict:
