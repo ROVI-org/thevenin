@@ -91,9 +91,11 @@ class Experiment:
         """
         with np.printoptions(threshold=6, edgeitems=2):
             for i, step in enumerate(self.steps):
-                print("\nstep:", i, "\n" + "-"*10)
+                print(f"\nStep {i}\n" + "-"*20)
                 for key, value in step.items():
-                    print(key, ":", f"{value!r}")
+                    print(f"{key:<7} : {value!r}")
+
+                print(f"options : {self._kwargs[i]!r}")
 
     def add_step(self, mode: str, value: float | Callable, tspan: tuple,
                  limits: tuple[str, float] = None, **kwargs) -> None:
@@ -109,7 +111,8 @@ class Experiment:
         tspan : tuple
             Relative times for recording solution [s]. Providing a tuple as
             (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
-            tspan using ``np.linspace`` or ``np.arange``, respectively.
+            tspan using ``np.linspace`` or ``np.arange``, respectively. See
+            the notes for more information.
         limits : tuple[str, float], optional
             Stopping criteria for the new step, must be entered in sequential
             name/value pairs. Allowable names are {'soc', 'temperature_K',
@@ -154,7 +157,11 @@ class Experiment:
         * Given (float, int):
             ``tspan = np.linspace(0., tspan[0], tspan[1])``
         * Given (float, float):
-            ``tspan = np.arange(0., tspan[0] + tspan[1], tspan[1])``
+            ``tspan = np.arange(0., tspan[0], tspan[1])``
+
+            In this case, 't_max' is also appended to the end. This results
+            in the final 'dt' being different from the others if 't_max' is
+            not evenly divisible by the given 'dt'.
 
         """
 
@@ -171,9 +178,12 @@ class Experiment:
             tspan = np.linspace(0., t_max, Nt)
         elif isinstance(tspan[1], float):
             t_max, dt = tspan
-            tspan = np.arange(0., t_max + dt, dt, dtype=float)
+            tspan = np.arange(0., t_max, dt, dtype=float)
         else:
             raise TypeError("'tspan[1]' must be type int or float.")
+
+        if tspan[-1] != t_max:
+            tspan = np.hstack([tspan, t_max])
 
         step = {}
         step['mode'] = mode
