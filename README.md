@@ -57,7 +57,7 @@ The overall cell voltage is
   V_{\rm cell} = V_{\rm OCV}({\rm SOC}) - \sum_j V_j - IR_0,
 \end{equation}
 ```
-where $R_0$ the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of SOC and $T_{\rm cell}$.
+where $R_0$ is the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of SOC and $T_{\rm cell}$.
 
 ## Installation
 We recommend using [Anaconda](https://anaconda.com) to install this package due to the [scikits-odes-sundials](https://scikits-odes.readthedocs.io) dependency, which is installed separately using `conda install` to avoid having to download and compile SUNDIALS locally. Please refer to the linked `scikits-odes` documentation if you prefer installing without using `conda`. Note that we plan to replace this dependency in a future release to streamline installation.
