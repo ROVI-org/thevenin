@@ -1,13 +1,13 @@
-Patterns and conventions
+Patterns and Conventions
 ========================
 
-File organization
+File Organization
 -----------------
 It is preferred to have more files with fewer lines of code rather than fewer, larger files. This keeps the codebase easier to navigate and review. As a rule of thumb, classes and functions that are long should be in their own file, while shorter, related items can be grouped together. However, take care to not group unrelated classes and/or functions just because they are short. It is okay for these to still be in their own files if they are unique and cannot be categorized to fit in with other classes/functions.
 
 To maintain ease of access for users, all user-facing functions and classes should be no more than three levels deep from the top-level of the package. This ensures that users do not need to navigate through excessive subpackages or submodules to find the tools they need. Keeping interfaces easily discoverable improves usability and reduces friction when working with the package. With this in mind, it is still okay for developers to have nested code, however, they should import user-facing functionality into the package or some subpackage that makes it more accessible.
 
-Naming convention
+Naming Convention
 -----------------
 To ensure consistency and ease of development, the following conventions are enforced:
 
@@ -17,7 +17,7 @@ To ensure consistency and ease of development, the following conventions are enf
 2. Class and function names: 
     Classes use ``CamelCase``, while functions and methods use ``snake_case``. Classes should generally be in their own file unless grouped logically with others.
 
-Import considerations
+Import Considerations
 ---------------------
 
 Ordering
@@ -51,7 +51,7 @@ Placement
 * For heavier dependencies or rarely used ones, consider importing them only where needed (within functions/methods) to minimize unnecessary load times.
 * Regardless of placement, at the top of a file of within a function/method, ordering within each group should follow the ordering listed above.
 
-Class considerations
+Class Considerations
 --------------------
 For class definitions, we follow a specific ordering convention to make it easier to navigate through the code:
 
@@ -81,7 +81,7 @@ In some cases, exceptions to this order may be made, particularly if moving a hi
             # Some internal logic
             pass
 
-Module considerations
+Module Considerations
 ---------------------
 In our modules, we maintain a consistent structure to enhance readability and organization. The general order is as follows:
 
@@ -91,7 +91,7 @@ In our modules, we maintain a consistent structure to enhance readability and or
 
 This ordering helps ensure that users interacting with the module can quickly identify the main components, while hidden/internal logic remains at the bottom for a clearer separation of concerns.
 
-Development tools
+Development Tools
 -----------------
 For ease of development, tools and dependencies for linting, formatting, spellchecking, testing, and documentation building are included as optional dependencies. Installing these is as simple as running the following::
 

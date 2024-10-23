@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tests and coverage &#8212; thevenin 0.1.0 documentation</title>
+    <title>Tests and Coverage &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Review process" href="review_process.html" />
-    <link rel="prev" title="Code style and linting" href="code_styling.html" />
+    <link rel="next" title="Review Process" href="review_process.html" />
+    <link rel="prev" title="Code Style and Linting" href="code_style_and_linting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -317,22 +317,22 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Before you contribute</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
-<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development Environments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code structure</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and Conventions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_styling.html">Code style and linting</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tests and coverage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code Style and Linting</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tests and Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review Process</a></li>
 </ul>
 </div>
 </nav></div>
@@ -373,7 +373,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Development</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Tests and coverage</li>
+    <li class="breadcrumb-item active" aria-current="page">Tests and Coverage</li>
   </ul>
 </nav>
 </div>
@@ -391,13 +391,13 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="tests-and-coverage">
-<h1>Tests and coverage<a class="headerlink" href="#tests-and-coverage" title="Link to this heading">#</a></h1>
+<h1>Tests and Coverage<a class="headerlink" href="#tests-and-coverage" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <p>Testing and coverage are critical to maintaining code quality and ensuring that our software behaves as expected. This page outlines our practices for writing and running tests, measuring coverage, and maintaining high standards in our codebase.</p>
 </section>
 <section id="testing-practices">
-<h2>Testing practices<a class="headerlink" href="#testing-practices" title="Link to this heading">#</a></h2>
+<h2>Testing Practices<a class="headerlink" href="#testing-practices" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Test organization</dt><dd><p>Tests should be organized first by module and then by class and/or function. This helps in managing and locating tests effectively. Avoid grouping tests into a single file just because they share similar functions. Instead, organize them based on their associated modules.</p>
@@ -417,7 +417,7 @@ document.write(`
 </ul>
 </section>
 <section id="running-tests">
-<h2>Running tests<a class="headerlink" href="#running-tests" title="Link to this heading">#</a></h2>
+<h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading">#</a></h2>
 <p>The full test suite can be run locally using:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nox -s tests</span>
 </pre></div>
@@ -429,7 +429,7 @@ document.write(`
 <p>where <code class="docutils literal notranslate"><span class="pre">test_file.py</span></code> is the file that includes the tests you’d like to run. Generally, you will want to run individual files when you are iterating back and forth between fixing bugs, adding features, and writing new tests. However, you should always run the full test suite once you are finished and prior to any commits and/or pushes to your repository.</p>
 <p>If you forget to run tests locally they will still be run as part of the continuous integration (CI) workflow on your next push or pull request. While we only expect you to run your tests locally using the most recent stable version of Python, the CI workflow will also run the full test suite using older versions of Python and will check that tests pass on all major operating systems.</p>
 <section id="failing-tests">
-<h3>Failing tests<a class="headerlink" href="#failing-tests" title="Link to this heading">#</a></h3>
+<h3>Failing Tests<a class="headerlink" href="#failing-tests" title="Link to this heading">#</a></h3>
 <p>It is possible that although your local tests work that one of the older versions of Python, or even the newest version of Python on a different machine, may fail. In these cases, you should check the GitHub actions logs and address the issue. Ask for help from other developers using the <a class="reference external" href="https://github.com/ROVI-org/thevenin/discussions">Discussions</a> page if you ever feel stuck.</p>
 <p>A good place to start if your tests are only failing on older Python versions is to setup a second, temporarily, development environment with one of the older Python versions. All <code class="docutils literal notranslate"><span class="pre">nox</span></code> commands will still function the same way. This can help you run the failing tests locally instead of continuously pushing to GitHub. After failed tests are resolved, make sure you move back to using your primary development environment for future work.</p>
 </section>
@@ -442,7 +442,7 @@ document.write(`
 </div>
 <p>After tests finish running, you can check the coverage by opening the <code class="docutils literal notranslate"><span class="pre">index.html</span></code> file in the <code class="docutils literal notranslate"><span class="pre">reports/htmlcov/</span></code> folder. This will help you navigate through the source code files to see which lines are and are not coveraged.</p>
 <section id="excluding-lines">
-<h3>Excluding lines<a class="headerlink" href="#excluding-lines" title="Link to this heading">#</a></h3>
+<h3>Excluding Lines<a class="headerlink" href="#excluding-lines" title="Link to this heading">#</a></h3>
 <p>In some cases there will be lines of code that do not need to be covered. For example, the <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">TYPE_CHECKING</span></code> line of code does not get run during testing and will therefore never be “covered”. In this case and a few others, it is okay to use the directive <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">pragma:</span> <span class="pre">no</span> <span class="pre">cover</span></code> to ignore a line (or section) or code. For example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tying</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
@@ -455,7 +455,7 @@ document.write(`
 </section>
 </section>
 <section id="performance-testing">
-<h2>Performance testing<a class="headerlink" href="#performance-testing" title="Link to this heading">#</a></h2>
+<h2>Performance Testing<a class="headerlink" href="#performance-testing" title="Link to this heading">#</a></h2>
 <p>Tests should prioritize functionality. We do not write performance tests into the test suite. If you are optimizing performance, include examples in your pull request to compare the current and new implementations. Once confirmed, these performance tests can be removed.</p>
 </section>
 </section>
@@ -483,16 +483,16 @@ document.write(`
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-practices">Testing practices</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests">Running tests</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#failing-tests">Failing tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-practices">Testing Practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests">Running Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#failing-tests">Failing Tests</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage">Coverage</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#excluding-lines">Excluding lines</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#excluding-lines">Excluding Lines</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-testing">Performance testing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-testing">Performance Testing</a></li>
 </ul>
   </nav></div>
 

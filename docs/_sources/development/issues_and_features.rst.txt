@@ -1,11 +1,11 @@
-Issues and features
+Issues and Features
 ===================
 
 Overview 
 --------
 Before starting on a bug fix or developing a new feature for Thevenin, please follow the steps outlined below to ensure efficient collaboration and alignment with the project's goals. Whether you're reporting a bug, suggesting a feature, or volunteering to work on an issue, these guidelines will help maintain smooth development and communication.
 
-Steps to report an issue
+Steps to Report an Issue
 ------------------------
 1. Check for existing issues
 
@@ -19,7 +19,7 @@ Steps to report an issue
   - If you'd like to take on the issue yourself, indicate this in the issue and request that it be assigned to you.
   - Before proceeding with any major work, wait for a maintainer's response to ensure the issue aligns with the project's scope and future plans.
 
-Best practices
+Best Practices
 ^^^^^^^^^^^^^^
 When filing an issue, follow these best practices to help the maintainers understand the problem or feature request efficiently:
 
@@ -34,7 +34,7 @@ When filing an issue, follow these best practices to help the maintainers unders
   - Explain the problem the feature will solve, and why it's important.
   - Suggest how the feature should work and provide any references or examples if needed.
 
-Working on an issue
+Working on an Issue
 -------------------
 Once your issue is approved and assigned, follow the GitHub flow branching strategy for development:
 
@@ -55,6 +55,6 @@ Remember:
 * **Engage early:** Always seek feedback from maintainers before diving too deep into development, especially for larger changes or features.
 * **Be considerate:** Ensure your changes are well-organized, documented, and easy to review. This will help expedite the review and approval process.
 
-Getting help
+Getting Help
 ------------
 If you're unsure whether your contribution fits within the scope of the project or if you need help getting started, feel free to ask questions by commenting on issues or reaching out to the maintainers. Collaboration is key to the success of Thevenin, and we're here to support you.

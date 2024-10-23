@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>thevenin._experiment &#8212; thevenin 0.1.0 documentation</title>
+    <title>thevenin._experiment &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,8 +127,8 @@
     
     
     
-    <img src="../../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -455,9 +455,11 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">edgeitems</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">step:&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Step </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">step</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">:</span><span class="s2">&lt;7</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;options : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Experiment.add_step">
@@ -476,7 +478,8 @@ document.write(`
 <span class="sd">        tspan : tuple</span>
 <span class="sd">            Relative times for recording solution [s]. Providing a tuple as</span>
 <span class="sd">            (t_max: float, Nt: int) or (t_max: float, dt: float) constructs</span>
-<span class="sd">            tspan using ``np.linspace`` or ``np.arange``, respectively.</span>
+<span class="sd">            tspan using ``np.linspace`` or ``np.arange``, respectively. See</span>
+<span class="sd">            the notes for more information.</span>
 <span class="sd">        limits : tuple[str, float], optional</span>
 <span class="sd">            Stopping criteria for the new step, must be entered in sequential</span>
 <span class="sd">            name/value pairs. Allowable names are {&#39;soc&#39;, &#39;temperature_K&#39;,</span>
@@ -521,7 +524,11 @@ document.write(`
 <span class="sd">        * Given (float, int):</span>
 <span class="sd">            ``tspan = np.linspace(0., tspan[0], tspan[1])``</span>
 <span class="sd">        * Given (float, float):</span>
-<span class="sd">            ``tspan = np.arange(0., tspan[0] + tspan[1], tspan[1])``</span>
+<span class="sd">            ``tspan = np.arange(0., tspan[0], tspan[1])``</span>
+
+<span class="sd">            In this case, &#39;t_max&#39; is also appended to the end. This results</span>
+<span class="sd">            in the final &#39;dt&#39; being different from the others if &#39;t_max&#39; is</span>
+<span class="sd">            not evenly divisible by the given &#39;dt&#39;.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -538,9 +545,12 @@ document.write(`
             <span class="n">tspan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_max</span><span class="p">,</span> <span class="n">Nt</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tspan</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
             <span class="n">t_max</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">tspan</span>
-            <span class="n">tspan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_max</span> <span class="o">+</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">tspan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_max</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;tspan[1]&#39; must be type int or float.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tspan</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">t_max</span><span class="p">:</span>
+            <span class="n">tspan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">tspan</span><span class="p">,</span> <span class="n">t_max</span><span class="p">])</span>
 
         <span class="n">step</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">step</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mode</span>

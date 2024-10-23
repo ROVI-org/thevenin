@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Step functions\n",
+    "# Step Functions\n",
     "In many experimental setups, dynamic loads are applied to simulate realistic operating conditions. Experimental platforms often handle these dynamic loads effectively, interpolating between data points if necessary to create smooth profiles. However, while interpolation is a convenient tool, there are situations where it might not be the best approach for simulating system behavior. Therefore, we also supply helper functions to construct step-based load profiles.\n",
     "\n",
     "## Why not interpolate?\n",
@@ -23,7 +23,7 @@
     "3. Using the `StepFunctio` class to create instantaneous stepped loads.\n",
     "4. Using the `RampedSteps` class to create stable transitions between load steps.\n",
     "\n",
-    "## Dynamic experiments\n",
+    "## Dynamic Experiments\n",
     "To create dynamic load profiles, especially for more complex experiments, there are many approaches you can take. The `Experiment` class allows users to pass in any Python `Callable` like `f(t: float) -> float` to control each step. Therefore, if you have data, you can easily interpolate the data to create a load profile, or you can automate the construction of load steps using a for loop. Below we demonstrate both approaches."
    ]
   },
@@ -45,10 +45,10 @@
     "# Interpolating the data\n",
     "interp = lambda t: np.interp(t, time_s, current_A)\n",
     "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', interp, (3600*6, 60.))\n",
+    "expr = thevenin.Experiment(max_dt=60.)\n",
+    "expr.add_step('current_A', interp, (3600*6, 60.))\n",
     "\n",
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')\n"
    ]
@@ -69,11 +69,11 @@
    "outputs": [],
    "source": [
     "# Looping over constant steps\n",
-    "demand = thevenin.Experiment()\n",
+    "expr = thevenin.Experiment(max_dt=60.)\n",
     "for amps in current_A:\n",
-    "    demand.add_step('current_A', amps, (3600, 60.))\n",
+    "    expr.add_step('current_A', amps, (3600, 60.))\n",
     "\n",
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')"
    ]
@@ -84,39 +84,7 @@
    "source": [
     "This loop-based method significantly improves the accuracy of the results in this case. You can see how different the two voltage profiles are when the load profile is applied correctly, instead of using interpolation. This loop-based approach offers the most flexibility and is recommended when users need precise control over each step. For example, using the `add_step` method allows you to add different limits to each step, which can be incorporated into the loop. This level of control is not always possible with other methods.\n",
     "\n",
-    "## Instantaneous load steps\n",
-    "For scenarios involving abrupt changes in load, the `StepFunction` class can also be useful. It allows users to define a series of instantaneous steps at specific time points, simulating conditions where the load jumps suddenly between levels. However, depending on your model’s parameters, using this class can sometimes lead to instabilities that are not present with the loop-based approach described above.\n",
-    "\n",
-    "In the example below, we use the same time and current data to create a `StepFunction` instance. You’ll see that the model crashes after the second step, which is due to the stiff nature of the instantaneous load changes. The loop-based approach avoids this by recalculating and correcting initial conditions at the start of each step. In contrast, the `StepFunction` method applies the entire load profile as a single experimental load, meaning the model can only correct the initial conditions once, at the beginning of the simulation."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# Automatted instantaneous steps\n",
-    "dynamic_load = thevenin.loadfns.StepFunction(time_s, current_A)\n",
-    "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', dynamic_load, (3600*6, 60.))\n",
-    "\n",
-    "soln = model.run(demand)\n",
-    "print(f\"{soln.success=}\")\n",
-    "soln.plot('time_h', 'current_A')\n",
-    "soln.plot('time_h', 'voltage_V')"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Aside from causing crashes, this approach is also less flexible in terms of setting limits or adjusting solver settings, as the entire profile is handled as a single experimental step rather than multiple, individual ones. Due to occasional crashes and reduced flexibility, we don’t generally recommend the `StepFunction` class, though it’s included in the module for completeness. Instead, for instantaneous steps, we suggest using the loop-based approach, even if it requires writing a few more lines of code.\n",
-    "\n",
-    "Alternatively, when a true instantaneous step can be avoided and approximated with a rapid ramp between steps, we offer the `RampedSteps` class. This option is simple, quick to use, and provides improved stability compared to `StepFunction`.\n",
-    "\n",
-    "## Ramped load transitions\n",
+    "## Ramped Transitions\n",
     "Unlike `StepFunction`, the `RampedSteps` class introduces \"smooth\" transitions between load steps by ramping up or down over a specified time period. This method is especially useful when dealing with stiff systems, where abrupt changes might otherwise cause solver instability. Below we demonstrate this using the same hour-by-hour profile from above. We set the ramp between steps to be just one millisecond so that the transitions are still quick and approximate an instantaneous change. In this case, the added ramps improve the stability and the full simulation is run, as shown in the figure. Overall, the results are nearly identical to the loop-based approach since the ramps are set to occur over such a small time scale. In particular, the main difference is shown in the current profile, where you can briefly see the first ramp (starting from zero current at `t = 0`)."
    ]
   },
@@ -127,12 +95,12 @@
    "outputs": [],
    "source": [
     "# Stabilize the solver with ramped steps\n",
-    "dynamic_load = thevenin.loadfns.RampedSteps(time_s, current_A, 1e-3)\n",
+    "demand = thevenin.loadfns.RampedSteps(time_s, current_A, 1e-3)\n",
     "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', dynamic_load, (3600*6, 60.))\n",
+    "expr = thevenin.Experiment(max_dt=60.)\n",
+    "expr.add_step('current_A', demand, (3600*6, 60.))\n",
     "\n",
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_h', 'current_A')\n",
     "soln.plot('time_h', 'voltage_V')"
    ]

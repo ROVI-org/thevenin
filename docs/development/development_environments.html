@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Development environments &#8212; thevenin 0.1.0 documentation</title>
+    <title>Development Environments &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Project layout" href="project_layout.html" />
-    <link rel="prev" title="Issues and features" href="issues_and_features.html" />
+    <link rel="next" title="Project Layout" href="project_layout.html" />
+    <link rel="prev" title="Issues and Features" href="issues_and_features.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -313,22 +313,22 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Before you contribute</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
-<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and features</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Development environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and Features</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Development Environments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code structure</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and Conventions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code style and linting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and coverage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code Style and Linting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review Process</a></li>
 </ul>
 </div>
 </nav></div>
@@ -387,7 +387,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="development-environments">
-<h1>Development environments<a class="headerlink" href="#development-environments" title="Link to this heading">#</a></h1>
+<h1>Development Environments<a class="headerlink" href="#development-environments" title="Link to this heading">#</a></h1>
 <p>This guide will walk you through setting up a local development environment for contributing to Thevenin. It covers recommended practices, tools, and commands for developers to efficiently build, test, and contribute to the project.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -433,7 +433,7 @@ document.write(`
 <span class="go">nox -s codespell [-- write]</span>
 </pre></div>
 </div>
-<p>The optional <code class="docutils literal notranslate"><span class="pre">format</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> arguments will attempt to format the code and correct misspellings, respectively. For more information on linting and code style, make sure you reference the <span class="xref std std-doc">code styling and linting</span> section.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">format</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> arguments will attempt to format the code and correct misspellings, respectively. For more information on linting and code style, make sure you reference the <a class="reference internal" href="code_style_and_linting.html"><span class="doc">Code Style and Linting</span></a> section.</p>
 </dd>
 </dl>
 </li>
@@ -447,7 +447,7 @@ document.write(`
 </dl>
 </li>
 </ol>
-<p>Now that you’re all setup with a development version of Thevenin and have tested the codebase using the <code class="docutils literal notranslate"><span class="pre">nox</span></code> integration, be sure to follow the <a class="reference internal" href="version_control.html"><span class="doc">version control</span></a> workflow as you contribute. Happy coding!</p>
+<p>Now that you’re all setup with a development version of Thevenin and have tested the codebase using the <code class="docutils literal notranslate"><span class="pre">nox</span></code> integration, be sure to follow the <a class="reference internal" href="version_control.html"><span class="doc">Version Control</span></a> workflow as you contribute. Happy coding!</p>
 </section>
 
 

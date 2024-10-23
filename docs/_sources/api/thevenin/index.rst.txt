@@ -202,7 +202,8 @@ Package Contents
       :type value: float | Callable
       :param tspan: Relative times for recording solution [s]. Providing a tuple as
                     (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
-                    tspan using ``np.linspace`` or ``np.arange``, respectively.
+                    tspan using ``np.linspace`` or ``np.arange``, respectively. See
+                    the notes for more information.
       :type tspan: tuple
       :param limits: Stopping criteria for the new step, must be entered in sequential
                      name/value pairs. Allowable names are {'soc', 'temperature_K',
@@ -239,7 +240,11 @@ Package Contents
       * Given (float, int):
           ``tspan = np.linspace(0., tspan[0], tspan[1])``
       * Given (float, float):
-          ``tspan = np.arange(0., tspan[0] + tspan[1], tspan[1])``
+          ``tspan = np.arange(0., tspan[0], tspan[1])``
+
+          In this case, 't_max' is also appended to the end. This results
+          in the final 'dt' being different from the others if 't_max' is
+          not evenly divisible by the given 'dt'.
 
 
 

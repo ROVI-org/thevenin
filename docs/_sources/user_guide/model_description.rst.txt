@@ -1,4 +1,4 @@
-Model description
+Model Description
 =================
 This page outlines the underlying mathematics of the Thevenin equivalent circuit model. The index :math:`j` is used throughout the documentation to gernalize the fact that the model can be run with a variable number of resistor-capacitor (RC) elements. When zero RC pairs are specified, the model collapses into the simpler Rint model, discussed :doc:`here <equivalent_circuit_models>`. However, the model also allows any nonzero number of RC pairs, within reason. The figure below illustrates an example Thevenin circuit with two RC pairs.
 

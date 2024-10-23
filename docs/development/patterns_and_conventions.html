@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Patterns and conventions &#8212; thevenin 0.1.0 documentation</title>
+    <title>Patterns and Conventions &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Version control" href="version_control.html" />
-    <link rel="prev" title="Project layout" href="project_layout.html" />
+    <link rel="next" title="Version Control" href="version_control.html" />
+    <link rel="prev" title="Project Layout" href="project_layout.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -317,22 +317,22 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Before you contribute</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
-<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development Environments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code structure</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project layout</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Patterns and conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project Layout</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Patterns and Conventions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code style and linting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and coverage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_style_and_linting.html">Code Style and Linting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review Process</a></li>
 </ul>
 </div>
 </nav></div>
@@ -391,14 +391,14 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="patterns-and-conventions">
-<h1>Patterns and conventions<a class="headerlink" href="#patterns-and-conventions" title="Link to this heading">#</a></h1>
+<h1>Patterns and Conventions<a class="headerlink" href="#patterns-and-conventions" title="Link to this heading">#</a></h1>
 <section id="file-organization">
-<h2>File organization<a class="headerlink" href="#file-organization" title="Link to this heading">#</a></h2>
+<h2>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading">#</a></h2>
 <p>It is preferred to have more files with fewer lines of code rather than fewer, larger files. This keeps the codebase easier to navigate and review. As a rule of thumb, classes and functions that are long should be in their own file, while shorter, related items can be grouped together. However, take care to not group unrelated classes and/or functions just because they are short. It is okay for these to still be in their own files if they are unique and cannot be categorized to fit in with other classes/functions.</p>
 <p>To maintain ease of access for users, all user-facing functions and classes should be no more than three levels deep from the top-level of the package. This ensures that users do not need to navigate through excessive subpackages or submodules to find the tools they need. Keeping interfaces easily discoverable improves usability and reduces friction when working with the package. With this in mind, it is still okay for developers to have nested code, however, they should import user-facing functionality into the package or some subpackage that makes it more accessible.</p>
 </section>
 <section id="naming-convention">
-<h2>Naming convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h2>
+<h2>Naming Convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h2>
 <p>To ensure consistency and ease of development, the following conventions are enforced:</p>
 <ol class="arabic simple">
 <li><dl class="simple">
@@ -414,7 +414,7 @@ document.write(`
 </ol>
 </section>
 <section id="import-considerations">
-<h2>Import considerations<a class="headerlink" href="#import-considerations" title="Link to this heading">#</a></h2>
+<h2>Import Considerations<a class="headerlink" href="#import-considerations" title="Link to this heading">#</a></h2>
 <section id="ordering">
 <h3>Ordering<a class="headerlink" href="#ordering" title="Link to this heading">#</a></h3>
 <p>In our codebase, import statements are organized into three distinct groups based on where the modules originate. This helps keep imports clean and maintainable. The groups, in order, are:</p>
@@ -449,7 +449,7 @@ document.write(`
 </section>
 </section>
 <section id="class-considerations">
-<h2>Class considerations<a class="headerlink" href="#class-considerations" title="Link to this heading">#</a></h2>
+<h2>Class Considerations<a class="headerlink" href="#class-considerations" title="Link to this heading">#</a></h2>
 <p>For class definitions, we follow a specific ordering convention to make it easier to navigate through the code:</p>
 <ol class="arabic simple">
 <li><p><strong>Magic Methods:</strong> These special methods (e.g., <code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">__repr__</span></code>, etc.) come first. They define key behaviors of the class.</p></li>
@@ -478,7 +478,7 @@ document.write(`
 </div>
 </section>
 <section id="module-considerations">
-<h2>Module considerations<a class="headerlink" href="#module-considerations" title="Link to this heading">#</a></h2>
+<h2>Module Considerations<a class="headerlink" href="#module-considerations" title="Link to this heading">#</a></h2>
 <p>In our modules, we maintain a consistent structure to enhance readability and organization. The general order is as follows:</p>
 <ol class="arabic simple">
 <li><p><strong>Classes:</strong> If a module contains any class definitions, they should appear first. Classes define the core structure and behavior of the module.</p></li>
@@ -488,7 +488,7 @@ document.write(`
 <p>This ordering helps ensure that users interacting with the module can quickly identify the main components, while hidden/internal logic remains at the bottom for a clearer separation of concerns.</p>
 </section>
 <section id="development-tools">
-<h2>Development tools<a class="headerlink" href="#development-tools" title="Link to this heading">#</a></h2>
+<h2>Development Tools<a class="headerlink" href="#development-tools" title="Link to this heading">#</a></h2>
 <p>For ease of development, tools and dependencies for linting, formatting, spellchecking, testing, and documentation building are included as optional dependencies. Installing these is as simple as running the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -e .[dev]</span>
 </pre></div>
@@ -527,16 +527,16 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-organization">File organization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-convention">Naming convention</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-considerations">Import considerations</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-organization">File Organization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-convention">Naming Convention</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-considerations">Import Considerations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ordering">Ordering</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#placement">Placement</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-considerations">Class considerations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-considerations">Module considerations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-tools">Development tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-considerations">Class Considerations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-considerations">Module Considerations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-tools">Development Tools</a></li>
 </ul>
   </nav></div>
 

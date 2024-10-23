@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>thevenin &#8212; thevenin 0.1.0 documentation</title>
+    <title>thevenin &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -611,7 +611,8 @@ detected.</p>
 <li><p><strong>value</strong> (<em>float</em><em> | </em><em>Callable</em>) – Value of boundary contion in the appropriate units.</p></li>
 <li><p><strong>tspan</strong> (<em>tuple</em>) – Relative times for recording solution [s]. Providing a tuple as
 (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
-tspan using <code class="docutils literal notranslate"><span class="pre">np.linspace</span></code> or <code class="docutils literal notranslate"><span class="pre">np.arange</span></code>, respectively.</p></li>
+tspan using <code class="docutils literal notranslate"><span class="pre">np.linspace</span></code> or <code class="docutils literal notranslate"><span class="pre">np.arange</span></code>, respectively. See
+the notes for more information.</p></li>
 <li><p><strong>limits</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Stopping criteria for the new step, must be entered in sequential
 name/value pairs. Allowable names are {‘soc’, ‘temperature_K’,
 ‘current_A’, ‘voltage_V’, ‘power_W’, ‘capacity_Ah’, ‘time_s’,
@@ -647,14 +648,17 @@ signature like def load(t: float) -&gt; float, where t is the step’s
 relative time, in seconds.</p>
 <p>The solution times array is constructed depending on the ‘tspan’
 input types:</p>
-<ul class="simple">
+<ul>
 <li><dl class="simple">
 <dt>Given (float, int):</dt><dd><p><code class="docutils literal notranslate"><span class="pre">tspan</span> <span class="pre">=</span> <span class="pre">np.linspace(0.,</span> <span class="pre">tspan[0],</span> <span class="pre">tspan[1])</span></code></p>
 </dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>Given (float, float):</dt><dd><p><code class="docutils literal notranslate"><span class="pre">tspan</span> <span class="pre">=</span> <span class="pre">np.arange(0.,</span> <span class="pre">tspan[0]</span> <span class="pre">+</span> <span class="pre">tspan[1],</span> <span class="pre">tspan[1])</span></code></p>
+<li><dl>
+<dt>Given (float, float):</dt><dd><p><code class="docutils literal notranslate"><span class="pre">tspan</span> <span class="pre">=</span> <span class="pre">np.arange(0.,</span> <span class="pre">tspan[0],</span> <span class="pre">tspan[1])</span></code></p>
+<p>In this case, ‘t_max’ is also appended to the end. This results
+in the final ‘dt’ being different from the others if ‘t_max’ is
+not evenly divisible by the given ‘dt’.</p>
 </dd>
 </dl>
 </li>

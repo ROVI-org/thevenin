@@ -4,10 +4,10 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# YAML file inputs\n",
+    "# YAML File Inputs\n",
     "This basic example will walk you through understanding the three main classes required to build and exercise equivalent circuit models using this package. The three classes as the `Model`, `Experiment`, and `StepSolution` or `CylceSolution` classes. Models hold parameters associated with defining the battery circuit, experiments list a series of sequential steps that define a test protocol or duty cycle, and the solution classes provide an interface to access, manipulate, and/or plot the solution.\n",
     "\n",
-    "## Import modules"
+    "## Import Modules"
    ]
   },
   {
@@ -24,7 +24,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Construct a model\n",
+    "## Construct a Model\n",
     "The model class can be constructed using either a '.yaml' file or a dictionary that specifies all keyword arguments shown in the documentation (`help(thevenin.Model)`). A default '.yaml' file is read in when no input is provided. This is simply for convenience to help users get up and going as quickly as possible. However, you should learn how to write your own '.yaml' file or dictionary input if you would like to use this package to its fullest extent. \n",
     "\n",
     "The '.yaml' format is very similar to building a dictionary in Python. Use the default 'params.yaml' file given below as a template for your own files. Note that the open circuit voltage `ocv` and circuit elements (`R0`, `R1`, and `C1`) must be input as a `Callable` with the correct inputs in the correct order, i.e., `f(soc: float) -> float` for `ocv` and `f(soc: float, T_cell: float) -> float` for all RC elements. The inputs represent the state of charge (`soc`, -) and cell temperature (`T_cell`, K). Resistor and capacitor outputs should be in Ohm and F, respectively. Since '.yaml' files do not natively support python functions, this package uses a custom `!eval` constructor to interpret functional parameters. The `!eval` constructor should be followed by a pipe `|` so that the interpreter does not get confused by the colon in the `lambda` expression. `np` expressions and basic math are also supported when using the `!eval` constructor.\n",
@@ -78,7 +78,7 @@
    "source": [
     "When using the default parameters, a warning will always print. This is to ensure the user is running with their preferred inputs. In the case that a user has a file by the same name, the package will take the default as its preference. Be sure to specify the local or absolute path in this case, e.g., `./params.yaml`, or simply rename your file.\n",
     "\n",
-    "## Build an experiment\n",
+    "## Build an Experiment\n",
     "Experiments are built using the `Experiment` class. An experiment starts out empty and is then constructed by adding a series of current-, voltage-, or power-controlled steps. Each step requires knowing the control mode/units, the control value, a relative time span, and limiting criteria (optional). Control values can be specified as either constants or dynamic profiles with sinatures like `f(t: float) -> float` where `t` is the relative time of the new step, in seconds. The experiment below discharges at a nominal 1C rate for up to 1 hour. A limit is set such that if the voltage hits 3 V then the next step is triggered early. Afterward, the battery rests for 10 min before charging at 1C for 1 hours or until 4.3 V is reached. The remaining three steps perform a voltage hold at 4.3 V for 10 min, a constant power profile of 200 W for 1 hour or until 3.8 V is reached, and a sinusoidal voltage load for 10 min centered around 3.8 V.\n",
     "\n",
     "Note that the time span for each step is constructed as `(t_max: float, dt: float)` which is used to determine the time array as `tspan = np.arange(0., t_max + dt, dt)`. You can also construct a time array given `(t_max: float, Nt: int)` by using an integer instead of a float in the second position. In this case, `tspan = np.linspace(0., t_max, Nt)`. To learn more about building an experiment, including which limits are allowed and/or how to adjust solver settings on a per-step basis, see the documentation `help(thevenin.Experiment)`."
@@ -92,20 +92,20 @@
    "source": [
     "dynamic_load = lambda t: 10e-3*np.sin(2.*np.pi*t / 120.) + 3.8\n",
     "\n",
-    "demand = thevenin.Experiment(max_dt=10.)\n",
-    "demand.add_step('current_A', 75., (3600., 1.), limits=('voltage_V', 3.))\n",
-    "demand.add_step('current_A', 0., (600., 1.))\n",
-    "demand.add_step('current_A', -75., (3600., 1.), limits=('voltage_V', 4.3))\n",
-    "demand.add_step('voltage_V', 4.3, (600., 1.))\n",
-    "demand.add_step('power_W', 200., (3600., 1.), limits=('voltage_V', 3.8))\n",
-    "demand.add_step('voltage_V', dynamic_load, (600., 1.))"
+    "expr = thevenin.Experiment(max_dt=10.)\n",
+    "expr.add_step('current_A', 75., (3600., 1.), limits=('voltage_V', 3.))\n",
+    "expr.add_step('current_A', 0., (600., 1.))\n",
+    "expr.add_step('current_A', -75., (3600., 1.), limits=('voltage_V', 4.3))\n",
+    "expr.add_step('voltage_V', 4.3, (600., 1.))\n",
+    "expr.add_step('power_W', 200., (3600., 1.), limits=('voltage_V', 3.8))\n",
+    "expr.add_step('voltage_V', dynamic_load, (600., 1.))"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Run the experiment\n",
+    "## Run the Experiment\n",
     "Experiments are run using either the `run` method, as shown below, or the `run_step` method. The difference between the two is that the `run` method will run all experiment steps with one call. If you would prefer to run the discharge first, perform an analysis, and then run the rest, etc. then you will want to use the `run_step` method. In this case, you should always start with step 0 and then run the following steps in order. When you use `run_step` the models internal state is saved at the end of each step. Therefore, after all steps have been run, you should run the `pre` method to pre-process the model back to its original initial state. All of this is handled automatically in the `run` method.\n",
     "\n",
     "Regardless of how you run your experiment, the return value will be a solution instance. Solution instances each contain a `vars` attribute which contains a dictionary of the output variables. Keys are generally self descriptive and include units where applicable. To quickly plot any two variables against one another, use the `plot` method with the two keys of interest specified for the `x` and `y` variables of the figure. Below, time (in hours) is plotted against voltage."
@@ -128,7 +128,7 @@
     }
    ],
    "source": [
-    "sol = model.run(demand)\n",
+    "sol = model.run(expr)\n",
     "sol.plot('time_h', 'voltage_V')"
    ]
   },
@@ -158,8 +158,8 @@
    "source": [
     "# Run each index, starting with 0\n",
     "solns = []\n",
-    "for i in range(demand.num_steps):\n",
-    "    solns.append(model.run_step(demand, i))\n",
+    "for i in range(expr.num_steps):\n",
+    "    solns.append(model.run_step(expr, i))\n",
     "    \n",
     "# Re-run the pre-processor in case you'd like to run another experiment\n",
     "model.pre()\n",

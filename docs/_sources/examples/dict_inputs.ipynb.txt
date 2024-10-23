@@ -4,10 +4,10 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Dictionary inputs\n",
+    "# Dictionary Inputs\n",
     "In the previous example, the model parameters were built from a '.yaml' file. In some cases, the functional parameters are relatively complex and can be challenging to specify in the '.yaml' format. Therefore, the model can also be constructed using a dictionary, as demonstrated below.\n",
     "\n",
-    "## Import modules"
+    "## Import Modules"
    ]
   },
   {
@@ -24,7 +24,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Define the parameters\n",
+    "## Define the Parameters\n",
     "In addition to the open circuit voltage (`ocv`), all circuit elements (i.e., `R0`, `R1`, `C1`, etc.) must be specified as functions. While `OCV` is only a function of the state of charge (`soc`, -), the circuit elements are function of both soc and temperature (`T_cell`, K). It is important that these are the only inputs to the functions and that the inputs are given in the correct order. \n",
     "\n",
     "The functions below come from fitting the equivalent circuit model to a 75 Ah graphite-NMC battery made by Kokam. Fits were performed using charge and discharge pulses from HPPC tests done at multiple temperatures. The `soc` was assumed constant during a single pulse and each resistor and capacitor element was fit as a constant for a given soc/temperature condition. Expressions below come from AI-Batt, which is an open-source software capable of semi-autonomously identifying algebraic expressions that map inputs (`soc` and `T_cell`) to outputs (`R0`, `R1`, `C1`)."
@@ -120,7 +120,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Construct a model\n",
+    "## Construct a Model\n",
     "The model is constructed below using all necessary keyword arguments. You can see a list of these parameters using ``help(thevenin.Model)``."
    ]
   },
@@ -153,7 +153,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Build an experiment\n",
+    "## Build an Experiment\n",
     "Experiments are built using the `Experiment` class. An experiment starts out empty and is then constructed by adding a series of current-, voltage-, or power-controlled steps. Each step requires knowing the control mode/units, the control value, a relative time span, and limiting criteria (optional). Control values can be specified as either constants or dynamic profiles with sinatures like `f(t: float) -> float` where `t` is the relative time of the new step, in seconds. The experiment below discharges at a nominal C/5 rate for up to 5 hours. A limit is set such that if the voltage hits 3 V then the next step is triggered early. Afterward, the battery rests for 10 min before charging at C/5 for 5 hours or until 4.2 V is reached. The final step is a 1 hour voltage hold at 4.2 V.\n",
     "\n",
     "Note that the time span for each step is constructed as `(t_max: float, dt: float)` which is used to determine the time array as `tspan = np.arange(0., t_max + dt, dt)`. You can also construct a time array given `(t_max: float, Nt: int)` by using an integer instead of a float in the second position. In this case, `tspan = np.linspace(0., t_max, Nt)`. To learn more about building an experiment, including which limits are allowed and/or how to adjust solver settings on a per-step basis, see the documentation `help(thevenin.Experiment)`."
@@ -165,18 +165,18 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', 15., (5.*3600., 60.), limits=('voltage_V', 3.))\n",
-    "demand.add_step('current_A', 0., (600., 5.))\n",
-    "demand.add_step('current_A', -15., (5.*3600., 60.), limits=('voltage_V', 4.2))\n",
-    "demand.add_step('voltage_V', 4.2, (3600., 60.))"
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', 15., (5.*3600., 60.), limits=('voltage_V', 3.))\n",
+    "expr.add_step('current_A', 0., (600., 5.))\n",
+    "expr.add_step('current_A', -15., (5.*3600., 60.), limits=('voltage_V', 4.2))\n",
+    "expr.add_step('voltage_V', 4.2, (3600., 60.))"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Run the experiment\n",
+    "## Run the Experiment\n",
     "Experiments are run using either the `run` method, as shown below, or the `run_step` method. The difference between the two is that the `run` method will run all experiment steps with one call. If you would prefer to run the discharge first, perform an analysis, and then run the rest, etc. then you will want to use the `run_step` method. In this case, you should always start with step 0 and then run the following steps in order. When you use `run_step` the models internal state is saved at the end of each step. Therefore, after all steps have been run, you should run the `pre` method to pre-process the model back to its original initial state. All of this is handled automatically in the `run` method.\n",
     "\n",
     "Regardless of how you run your experiment, the return value will be a solution instance. Solution instances each contain a `vars` attribute which contains a dictionary of the output variables. Keys are generally self descriptive and include units where applicable. To quickly plot any two variables against one another, use the `plot` method with the two keys of interest specified for the `x` and `y` variables of the figure. Below, time (in hours) is plotted against voltage."
@@ -199,7 +199,7 @@
     }
    ],
    "source": [
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_h', 'voltage_V')"
    ]
   },

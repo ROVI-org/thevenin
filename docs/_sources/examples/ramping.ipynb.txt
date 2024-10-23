@@ -24,7 +24,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Creating a ramped load\n",
+    "## Creating Ramped Demands\n",
     "Thevenin supports both constant and dynamic load profiles for each experimental step. For example, below we make a profile that discharges the battery at a constant current until 3.5 V and then charges the battery by ramping the voltage until 4.2 V."
    ]
   },
@@ -40,9 +40,9 @@
     "def voltage_ramp(t: float) -> float:\n",
     "    return 3.5 + 5e-3*t\n",
     "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
-    "demand.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
+    "expr.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
    ]
   },
   {
@@ -60,9 +60,9 @@
    "source": [
     "voltage_ramp = thevenin.loadfns.Ramp(5e-3, 3.5)\n",
     "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
-    "demand.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', 75., (3600., 60.), limits=('voltage_V', 3.5))\n",
+    "expr.add_step('voltage_V', voltage_ramp, (600., 10.), limits=('voltage_V', 4.2))"
    ]
   },
   {
@@ -80,7 +80,7 @@
    "source": [
     "model = thevenin.Model()\n",
     "\n",
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_min', 'voltage_V')"
    ]
   },
@@ -88,7 +88,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Stability ramps\n",
+    "## Stability Ramps\n",
     "Aside from a constant ramp, like `Ramp` demonstrated above, ramps are also commonly used to quickly move from a rested state to a constant load. This can help with solver stability over trying to instantaneously pull a load. To build this type of provile, use the `Ramp2Constant` class. Below, we ramp up to a 20 C discharge in one millisecond and then hold the 20 C discharge rate until 3 V."
    ]
   },
@@ -100,10 +100,10 @@
    "source": [
     "dynamic_load = thevenin.loadfns.Ramp2Constant(20*75/1e-3, 20*75)\n",
     "\n",
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', dynamic_load, (180., 0.5), limits=('voltage_V', 3.))\n",
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', dynamic_load, (180., 0.5), limits=('voltage_V', 3.))\n",
     "\n",
-    "soln = model.run(demand)\n",
+    "soln = model.run(expr)\n",
     "soln.plot('time_s', 'current_A')\n",
     "soln.plot('time_s', 'voltage_V')"
    ]
@@ -114,7 +114,7 @@
    "source": [
     "These types of \"stability\" ramps become more and more helpful (or needed) as loads become more demanding. They can also depend on the model's parameter set, i.e., for one set of parameters the model may start crashing at a 5 C discharge whereas another set is stable up to 50 C. \n",
     "\n",
-    "## Comparing to instantaneous loads\n",
+    "## Comparing to Instantaneous Demands\n",
     "The default model parameters, and the Thevenin model in general, is typically fairly stable compared to other higher-fidelity models (e.g., the single particle model or pseudo-2D model). Therefore, here we can also demonstrate that when we run an instantaneous 20 C discharge profile that the results are not significantly impacted. See the figure below that compares the voltage profile above to one obtained without the ramped profile."
    ]
   },
@@ -124,10 +124,10 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', 75*20, (180., 75), limits=('voltage_V', 3.))\n",
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', 75*20, (180., 75), limits=('voltage_V', 3.))\n",
     "\n",
-    "soln2 = model.run(demand)\n",
+    "soln2 = model.run(expr)\n",
     "\n",
     "plt.plot(soln.vars['time_s'], soln.vars['voltage_V'], '-k')\n",
     "plt.plot(soln2.vars['time_s'], soln2.vars['voltage_V'], 'ok', markerfacecolor='none')\n",

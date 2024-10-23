@@ -9,7 +9,7 @@ Thevenin is a Python package designed for running Thevenin equivalent circuit mo
 
 The model allows each of the circuit elements to have functional parameters, i.e., values that depend on the state of the system. Resistance and capacitance values can be expressed in terms of both state of charge and temperature. To calibrate the model to a specific system, it is common to fit each of these values to cell data at different temperatures and states of charge (SOC) and then to use those fits to find algebraic expressions that describe their dependence on SOC and temperature. Alternatively, a parameterized table can also be used for interpolation to provide circuit element parameters after fitting. While this package does not natively include a fitting strategy, the model is fast and can easily be set up with optimization routines. We recommend the `scipy.optimize <https://docs.scipy.org/doc/scipy/reference/optimize.html>`_ package for those looking to take this approach.
 
-Use cases
+Use Cases
 =========
 The thevenin package is particularly useful for battery modeling and simulation, where predicting voltage response to varying loads is crucial. Engineers and researchers can use it to simulate state-of-charge-dependent behavior or investigate the effects of temperature fluctuations on system performance. The package is ideal for designing and testing control algorithms, predicting system performance under dynamic loads, or conducting model-based diagnostics and state estimation in energy storage applications.
 

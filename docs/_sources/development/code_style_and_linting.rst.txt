@@ -1,12 +1,12 @@
-Code style and linting
+Code Style and Linting
 ======================
 Maintaining a consistent code style and adhering to linting rules is crucial for ensuring code quality and readability. This page outlines the guidelines and tools used for code style and linting in our project.
 
-Styling guidelines
+Styling Guidelines
 ------------------
 We adhere to `PEP8 <https://peps.python.org/pep-0008/>`_ with minimal exceptions. Minor adjustments to spacing (around operators, under/over-indentation) are allowed when they improve clarity. We include a ``.flake8`` configuration file in ``.github/linters`` that specifies these exceptions. Developers should configure their IDEs with this file to ensure consistency.
 
-Code formatting
+Code Formatting
 ---------------
 While `black <https://black.readthedocs.io/en/stable/>`_ is a popular auto-formatting package, we do not permit it to be used for this codebase. Although it adheres to the same PEP8 standards that we follow, the ``black`` styling can be a bit more opinionated at times and does not always help improve clarity. For those still looking for auto-formatting, we permit the use of `autopep8 <https://github.com/hhatto/autopep8>`_ is when paired with the ``.flake8`` configuration file found in ``.github/linters``. IDEs supporting ``autopep8`` should be configured accordingly. Developers can also run the formatter manually using::
 
@@ -30,7 +30,7 @@ Documentation
 -------------
 Code should be documented using the `numpydoc <https://numpydoc.readthedocs.io/en/latest/format.html>`_ docstring format. All classes, methods, and functions must have clear docstrings, including hidden methods/functions. Use type hints to specify input and output types. Code should be readable with minimal comments, though particularly complex sections should include additional explanations.
 
-Additional preferences
+Additional Preferences
 ----------------------
 When it comes to string quotation, we have a few specific preferences to maintain consistency across the codebase:
 

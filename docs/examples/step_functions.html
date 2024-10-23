@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>2. Step functions &#8212; thevenin 0.1.0 documentation</title>
+    <title>2. Step Functions &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -317,13 +317,13 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Basic tutorial</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML file inputs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dict_inputs.html">2. Dictionary inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML File Inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dict_inputs.html">2. Dictionary Inputs</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dynamic loads</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ramping.html">1. Ramping</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Step functions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Step Functions</a></li>
 </ul>
 </div>
 </nav></div>
@@ -382,7 +382,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="step-functions">
-<h1><span class="section-number">2. </span>Step functions<a class="headerlink" href="#step-functions" title="Link to this heading">#</a></h1>
+<h1><span class="section-number">2. </span>Step Functions<a class="headerlink" href="#step-functions" title="Link to this heading">#</a></h1>
 <p>In many experimental setups, dynamic loads are applied to simulate realistic operating conditions. Experimental platforms often handle these dynamic loads effectively, interpolating between data points if necessary to create smooth profiles. However, while interpolation is a convenient tool, there are situations where it might not be the best approach for simulating system behavior. Therefore, we also supply helper functions to construct step-based load profiles.</p>
 <section id="why-not-interpolate">
 <h2><span class="section-number">2.1. </span>Why not interpolate?<a class="headerlink" href="#why-not-interpolate" title="Link to this heading">#</a></h2>
@@ -402,7 +402,7 @@ document.write(`
 </ol>
 </section>
 <section id="dynamic-experiments">
-<h2><span class="section-number">2.3. </span>Dynamic experiments<a class="headerlink" href="#dynamic-experiments" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.3. </span>Dynamic Experiments<a class="headerlink" href="#dynamic-experiments" title="Link to this heading">#</a></h2>
 <p>To create dynamic load profiles, especially for more complex experiments, there are many approaches you can take. The <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> class allows users to pass in any Python <code class="docutils literal notranslate"><span class="pre">Callable</span></code> like <code class="docutils literal notranslate"><span class="pre">f(t:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code> to control each step. Therefore, if you have data, you can easily interpolate the data to create a load profile, or you can automate the construction of load steps using a for loop. Below we demonstrate both approaches.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -418,10 +418,10 @@ document.write(`
 <span class="linenos">10</span><span class="c1"># Interpolating the data</span>
 <span class="linenos">11</span><span class="n">interp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">)</span>
 <span class="linenos">12</span>
-<span class="linenos">13</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
-<span class="linenos">14</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">13</span><span class="n">expr</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">(</span><span class="n">max_dt</span><span class="o">=</span><span class="mf">60.</span><span class="p">)</span>
+<span class="linenos">14</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
 <span class="linenos">15</span>
-<span class="linenos">16</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
+<span class="linenos">16</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
 <span class="linenos">17</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
 <span class="linenos">18</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
 </pre></div>
@@ -431,8 +431,8 @@ document.write(`
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[thevenin UserWarning]: Using the default parameter file &#39;params.yaml&#39;.
 </pre></div>
 </div>
-<img alt="../_images/0e1ac83fa495aaf6166e3c42ffe52b67a80feb137b63b30cf10a104b4ea00dc3.png" src="../_images/0e1ac83fa495aaf6166e3c42ffe52b67a80feb137b63b30cf10a104b4ea00dc3.png" />
-<img alt="../_images/6e8bb01372ee244a66128a702d9178f02f560b0f69ae348160eedafc71e231f3.png" src="../_images/6e8bb01372ee244a66128a702d9178f02f560b0f69ae348160eedafc71e231f3.png" />
+<img alt="../_images/263f6c968931a73d6ef666a726975503ac36ddb568acd9ed226ad2f8679a0742.png" src="../_images/263f6c968931a73d6ef666a726975503ac36ddb568acd9ed226ad2f8679a0742.png" />
+<img alt="../_images/65618489ca9a793c0652c40fd47d75f2d8f184fbaeff9c9139dec25fcce7d36b.png" src="../_images/65618489ca9a793c0652c40fd47d75f2d8f184fbaeff9c9139dec25fcce7d36b.png" />
 </div>
 </div>
 <p>In the script above, the data represents hour-by-hour constant-current loads, which might represent some stationary storage system. Since the current is constant across each hour, interpolating between points poorly approximates the actual system behavior. However, interpolation might be more relevant for other dynamic systems like electric vehicles, where data is resolved on shorter timescales, such as seconds.</p>
@@ -440,80 +440,50 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Looping over constant steps</span>
-<span class="linenos">2</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">2</span><span class="n">expr</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">(</span><span class="n">max_dt</span><span class="o">=</span><span class="mf">60.</span><span class="p">)</span>
 <span class="linenos">3</span><span class="k">for</span> <span class="n">amps</span> <span class="ow">in</span> <span class="n">current_A</span><span class="p">:</span>
-<span class="linenos">4</span>    <span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">4</span>    <span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
 <span class="linenos">5</span>
-<span class="linenos">6</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
+<span class="linenos">6</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
 <span class="linenos">7</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
 <span class="linenos">8</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5e3f2af20ecd1cc65e59efa847be883aae3634cacf3ba80649702c11ba235731.png" src="../_images/5e3f2af20ecd1cc65e59efa847be883aae3634cacf3ba80649702c11ba235731.png" />
-<img alt="../_images/6f6d61c2e2a9e61bde545b17612082e336dbf12657fed44464f81392ef08bcd3.png" src="../_images/6f6d61c2e2a9e61bde545b17612082e336dbf12657fed44464f81392ef08bcd3.png" />
+<img alt="../_images/bf45c11afc81258b0d781083c888d4320c194d7c24e20e3cda1174cf5dad03e0.png" src="../_images/bf45c11afc81258b0d781083c888d4320c194d7c24e20e3cda1174cf5dad03e0.png" />
+<img alt="../_images/c030f270f93e1a2e60568ccbb0d223ac0ebff179873593a43800af123871440a.png" src="../_images/c030f270f93e1a2e60568ccbb0d223ac0ebff179873593a43800af123871440a.png" />
 </div>
 </div>
 <p>This loop-based method significantly improves the accuracy of the results in this case. You can see how different the two voltage profiles are when the load profile is applied correctly, instead of using interpolation. This loop-based approach offers the most flexibility and is recommended when users need precise control over each step. For example, using the <code class="docutils literal notranslate"><span class="pre">add_step</span></code> method allows you to add different limits to each step, which can be incorporated into the loop. This level of control is not always possible with other methods.</p>
 </section>
-<section id="instantaneous-load-steps">
-<h2><span class="section-number">2.4. </span>Instantaneous load steps<a class="headerlink" href="#instantaneous-load-steps" title="Link to this heading">#</a></h2>
-<p>For scenarios involving abrupt changes in load, the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> class can also be useful. It allows users to define a series of instantaneous steps at specific time points, simulating conditions where the load jumps suddenly between levels. However, depending on your model’s parameters, using this class can sometimes lead to instabilities that are not present with the loop-based approach described above.</p>
-<p>In the example below, we use the same time and current data to create a <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> instance. You’ll see that the model crashes after the second step, which is due to the stiff nature of the instantaneous load changes. The loop-based approach avoids this by recalculating and correcting initial conditions at the start of each step. In contrast, the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> method applies the entire load profile as a single experimental load, meaning the model can only correct the initial conditions once, at the beginning of the simulation.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Automatted instantaneous steps</span>
-<span class="linenos"> 2</span><span class="n">dynamic_load</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">StepFunction</span><span class="p">(</span><span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">)</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
-<span class="linenos"> 5</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">dynamic_load</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
-<span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
-<span class="linenos"> 8</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">soln</span><span class="o">.</span><span class="n">success</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="linenos"> 9</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
-<span class="linenos">10</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>soln.success=[False]
-</pre></div>
-</div>
-<img alt="../_images/92a4ae3ce66c5787a093e68727ab74ca41566ea2b8988989bc9e1587d73270c4.png" src="../_images/92a4ae3ce66c5787a093e68727ab74ca41566ea2b8988989bc9e1587d73270c4.png" />
-<img alt="../_images/a1c914a09baf612351952bef7dab8607f206e4878de799a68b08abcc88b54752.png" src="../_images/a1c914a09baf612351952bef7dab8607f206e4878de799a68b08abcc88b54752.png" />
-</div>
-</div>
-<p>Aside from causing crashes, this approach is also less flexible in terms of setting limits or adjusting solver settings, as the entire profile is handled as a single experimental step rather than multiple, individual ones. Due to occasional crashes and reduced flexibility, we don’t generally recommend the <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> class, though it’s included in the module for completeness. Instead, for instantaneous steps, we suggest using the loop-based approach, even if it requires writing a few more lines of code.</p>
-<p>Alternatively, when a true instantaneous step can be avoided and approximated with a rapid ramp between steps, we offer the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class. This option is simple, quick to use, and provides improved stability compared to <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code>.</p>
-</section>
-<section id="ramped-load-transitions">
-<h2><span class="section-number">2.5. </span>Ramped load transitions<a class="headerlink" href="#ramped-load-transitions" title="Link to this heading">#</a></h2>
+<section id="ramped-transitions">
+<h2><span class="section-number">2.4. </span>Ramped Transitions<a class="headerlink" href="#ramped-transitions" title="Link to this heading">#</a></h2>
 <p>Unlike <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code>, the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class introduces “smooth” transitions between load steps by ramping up or down over a specified time period. This method is especially useful when dealing with stiff systems, where abrupt changes might otherwise cause solver instability. Below we demonstrate this using the same hour-by-hour profile from above. We set the ramp between steps to be just one millisecond so that the transitions are still quick and approximate an instantaneous change. In this case, the added ramps improve the stability and the full simulation is run, as shown in the figure. Overall, the results are nearly identical to the loop-based approach since the ramps are set to occur over such a small time scale. In particular, the main difference is shown in the current profile, where you can briefly see the first ramp (starting from zero current at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Stabilize the solver with ramped steps</span>
-<span class="linenos">2</span><span class="n">dynamic_load</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">RampedSteps</span><span class="p">(</span><span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<span class="linenos">2</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">loadfns</span><span class="o">.</span><span class="n">RampedSteps</span><span class="p">(</span><span class="n">time_s</span><span class="p">,</span> <span class="n">current_A</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 <span class="linenos">3</span>
-<span class="linenos">4</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
-<span class="linenos">5</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">dynamic_load</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="linenos">4</span><span class="n">expr</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">(</span><span class="n">max_dt</span><span class="o">=</span><span class="mf">60.</span><span class="p">)</span>
+<span class="linenos">5</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="n">demand</span><span class="p">,</span> <span class="p">(</span><span class="mi">3600</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
 <span class="linenos">6</span>
-<span class="linenos">7</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
+<span class="linenos">7</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
 <span class="linenos">8</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;current_A&#39;</span><span class="p">)</span>
 <span class="linenos">9</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7c8f57f652261b4bf928ccf71909dbf3c0315193407a671f723e581b531ebbfe.png" src="../_images/7c8f57f652261b4bf928ccf71909dbf3c0315193407a671f723e581b531ebbfe.png" />
-<img alt="../_images/de5e972375fe7cd173b51f678e6e3618ea3e5dccef27d7d271e594eac2d6adec.png" src="../_images/de5e972375fe7cd173b51f678e6e3618ea3e5dccef27d7d271e594eac2d6adec.png" />
+<img alt="../_images/cdad20abfcc24fbd4cf28786828a3603ff6d4ead6bcb3bc0c18f0b042b8295c2.png" src="../_images/cdad20abfcc24fbd4cf28786828a3603ff6d4ead6bcb3bc0c18f0b042b8295c2.png" />
+<img alt="../_images/54f31f2b3c189fb3cb30c66acd387c49dcc73f776030b9693e7f66724396a1ec.png" src="../_images/54f31f2b3c189fb3cb30c66acd387c49dcc73f776030b9693e7f66724396a1ec.png" />
 </div>
 </div>
 <p>While the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class improves solver stability, it still lacks flexibility for setting limits on each individual step. For instance, you could apply limits to stop the simulation if the voltage goes outside a specific window (e.g., [3, 4.2]), but this would simply end the entire simulation prematurely. In most cases, you wouldn’t want to stop the simulation completely but instead transition to the next step early. To achieve this behavior, you would need to use loops, or alternatively, set up multiple instances of the <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> class if you want to transition between groups of steps based on specific limits rather than between individual steps.</p>
 <p>In general, if maximum flexibility is needed, more manual setup is required for multi-step experiments. However, if you can work within the limitations of <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code>, it is a powerful tool for quickly constructing step-like profiles while maintaining some degree of stability.</p>
 </section>
 <section id="conclusion">
-<h2><span class="section-number">2.6. </span>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.5. </span>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
 <p>In this tutorial, we explored various methods for constructing dynamic load profiles using Thevenin’s <code class="docutils literal notranslate"><span class="pre">StepFunction</span></code> and <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> classes. We’ve shown how both instantaneous steps and ramps between steps can be modeled and discussed the trade-offs between flexibility, stability, and ease of use. While loop-based approaches offer the greatest control, <code class="docutils literal notranslate"><span class="pre">RampedSteps</span></code> provides a simple and effective way to ensure stability in simulations, making it a valuable option for many users. Ultimately, the best method depends on the complexity of the load profile you need and the requirements of your specific experiment or model.</p>
 </section>
 </section>
@@ -542,10 +512,9 @@ document.write(`
     <ul class="nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-not-interpolate">2.1. Why not interpolate?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">2.2. Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-experiments">2.3. Dynamic experiments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instantaneous-load-steps">2.4. Instantaneous load steps</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramped-load-transitions">2.5. Ramped load transitions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">2.6. Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-experiments">2.3. Dynamic Experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramped-transitions">2.4. Ramped Transitions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">2.5. Conclusion</a></li>
 </ul>
   </nav></div>
 

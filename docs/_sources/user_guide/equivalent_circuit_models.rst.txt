@@ -1,4 +1,4 @@
-Equivalent circuit models
+Equivalent Circuit Models
 =========================
 Equivalent circuit models (ECMs) are a class of simplified mathematical models used to represent the dynamic behavior of electrochemical devices, such as batteries, supercapacitors, and fuel cells. These models approximate the system's behavior using a combination of resistors, capacitors, and sometimes inductors, rather than attempting to model the underlying physics in detail. By abstracting the system into a circuit, ECMs provide a balance between model accuracy and computational efficiency, making them an attractive choice for many real-time applications such as state estimation, control, and diagnostics.
 

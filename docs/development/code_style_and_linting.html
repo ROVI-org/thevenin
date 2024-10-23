@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Code style and linting &#8212; thevenin 0.1.0 documentation</title>
+    <title>Code Style and Linting &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tests and coverage" href="tests_and_coverage.html" />
-    <link rel="prev" title="Version control" href="version_control.html" />
+    <link rel="next" title="Tests and Coverage" href="tests_and_coverage.html" />
+    <link rel="prev" title="Version Control" href="version_control.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -317,22 +317,22 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Before you contribute</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
-<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues_and_features.html">Issues and Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_environments.html">Development Environments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code structure</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_layout.html">Project Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patterns_and_conventions.html">Patterns and Conventions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version control</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Code style and linting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and coverage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_control.html">Version Control</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Code Style and Linting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests_and_coverage.html">Tests and Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="review_process.html">Review Process</a></li>
 </ul>
 </div>
 </nav></div>
@@ -373,7 +373,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Development</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Code style...</li>
+    <li class="breadcrumb-item active" aria-current="page">Code Style...</li>
   </ul>
 </nav>
 </div>
@@ -391,14 +391,14 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="code-style-and-linting">
-<h1>Code style and linting<a class="headerlink" href="#code-style-and-linting" title="Link to this heading">#</a></h1>
+<h1>Code Style and Linting<a class="headerlink" href="#code-style-and-linting" title="Link to this heading">#</a></h1>
 <p>Maintaining a consistent code style and adhering to linting rules is crucial for ensuring code quality and readability. This page outlines the guidelines and tools used for code style and linting in our project.</p>
 <section id="styling-guidelines">
-<h2>Styling guidelines<a class="headerlink" href="#styling-guidelines" title="Link to this heading">#</a></h2>
+<h2>Styling Guidelines<a class="headerlink" href="#styling-guidelines" title="Link to this heading">#</a></h2>
 <p>We adhere to <a class="reference external" href="https://peps.python.org/pep-0008/">PEP8</a> with minimal exceptions. Minor adjustments to spacing (around operators, under/over-indentation) are allowed when they improve clarity. We include a <code class="docutils literal notranslate"><span class="pre">.flake8</span></code> configuration file in <code class="docutils literal notranslate"><span class="pre">.github/linters</span></code> that specifies these exceptions. Developers should configure their IDEs with this file to ensure consistency.</p>
 </section>
 <section id="code-formatting">
-<h2>Code formatting<a class="headerlink" href="#code-formatting" title="Link to this heading">#</a></h2>
+<h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Link to this heading">#</a></h2>
 <p>While <a class="reference external" href="https://black.readthedocs.io/en/stable/">black</a> is a popular auto-formatting package, we do not permit it to be used for this codebase. Although it adheres to the same PEP8 standards that we follow, the <code class="docutils literal notranslate"><span class="pre">black</span></code> styling can be a bit more opinionated at times and does not always help improve clarity. For those still looking for auto-formatting, we permit the use of <a class="reference external" href="https://github.com/hhatto/autopep8">autopep8</a> is when paired with the <code class="docutils literal notranslate"><span class="pre">.flake8</span></code> configuration file found in <code class="docutils literal notranslate"><span class="pre">.github/linters</span></code>. IDEs supporting <code class="docutils literal notranslate"><span class="pre">autopep8</span></code> should be configured accordingly. Developers can also run the formatter manually using:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nox -s linter -- format</span>
 </pre></div>
@@ -422,7 +422,7 @@ document.write(`
 <p>Code should be documented using the <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">numpydoc</a> docstring format. All classes, methods, and functions must have clear docstrings, including hidden methods/functions. Use type hints to specify input and output types. Code should be readable with minimal comments, though particularly complex sections should include additional explanations.</p>
 </section>
 <section id="additional-preferences">
-<h2>Additional preferences<a class="headerlink" href="#additional-preferences" title="Link to this heading">#</a></h2>
+<h2>Additional Preferences<a class="headerlink" href="#additional-preferences" title="Link to this heading">#</a></h2>
 <p>When it comes to string quotation, we have a few specific preferences to maintain consistency across the codebase:</p>
 <ul>
 <li><p><strong>Single quotes:</strong></p>
@@ -472,11 +472,11 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#styling-guidelines">Styling guidelines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-formatting">Code formatting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#styling-guidelines">Styling Guidelines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-formatting">Code Formatting</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enforcement">Enforcement</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-preferences">Additional preferences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-preferences">Additional Preferences</a></li>
 </ul>
   </nav></div>
 

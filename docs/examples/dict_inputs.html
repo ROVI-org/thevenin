@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>2. Dictionary inputs &#8212; thevenin 0.1.0 documentation</title>
+    <title>2. Dictionary Inputs &#8212; thevenin 0.1.1 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="1. Ramping" href="ramping.html" />
-    <link rel="prev" title="1. YAML file inputs" href="yaml_inputs.html" />
+    <link rel="prev" title="1. YAML File Inputs" href="yaml_inputs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +130,8 @@
     
     
     
-    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/dark.png" class="logo__image only-dark" alt="thevenin 0.1.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/light.png" class="logo__image only-light" alt="thevenin 0.1.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -317,13 +317,13 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Basic tutorial</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML file inputs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Dictionary inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yaml_inputs.html">1. YAML File Inputs</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Dictionary Inputs</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dynamic loads</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ramping.html">1. Ramping</a></li>
-<li class="toctree-l1"><a class="reference internal" href="step_functions.html">2. Step functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="step_functions.html">2. Step Functions</a></li>
 </ul>
 </div>
 </nav></div>
@@ -382,10 +382,10 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="dictionary-inputs">
-<h1><span class="section-number">2. </span>Dictionary inputs<a class="headerlink" href="#dictionary-inputs" title="Link to this heading">#</a></h1>
+<h1><span class="section-number">2. </span>Dictionary Inputs<a class="headerlink" href="#dictionary-inputs" title="Link to this heading">#</a></h1>
 <p>In the previous example, the model parameters were built from a ‘.yaml’ file. In some cases, the functional parameters are relatively complex and can be challenging to specify in the ‘.yaml’ format. Therefore, the model can also be constructed using a dictionary, as demonstrated below.</p>
 <section id="import-modules">
-<h2><span class="section-number">2.1. </span>Import modules<a class="headerlink" href="#import-modules" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.1. </span>Import Modules<a class="headerlink" href="#import-modules" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">import</span> <span class="nn">thevenin</span>
@@ -396,7 +396,7 @@ document.write(`
 </div>
 </section>
 <section id="define-the-parameters">
-<h2><span class="section-number">2.2. </span>Define the parameters<a class="headerlink" href="#define-the-parameters" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.2. </span>Define the Parameters<a class="headerlink" href="#define-the-parameters" title="Link to this heading">#</a></h2>
 <p>In addition to the open circuit voltage (<code class="docutils literal notranslate"><span class="pre">ocv</span></code>), all circuit elements (i.e., <code class="docutils literal notranslate"><span class="pre">R0</span></code>, <code class="docutils literal notranslate"><span class="pre">R1</span></code>, <code class="docutils literal notranslate"><span class="pre">C1</span></code>, etc.) must be specified as functions. While <code class="docutils literal notranslate"><span class="pre">OCV</span></code> is only a function of the state of charge (<code class="docutils literal notranslate"><span class="pre">soc</span></code>, -), the circuit elements are function of both soc and temperature (<code class="docutils literal notranslate"><span class="pre">T_cell</span></code>, K). It is important that these are the only inputs to the functions and that the inputs are given in the correct order.</p>
 <p>The functions below come from fitting the equivalent circuit model to a 75 Ah graphite-NMC battery made by Kokam. Fits were performed using charge and discharge pulses from HPPC tests done at multiple temperatures. The <code class="docutils literal notranslate"><span class="pre">soc</span></code> was assumed constant during a single pulse and each resistor and capacitor element was fit as a constant for a given soc/temperature condition. Expressions below come from AI-Batt, which is an open-source software capable of semi-autonomously identifying algebraic expressions that map inputs (<code class="docutils literal notranslate"><span class="pre">soc</span></code> and <code class="docutils literal notranslate"><span class="pre">T_cell</span></code>) to outputs (<code class="docutils literal notranslate"><span class="pre">R0</span></code>, <code class="docutils literal notranslate"><span class="pre">R1</span></code>, <code class="docutils literal notranslate"><span class="pre">C1</span></code>).</p>
 <div class="cell docutils container">
@@ -485,7 +485,7 @@ document.write(`
 </div>
 </section>
 <section id="construct-a-model">
-<h2><span class="section-number">2.3. </span>Construct a model<a class="headerlink" href="#construct-a-model" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.3. </span>Construct a Model<a class="headerlink" href="#construct-a-model" title="Link to this heading">#</a></h2>
 <p>The model is constructed below using all necessary keyword arguments. You can see a list of these parameters using <code class="docutils literal notranslate"><span class="pre">help(thevenin.Model)</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -512,28 +512,28 @@ document.write(`
 </div>
 </section>
 <section id="build-an-experiment">
-<h2><span class="section-number">2.4. </span>Build an experiment<a class="headerlink" href="#build-an-experiment" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.4. </span>Build an Experiment<a class="headerlink" href="#build-an-experiment" title="Link to this heading">#</a></h2>
 <p>Experiments are built using the <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> class. An experiment starts out empty and is then constructed by adding a series of current-, voltage-, or power-controlled steps. Each step requires knowing the control mode/units, the control value, a relative time span, and limiting criteria (optional). Control values can be specified as either constants or dynamic profiles with sinatures like <code class="docutils literal notranslate"><span class="pre">f(t:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code> where <code class="docutils literal notranslate"><span class="pre">t</span></code> is the relative time of the new step, in seconds. The experiment below discharges at a nominal C/5 rate for up to 5 hours. A limit is set such that if the voltage hits 3 V then the next step is triggered early. Afterward, the battery rests for 10 min before charging at C/5 for 5 hours or until 4.2 V is reached. The final step is a 1 hour voltage hold at 4.2 V.</p>
 <p>Note that the time span for each step is constructed as <code class="docutils literal notranslate"><span class="pre">(t_max:</span> <span class="pre">float,</span> <span class="pre">dt:</span> <span class="pre">float)</span></code> which is used to determine the time array as <code class="docutils literal notranslate"><span class="pre">tspan</span> <span class="pre">=</span> <span class="pre">np.arange(0.,</span> <span class="pre">t_max</span> <span class="pre">+</span> <span class="pre">dt,</span> <span class="pre">dt)</span></code>. You can also construct a time array given <code class="docutils literal notranslate"><span class="pre">(t_max:</span> <span class="pre">float,</span> <span class="pre">Nt:</span> <span class="pre">int)</span></code> by using an integer instead of a float in the second position. In this case, <code class="docutils literal notranslate"><span class="pre">tspan</span> <span class="pre">=</span> <span class="pre">np.linspace(0.,</span> <span class="pre">t_max,</span> <span class="pre">Nt)</span></code>. To learn more about building an experiment, including which limits are allowed and/or how to adjust solver settings on a per-step basis, see the documentation <code class="docutils literal notranslate"><span class="pre">help(thevenin.Experiment)</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">demand</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
-<span class="linenos">2</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
-<span class="linenos">3</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">))</span>
-<span class="linenos">4</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.</span><span class="p">,</span> <span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
-<span class="linenos">5</span><span class="n">demand</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="p">(</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">expr</span> <span class="o">=</span> <span class="n">thevenin</span><span class="o">.</span><span class="n">Experiment</span><span class="p">()</span>
+<span class="linenos">2</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">))</span>
+<span class="linenos">3</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">))</span>
+<span class="linenos">4</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;current_A&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.</span><span class="p">,</span> <span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="linenos">5</span><span class="n">expr</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="s1">&#39;voltage_V&#39;</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="p">(</span><span class="mf">3600.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="run-the-experiment">
-<h2><span class="section-number">2.5. </span>Run the experiment<a class="headerlink" href="#run-the-experiment" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.5. </span>Run the Experiment<a class="headerlink" href="#run-the-experiment" title="Link to this heading">#</a></h2>
 <p>Experiments are run using either the <code class="docutils literal notranslate"><span class="pre">run</span></code> method, as shown below, or the <code class="docutils literal notranslate"><span class="pre">run_step</span></code> method. The difference between the two is that the <code class="docutils literal notranslate"><span class="pre">run</span></code> method will run all experiment steps with one call. If you would prefer to run the discharge first, perform an analysis, and then run the rest, etc. then you will want to use the <code class="docutils literal notranslate"><span class="pre">run_step</span></code> method. In this case, you should always start with step 0 and then run the following steps in order. When you use <code class="docutils literal notranslate"><span class="pre">run_step</span></code> the models internal state is saved at the end of each step. Therefore, after all steps have been run, you should run the <code class="docutils literal notranslate"><span class="pre">pre</span></code> method to pre-process the model back to its original initial state. All of this is handled automatically in the <code class="docutils literal notranslate"><span class="pre">run</span></code> method.</p>
 <p>Regardless of how you run your experiment, the return value will be a solution instance. Solution instances each contain a <code class="docutils literal notranslate"><span class="pre">vars</span></code> attribute which contains a dictionary of the output variables. Keys are generally self descriptive and include units where applicable. To quickly plot any two variables against one another, use the <code class="docutils literal notranslate"><span class="pre">plot</span></code> method with the two keys of interest specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> variables of the figure. Below, time (in hours) is plotted against voltage.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
 <span class="linenos">2</span><span class="n">soln</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;time_h&#39;</span><span class="p">,</span> <span class="s1">&#39;voltage_V&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -567,11 +567,11 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-modules">2.1. Import modules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-parameters">2.2. Define the parameters</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#construct-a-model">2.3. Construct a model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-an-experiment">2.4. Build an experiment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-experiment">2.5. Run the experiment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-modules">2.1. Import Modules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-parameters">2.2. Define the Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#construct-a-model">2.3. Construct a Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-an-experiment">2.4. Build an Experiment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-experiment">2.5. Run the Experiment</a></li>
 </ul>
   </nav></div>
 

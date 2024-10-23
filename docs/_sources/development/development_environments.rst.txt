@@ -1,4 +1,4 @@
-Development environments
+Development Environments
 ========================
 This guide will walk you through setting up a local development environment for contributing to Thevenin. It covers recommended practices, tools, and commands for developers to efficiently build, test, and contribute to the project.
 
@@ -36,7 +36,7 @@ This guide will walk you through setting up a local development environment for 
         nox -s linter [-- format]
         nox -s codespell [-- write]
     
-    The optional ``format`` and ``write`` arguments will attempt to format the code and correct misspellings, respectively. For more information on linting and code style, make sure you reference the :doc:`code styling and linting <code_styling>` section.
+    The optional ``format`` and ``write`` arguments will attempt to format the code and correct misspellings, respectively. For more information on linting and code style, make sure you reference the :doc:`code_style_and_linting` section.
 
 6. Building documentation
     We use `sphinx <https://www.sphinx-doc.org/en/master/>`_ to build documentation by scraping docstrings. Before you start modifying the code base, make sure the documentation builds locally::
@@ -45,4 +45,4 @@ This guide will walk you through setting up a local development environment for 
 
     You can see the local documentation build in your browser by opening the ``index.html`` file from the ``sphinx/build/`` folder.
 
-Now that you're all setup with a development version of Thevenin and have tested the codebase using the ``nox`` integration, be sure to follow the :doc:`version control <version_control>` workflow as you contribute. Happy coding!
+Now that you're all setup with a development version of Thevenin and have tested the codebase using the ``nox`` integration, be sure to follow the :doc:`version_control` workflow as you contribute. Happy coding!

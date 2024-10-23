@@ -13,7 +13,7 @@
     "\n",
     "Each of these classes exist at the base package level so they are easily accessible. In this tutorial you will be introduced to each of class through a minimal example. The example will demonstrate a typical workflow for constructing a model, defining an experiment, and interacting with the solution.\n",
     "\n",
-    "## Construct a model\n",
+    "## Construct a Model\n",
     "The model class is constructed by providing options and parameters that define your circuit. The input can be given as either a dictionary or using a `.yaml` file. If you do not give an input, we include a default parameters file for you to get started. However, it is important that you understand this file and/or its dictionary equivalent so you can modify parameter definitions as necessary later. For more information about constructing model inputs, see the {ref}`examples <examples>` section.\n",
     "\n",
     "Here, we will start by simply using the default parameters. A warning will print when the default parameters are accessed, but we can ignore it. After initialization, the class can be printed to check all of the constant options/parameters. The model also contains functional parameters, i.e., properties that change as a function of state of charge (soc) and/or temperature. These values are difficult to represent in the printed output so they are not displayed."
@@ -21,7 +21,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [
     {
@@ -39,15 +39,6 @@
       "\th_therm=12.0,\n",
       "\tA_therm=1.0,\n",
       ")\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "\n",
-      "[thevenin UserWarning]: Using the default parameter file 'params.yaml'.\n",
-      "\n"
      ]
     }
    ],
@@ -79,7 +70,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Define an experiment\n",
+    "## Define an Experiment\n",
     "The model has two methods, `run()` and `run_step()` that correspond to the steps of the `Experiment` class. Similar to how a typical battery cycler would be programmed, an experiment is built by defining a series of sequential steps. Each step has its own mode (current, voltage, or power), value, time span, and limiting criteria.\n",
     "\n",
     "While we will not cover solver options in this tutorial, you should know that these options exist and are controlled through the `Experiment` class. Options that should be consistent throughout all steps should be set with keyword arguments when the class instance is created. You can also modify solver options at the per-step level (e.g., tighter tolerances) if needed. For more information, see the full documentation.\n",
@@ -93,9 +84,9 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "demand = thevenin.Experiment()\n",
-    "demand.add_step('current_A', 75., (4000., 60.), limits=('voltage_V', 3.))\n",
-    "demand.add_step('current_A', 0., (600., 60.))"
+    "expr = thevenin.Experiment()\n",
+    "expr.add_step('current_A', 75., (4000., 60.), limits=('voltage_V', 3.))\n",
+    "expr.add_step('current_A', 0., (600., 60.))"
    ]
   },
   {
@@ -109,7 +100,7 @@
     "1. The `tspan` input (third argument) uses 4000 seconds in the first step even though the current is chosen such that the battery should dischange within an hour. When `limits` is used within a step, and you want to guarantee the limit is actually reached, you will want to pick a time beyond when you expect the limiting event to occur.\n",
     "2. The value `60.` in the second position of the `tspan` argument contains a trailing decimal on purpose. When the decimal is present, Python interprets this as a float rather than an integer. The time step behavior is sensitive to this. When a float is passed, the solution is saved in intervals of this value (here, every 60 seconds). If an integer is passed instead, the full timespan is split into that number of times. In otherwords, `dt = tspan[0] / (tspan[1] - 1)`. We recommend always use floats for steps that have limits.\n",
     "\n",
-    "## Run the simulation\n",
+    "## Run the Simulation\n",
     "As mentioned above, the model contains two methods to run an experiment. You can either run the entire series of experiment steps by calling `run()`, or you can run one step at a time by calling `run_step()`. The most important difference between the two is that the model's internal state is changed and saved at the end of each step when using `run_step()` so that it is ready for the following step. Therefore, steps should only ever be run in sequential order, and steps between multiple experiments should not be mixed. For example, to run the above two steps one at a time, run the following code."
    ]
   },
@@ -119,8 +110,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "soln_0 = model.run_step(demand, 0)\n",
-    "soln_1 = model.run_step(demand, 1)"
+    "soln_0 = model.run_step(expr, 0)\n",
+    "soln_1 = model.run_step(expr, 1)"
    ]
   },
   {
@@ -140,14 +131,14 @@
    "source": [
     "model.pre()\n",
     "\n",
-    "soln = model.run(demand)"
+    "soln = model.run(expr)"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Interact with the solution\n",
+    "## Interacting with Solutions\n",
     "Simulation outputs will give one of two solution objects depending on your run mode. A `StepSolution` is returned when you run step by step and a `CycleSolution` is returned when using `run()`. The latter simply stitches together the individual step solutions. Each solution object has numerous attributes to inform the user whether or not their simulation was successful, how long the integrator took, etc. For `CycleSolution` instances, most of these values are lists where each index corresponds to experimental steps with the same indices. For example, below we see that both steps were successful and the total integration time."
    ]
   },
