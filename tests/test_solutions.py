@@ -13,11 +13,11 @@ def soln():
 
     model = thevenin.Model()
 
-    demand = thevenin.Experiment()
-    demand.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
-    demand.add_step('current_A', 0., (3600., 1.))
+    expr = thevenin.Experiment()
+    expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
+    expr.add_step('current_A', 0., (3600., 1.))
 
-    soln = model.run(demand)
+    soln = model.run(expr)
 
     return soln
 
