@@ -13,8 +13,8 @@
 [ci-b]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml/badge.svg
 [ci-l]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml
 
-[test-b]: https://raw.githubusercontent.com/ROVI-org/thevenin/1f2d5c206f2656163823352cbbf4459c4cb327ec/images/tests.svg
-[cov-b]: https://raw.githubusercontent.com/ROVI-org/thevenin/1f2d5c206f2656163823352cbbf4459c4cb327ec/images/coverage.svg
+[test-b]: https://github.com/ROVI-org/thevenin/blob/main/images/tests.svg?raw=true
+[cov-b]: https://github.com/ROVI-org/thevenin/blob/main/images/coverage.svg?raw=true
 
 [pep-b]: https://img.shields.io/badge/code%20style-pep8-orange.svg
 [pep-l]: https://www.python.org/dev/peps/pep-0008
