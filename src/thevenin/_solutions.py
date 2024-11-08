@@ -45,11 +45,11 @@ class BaseSolution(IDAResult):
 
             indent = ' '*indent
 
-            text = ", ".join(f"'{v}'" for v in value)
+            text = "[" + ", ".join(f"{v!r}" for v in value) + "]"
 
             return textwrap.fill(text, width=width, subsequent_indent=indent)
 
-        vars = wrap_string(self.vars.keys(), 70, len('    vars: '))
+        vars = wrap_string(self.vars.keys(), 70, len('    vars=['))
 
         data = {
             'solvetime': self.solvetime,
@@ -60,7 +60,7 @@ class BaseSolution(IDAResult):
             'vars': vars,
         }
 
-        summary = "\n\t".join(f"{k}: {v}," for k, v in data.items())
+        summary = "\n\t".join(f"{k}={v}," for k, v in data.items())
 
         readable = f"{self.__class__.__name__}(\n\t{summary}\n)"
 

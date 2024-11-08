@@ -65,10 +65,10 @@ def run_spellcheck(session):
 
     if 'write' in session.posargs:
         command.append('-w')
-
+        
     run_codespell(session)
 
-    session.run(*command, 'sphinx/source')
+    session.run(*command, 'docs/source')
 
 
 @nox.session(name='tests', python=False)
@@ -142,7 +142,7 @@ def run_sphinx(session):
 
     run_spellcheck(session)
 
-    session.run('sphinx-build', 'sphinx/source', 'sphinx/build')
+    session.run('sphinx-build', 'docs/source', 'docs/build')
 
 
 @nox.session(name='pre-commit', python=False)
@@ -150,8 +150,8 @@ def run_pre_commit(session):
     """
     Run all linters/tests and make new badges
 
-    Order of sessions: flake8, codespell, pytest, genbade. Using 'write' for
-    codespell and/or 'parallel' for pytest is permitted.
+    Order of sessions: flake8, codespell, pytest, genbade. Using 'format' for
+    linter, 'write' for codespell, and/or 'parallel' for pytest is permitted.
 
     """
 
