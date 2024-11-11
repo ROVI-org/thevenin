@@ -1,14 +1,27 @@
 # thevenin Changelog
 
-## [Version 0.1.1]()
+## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
 
 ### Optimizations
-* Add `options` to the `Experiment.print_steps()` report. This makes it easier to check solver options for each step.
 
 ### Bug Fixes
-* Make the final value of `tspan` always match `t_max`. In cases where `dt` is used to construct the time array, the final `dt` may differ from the one given. Fixes [Issue #10](https://github.com/ROVI-org/thevenin/issues/10).
 
 ### Breaking Changes
-* Drop support for Python 3.8 which reached end of support as of October 2024.
+
+## [v1.0.0](https://github.com/NREL/thevenin/tree/v1.0.0)
+This is the first official release of `thevenin`. Main features/capabilities are listed below.
+
+### Features
+- Support for any number of RC pairs
+- Run constant or dynamic loads with current, voltage, or power control
+- Parameters have temperature and state of charge dependence
+- Experiment limits to trigger switching between steps
+- Multi-limit support (end at voltage, time, etc. - whichever occurs first)
+
+### Notes
+- Implemented `pytest` with full package coverage
+- Source/binary distributions available on [PyPI](https://pypi.org/project/thevenin)
+- Documentation available on [Read the Docs](https://thevenin.readthedocs.io/)
+

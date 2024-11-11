@@ -319,7 +319,7 @@ def test_custom_format():
     original = warnings.formatwarning(*args).strip()
 
     # custom format works
-    assert custom == "[thevenin Warning]: This is a test warning."
+    assert custom == "[thevenin Warning] This is a test warning."
 
     # warnings from warnings.warn not impacted by custom format
-    assert original != "[thevenin Warning]: This is a test warning."
+    assert original != "[thevenin Warning] This is a test warning."

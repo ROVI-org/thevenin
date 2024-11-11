@@ -65,7 +65,7 @@ def run_spellcheck(session):
 
     if 'write' in session.posargs:
         command.append('-w')
-        
+
     run_codespell(session)
 
     session.run(*command, 'docs/source')
@@ -132,7 +132,7 @@ def run_sphinx(session):
     """
 
     if 'clean' in session.posargs:
-        os.chdir('sphinx')
+        os.chdir('docs')
         session.run('make', 'clean')
 
         if os.path.exists('source/api'):

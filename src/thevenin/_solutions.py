@@ -60,9 +60,9 @@ class BaseSolution(IDAResult):
             'vars': vars,
         }
 
-        summary = "\n\t".join(f"{k}={v}," for k, v in data.items())
+        summary = "\n    ".join(f"{k}={v}," for k, v in data.items())
 
-        readable = f"{self.__class__.__name__}(\n\t{summary}\n)"
+        readable = f"{self.__class__.__name__}(\n    {summary}\n)"
 
         return readable
 
@@ -101,7 +101,7 @@ class BaseSolution(IDAResult):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.show(block=False)
+        plt.show()
 
     def _to_dict(self) -> None:
         """

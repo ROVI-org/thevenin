@@ -48,9 +48,9 @@ class Experiment:
         keys = ['num_steps', 'options']
         values = [self.num_steps, self._options]
 
-        summary = "\n\t".join(f"{k}={v}," for k, v in zip(keys, values))
+        summary = "\n    ".join(f"{k}={v}," for k, v in zip(keys, values))
 
-        readable = f"Experiment(\n\t{summary}\n)"
+        readable = f"Experiment(\n    {summary}\n)"
 
         return readable
 

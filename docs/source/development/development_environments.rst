@@ -1,6 +1,6 @@
 Development Environments
 ========================
-This guide will walk you through setting up a local development environment for contributing to Thevenin. It covers recommended practices, tools, and commands for developers to efficiently build, test, and contribute to the project.
+This guide will walk you through setting up a local development environment for contributing to ``thevenin``. It covers recommended practices, tools, and commands for developers to efficiently build, test, and contribute to the project.
 
 .. note:: 
 
@@ -14,8 +14,8 @@ This guide will walk you through setting up a local development environment for 
 
     Development should be done using the latest stable release of Python, so please setup your virtual environment accordingly. Continuous Integration (CI) workflows automatically test older versions. On occasion, if issues arise during tests, you may need to work with older Python versions temporarily.
 
-3. Install Thevenin in editable mode
-    Once you have your virtual environment activated and the files locally available, install Thevenin in editable mode, including the necessary development tools and dependencies, like so::
+3. Install ``thevenin`` in editable mode
+    Once you have your virtual environment activated and the files locally available, install ``thevenin`` in editable mode, including the necessary development tools and dependencies, like so::
 
         pip install -e .[dev]
 
@@ -45,4 +45,4 @@ This guide will walk you through setting up a local development environment for 
 
     You can see the local documentation build in your browser by opening the ``index.html`` file from the ``sphinx/build/`` folder.
 
-Now that you're all setup with a development version of Thevenin and have tested the codebase using the ``nox`` integration, be sure to follow the :doc:`version_control` workflow as you contribute. Happy coding!
+Now that you're all setup with a development version of ``thevenin`` and have tested the codebase using the ``nox`` integration, be sure to follow the :doc:`version_control` workflow as you contribute. Happy coding!

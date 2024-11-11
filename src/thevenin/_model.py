@@ -135,9 +135,9 @@ class Model:
         keys = self._repr_keys
         values = [getattr(self, k) for k in keys]
 
-        summary = "\n\t".join([f"{k}={v}," for k, v in zip(keys, values)])
+        summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
 
-        readable = f"Model(\n\t{summary}\n)"
+        readable = f"Model(\n    {summary}\n)"
 
         return readable
 
@@ -584,7 +584,7 @@ def _yaml_reader(file: str) -> dict:
 
 
 def formatwarning(message, category, filename, lineno, line=None):
-    return f"\n[thevenin {category.__name__}]: {message}\n\n"
+    return f"\n[thevenin {category.__name__}] {message}\n\n"
 
 
 def short_warn(message, category=None, stacklevel=1, source=None):

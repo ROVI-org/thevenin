@@ -29,9 +29,9 @@ Several branching strategies are used in software development, each with its pro
 
 For this project, we use GitHub Flow, which is explained in detail below. Interested parties can read more about any of these branching strategies `here <https://blog.programster.org/git-workflows>`_.
 
-Thevenin Workflow
+Project Workflow
 -----------------
-The Thevenin project uses GitHub Flow as its version control model due to its simplicity and proven success in other scientific packages like `SciPy <https://scipy.org/>`_ and `Cantera <https://cantera.org/>`_. The workflow emphasizes short-lived feature branches, as shown in the figure below, that each address a single bug fix or feature addition.
+The ``thevenin`` project uses GitHub Flow as its version control model due to its simplicity and proven success in other scientific packages like `SciPy <https://scipy.org/>`_ and `Cantera <https://cantera.org/>`_. The workflow emphasizes short-lived feature branches, as shown in the figure below, that each address a single bug fix or feature addition.
 
 .. figure:: figures/github_flow.png
    :align: center
@@ -54,13 +54,13 @@ Key Features
 
 Note that only bug fixes should have a prefix, but all branches should reference an issue number. Use underscores between works as needed and try to keep to shorter names. The issue can always be referenced in cases where more information is needed.
 
-The main Thevenin repo only hosts the main and release branches. Users should fork the main repo and clone the fork to get a local copy::
+The main repository only hosts the main and release branches. Users should fork the main repo and clone the fork to get a local copy::
 
     git clone https://github.com/<username>/thevenin.git
 
 You will likely also want to setup a remote to the upstream repository for dealing with merge conflicts and version patches, as discussed below. To set up an ``upstream`` remote use:: 
 
-    git remote add upstream https://github.com/ROVI-org/thevenin.git
+    git remote add upstream https://github.com/NREL/thevenin.git
 
 Bug Fixes
 ^^^^^^^^^

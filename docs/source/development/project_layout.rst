@@ -1,6 +1,6 @@
 Project Layout
 ==============
-The Thevenin project is organized to provide clarity and structure, making it easy for developers to navigate and contribute. Below is an outline of the key directories and files, along with guidelines for working within them.
+The ``thevenin`` project is organized to provide clarity and structure, making it easy for developers to navigate and contribute. Below is an outline of the key directories and files, along with guidelines for working within them.
 
 Root Directory
 --------------
@@ -18,7 +18,7 @@ The ``src/`` directory contains the main package code. Using this structure ensu
 
 Top-level Package
 ^^^^^^^^^^^^^^^^^
-The core classes of the Thevenin package reside at the top level of the src/ directory and include:
+The core classes of the ``thevenin`` package reside at the top level of the src/ directory and include:
 
 * ``IDASolver``: Handles solving the differential algebraic equations used in circuit models.
 * ``Model``: Represents the equivalent circuit model itself, allowing for flexible setup of different configurations.

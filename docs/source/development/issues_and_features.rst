@@ -3,13 +3,13 @@ Issues and Features
 
 Overview 
 --------
-Before starting on a bug fix or developing a new feature for Thevenin, please follow the steps outlined below to ensure efficient collaboration and alignment with the project's goals. Whether you're reporting a bug, suggesting a feature, or volunteering to work on an issue, these guidelines will help maintain smooth development and communication.
+Before starting on a bug fix or developing a new feature for ``thevenin``, please follow the steps outlined below to ensure efficient collaboration and alignment with the project's goals. Whether you're reporting a bug, suggesting a feature, or volunteering to work on an issue, these guidelines will help maintain smooth development and communication.
 
 Steps to Report an Issue
 ------------------------
 1. Check for existing issues
 
-  - Always check the `issues page <https://github.com/ROVI-org/thevenin/issues>`_ on GitHub before starting any new work.
+  - Always check the `issues page <https://github.com/NREL/thevenin/issues>`_ on GitHub before starting any new work.
   - If a bug report or new feature request already exists, review the comments and status to see if someone is already working on it.
   - If you are interested in working on the issue, leave a comment requesting the issue be assigned to you. Feel free to express your interest or add any additional context if you are experiencing the same bug or would benefit from the new feature.
 
@@ -57,4 +57,4 @@ Remember:
 
 Getting Help
 ------------
-If you're unsure whether your contribution fits within the scope of the project or if you need help getting started, feel free to ask questions by commenting on issues or reaching out to the maintainers. Collaboration is key to the success of Thevenin, and we're here to support you.
+If you're unsure whether your contribution fits within the scope of the project or if you need help getting started, feel free to ask questions by commenting on issues or reaching out to the maintainers. Collaboration is key to the success of ``thevenin``, and we're here to support you.

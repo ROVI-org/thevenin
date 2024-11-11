@@ -10,14 +10,16 @@ thevenin
    The Thevenin equivalent circuit model is a common low-fidelity battery model
    consisting of a single resistor in series with any number of RC pairs, i.e.,
    parallel resistor-capacitor pairs. This Python package contains an API for
-   building and running experiments using Thevenin models.
+   building and running experiments using Thevenin models. When referring to the
+   model itself, we use capitalized "Thevenin", and for the package lowercase
+   ``thevenin``.
 
-   .. rubric:: Accessing the documentation
+   .. rubric:: Accessing the Documentation
 
    Documentation is accessible via Python's ``help()`` function which prints
    docstrings from a package, module, function, class, etc. You can also access
-   the documentation by visiting the website, hosted through GitHub pages. The
-   website includes search functionality and more detailed examples.
+   the documentation by visiting the website, hosted on Read the Docs. The website
+   includes search functionality and more detailed examples.
 
 
 
@@ -87,90 +89,12 @@ Package Contents
 
 
 
-   .. py:property:: errors
-      :type: bool | tuple
-
-      Details regarding whether or not an error stopped the solver.
-
-      :returns: **errors** (*bool | tuple*) -- If an error stopped the solver, this value will be a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the error was triggered. If an error did not
-                stop the solver, this value will be False.
-
-
-   .. py:property:: message
-      :type: str
-
-      Readable solver exit message.
-
-      :returns: **message** (*str*) -- Exit message from the IDASolver.
-
-
-   .. py:property:: roots
-      :type: bool | tuple
-
-      Details regarding whether or not a rootfn stopped the solver.
-
-      :returns: **roots** (*bool | tuple*) -- If a rootfn stopped the solver, this value will be a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the root function was triggered. If a root did
-                not stop the solver, this value will be False.
-
-
    .. py:property:: solvetime
       :type: str
 
       Print a statement specifying how long IDASolver spent integrating.
 
       :returns: **solvetime** (*str*) -- An f-string with the total solver integration time in seconds.
-
-
-   .. py:property:: success
-      :type: bool
-
-      Overall solver exit status.
-
-      :returns: **success** (*bool*) -- True if no errors, False otherwise.
-
-
-   .. py:property:: t
-      :type: numpy.ndarray
-
-      Saved solution times.
-
-      :returns: **t** (*1D np.array*) -- Solution times [s].
-
-
-   .. py:property:: tstop
-      :type: bool | tuple
-
-      Details regarding whether or not the tstop option stopped the solver.
-
-      :returns: **tstop** (*bool | tuple*) -- If the tstop option stopped the solver, this value is a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the tstop function was triggered. If tstop did
-                not stop the solver, this value will be False.
-
-
-   .. py:property:: y
-      :type: numpy.ndarray
-
-      Solution variables [units]. Rows correspond to solution times and
-      columns to state variables, in the same order as y0.
-
-      :returns: **y** (*2D np.array*) -- Solution variables [units].
-
-
-   .. py:property:: ydot
-      :type: numpy.ndarray
-
-      Solution variable time derivatives [units/s]. Rows and columns share
-      the same organization as y.
-
-      :returns: **ydot** (*2D np.array*) -- Solution variable time derivatives [units/s].
 
 
 .. py:class:: Experiment(**kwargs)
@@ -272,179 +196,291 @@ Package Contents
       :returns: **steps** (*list[dict]*) -- List of the step dictionaries.
 
 
-.. py:class:: IDASolver(residuals, **kwargs)
+.. py:class:: IDASolver(resfn, **options)
 
-   ODE/DAE solver.
 
-   This solver supports first-order ODEs and DAEs. The solver requires the
-   problem to be written in terms of a residual function, with a signature
-   ``def residuals(t, y, yp, res, inputs) -> None``. Instead of a return
-   value, the function fills ``res`` (a 1D array sized like ``y``) with
-   expressions from the system of equations, ``res = M(y)*yp - f(t, y)``.
-   Here, ``t`` is time, ``y`` is an array of dependent solution variables,
-   and ``yp`` are time derivatives of ``y``. The ``inputs`` argument allows
-   the user to pass any additional parameters to the residuals function.
 
-   :param residuals: Function like ``def residuals(t, y, yp, res, inputs) -> None``.
-   :type residuals: Callable
-   :param \*\*kwargs: Keywords, descriptions, and defaults given below.
+   SUNDIALS IDA solver.
 
-                      =========== =================================================
-                      Key         Description (*type* or {options}, default)
-                      =========== =================================================
-                      atol        absolute tolerance (*float*, 1e-6)
-                      rtol        relative tolerance (*float*, 1e-5)
-                      inputs      optional residual arguments (*tuple*, None)
-                      linsolver   linear solver ({'dense', 'band'}, 'dense')
-                      lband       residual function's lower bandwidth (*int*, 0)
-                      uband       residual function's upper bandwidth (*int*, 0)
-                      rootfn      root/event function (*Callable*, None)
-                      nr_rootfns  number of events in rootfn (*int*, 0)
-                      initcond    uncertain t0 values ({'y0', 'yp0', None}, 'yp0')
-                      algidx      algebraic variable indices (*list[int]*, None)
-                      max_dt      maximum allowable integration step (*float*, 0.)
-                      tstop       maximum integration time (*float*, None)
-                      =========== =================================================
-   :type \*\*kwargs: dict, optional
+   This class wraps the implicit differential algebraic (IDA) solver from
+   SUNDIALS. It can be used to solve both ordinary differential equations
+   (ODEs) and differiential agebraic equatinos (DAEs).
+
+   :param resfn: Residual function with signature ``f(t, y, yp, res[, userdata])``.
+                 If 'resfn' has return values, they are ignored. Instead of using
+                 returns, the solver interacts directly with the 'res' array memory.
+                 For more info see the notes.
+   :type resfn: Callable
+   :param \*\*options: Keyword arguments to describe the solver options. A full list of
+                       names, types, descriptions, and defaults is given below.
+   :type \*\*options: dict, optional
+   :param userdata: Additional data object to supply to all user-defined callables. If
+                    'resfn' takes in 5 arguments, including the optional 'userdata',
+                    then this option cannot be None (default). See notes for more info.
+   :type userdata: object or None, optional
+   :param calc_initcond: Specifies which initial condition, if any, to calculate prior to
+                         the first time step. The options 'y0' and 'yp0' will correct 'y0'
+                         or 'yp0' values at 't0', respectively. When not None (default),
+                         the 'calc_init_dt' value should be used to specify the direction
+                         of integration.
+   :type calc_initcond: {'y0', 'yp0', None}, optional
+   :param calc_init_dt: Relative time step to take during the initial condition correction.
+                        Positive vs. negative values provide the direction of integration
+                        as forwards or backwards, respectively. The default is 0.01.
+   :type calc_init_dt: float, optional
+   :param algebraic_idx: Specifies indices 'i' in the 'y[i]' state variable array that are
+                         purely algebraic. This option should always be provided for DAEs;
+                         otherwise, the solver can be unstable. The default is None.
+   :type algebraic_idx: array_like[int] or None, optional
+   :param first_step: Specifies the initial step size. The default is 0, which uses an
+                      estimated value internally determined by SUNDIALS.
+   :type first_step: float, optional
+   :param min_step: Minimum allowable step size. The default is 0.
+   :type min_step: float, optional
+   :param max_step: Maximum allowable step size. Use 0 (default) for unbounded steps.
+   :type max_step: float, optional
+   :param rtol: Relative tolerance. For example, 1e-4 means errors are controlled
+                to within 0.01%. It is recommended to not use values larger than
+                1e-3 nor smaller than 1e-15. The default is 1e-5.
+   :type rtol: float, optional
+   :param atol: Absolute tolerance. Can be a scalar float to apply the same value
+                for all state variables, or an array with a length matching 'y' to
+                provide tolerances specific to each variable. The default is 1e-6.
+   :type atol: float or array_like[float], optional
+   :param linsolver: Choice of linear solver. When using 'band', don't forget to provide
+                     'lband' and 'uband' values. The default is 'dense'.
+   :type linsolver: {'dense', 'band'}, optional
+   :param lband: Lower Jacobian bandwidth. Given a DAE system ``0 = F(t, y, yp)``,
+                 the Jacobian is ``J = dF_i/dy_j + c_j*dF_i/dyp_j`` where 'c_j' is
+                 determined internally based on both step size and order. 'lband'
+                 should be set to the max distance between the main diagonal and the
+                 non-zero elements below the diagonal. This option cannot be None
+                 (default) if 'linsolver' is 'band'. Use zero if no values are below
+                 the main diagonal.
+   :type lband: int or None, optional
+   :param uband: Upper Jacobian bandwidth. See 'lband' for the Jacobian description.
+                 'uband' should be set to the max distance between the main diagonal
+                 and the non-zero elements above the diagonal. This option cannot be
+                 None (default) if 'linsolver' is 'band'. Use zero if no elements
+                 are above the main diagonal.
+   :type uband: int or None, optional
+   :param max_order: Specifies the maximum order for the linear multistep BDF method.
+                     The value must be in the range [1, 5]. The default is 5.
+   :type max_order: int, optional
+   :param max_num_steps: Specifies the maximum number of steps taken by the solver in each
+                         attempt to reach the next output time. The default is 500.
+   :type max_num_steps: int, optional
+   :param max_nonlin_iters: Specifies the maximum number of nonlinear solver iterations in one
+                            step. The default is 4.
+   :type max_nonlin_iters: int, optional
+   :param max_conv_fails: Specifies the max number of nonlinear solver convergence failures
+                          in one step. The default is 10.
+   :type max_conv_fails: int, optional
+   :param constraints_idx: Specifies indices 'i' in the 'y' state variable array for which
+                           inequality constraints should be applied. Constraints types must be
+                           specified in 'constraints_type', see below. The default is None.
+   :type constraints_idx: array_like[int] or None, optional
+   :param constraints_type: If 'constraints_idx' is not None, then this option must include an
+                            array of equal length specifying the types of constraints to apply.
+                            Values should be in ``{-2, -1, 1, 2}`` which apply ``y[i] < 0``,
+                            ``y[i] <= 0``, ``y[i] >=0,`` and ``y[i] > 0``, respectively. The
+                            default is None.
+   :type constraints_type: array_like[int] or None, optional
+   :param eventsfn: Events function with signature ``g(t, y, yp, events[, userdata])``.
+                    Return values from this function are ignored. Instead, the solver
+                    directly interacts with the 'events' array. Each 'events[i]' should
+                    be an expression that triggers an event when equal to zero. If None
+                    (default), no events are tracked. See the notes for more info.
+
+                    The 'num_events' option is required when 'eventsfn' is not None so
+                    memory can be allocated for the events array. The events function
+                    can also have the following attributes:
+
+                        terminal: list[bool, int], optional
+                            A list with length 'num_events' that tells how the solver
+                            how to respond to each event. If boolean, the solver will
+                            terminate when True and will simply record the event when
+                            False. If integer, termination occurs at the given number
+                            of occurrences. The default is ``[True]*num_events``.
+                        direction: list[int], optional
+                            A list with length 'num_events' that tells the solver which
+                            event directions to track. Values must be in ``{-1, 0, 1}``.
+                            Negative values will only trigger events when the slope is
+                            negative (i.e., 'events[i]' went from positive to negative).
+                            Alternatively, positive values track events with positive
+                            slope. If zero, either direction triggers the event. When
+                            not assigned, ``direction = [0]*num_events``.
+
+                    You can assign attributes like ``eventsfn.terminal = [True]`` to
+                    any function in Python, after it has been defined.
+   :type eventsfn: Callable or None, optional
+   :param num_events: Number of events to track. Must be greater than zero if 'eventsfn'
+                      is not None. The default is 0.
+   :type num_events: int, optional
+   :param jacfn: Jacobian function like ``J(t, y, yp, res, cj, JJ[, userdata])``.
+                 The function should fill the pre-allocated 2D matrix 'JJ' with the
+                 values defined by ``JJ[i,j] = dres_i/dy_j + cj*dres_i/dyp_j``. An
+                 internal finite difference method is applied when None (default).
+                 As with other user-defined callables, return values from 'jacfn'
+                 are ignored. See notes for more info.
+   :type jacfn: Callable or None, optional
 
    .. rubric:: Notes
 
-   * IDA stands for Implicit Differential Algebraic solver. The solver is
-     accessed through `scikits-odes`_, a Python wrapper for `SUNDIALS`_.
-   * Not setting ``algidx`` for DAEs will likely result in an instability.
-   * For unrestricted integration steps, use ``max_dt = 0.``.
-   * Root functions require a signature like ``def rootfn(t, y, yp, events,
-     inputs) -> None``. Instead of a return value, the function fills the
-     ``events`` argument (a 1D array with size equal to the number of events
-     to track). If any ``events`` index equals zero during integration, the
-     solver will exit.
-   * If setting ``rootfn``, you also need to set ``nr_rootfns`` to allocate
-     memory for the correct number of expressions (i.e., ``events.size``).
+   Return values from 'resfn', 'eventsfn', and 'jacfn' are ignored by the
+   solver. Instead the solver directly reads from pre-allocated memory.
+   The 'res', 'events', and 'JJ' arrays from each user-defined callable
+   should be filled within each respective function. When setting values
+   across the entire array/matrix at once, don't forget to use ``[:]`` to
+   fill the existing array rather than overwriting it. For example, using
+   ``res[:] = F(t, y, yp)`` is correct whereas ``res = F(t, y, yp)`` is
+   not. Using this method of pre-allocated memory helps pass data between
+   Python and the SUNDIALS C functions. It also keeps the solver fast,
+   especially for large problems.
 
-   .. _SUNDIALS: https://sundials.readthedocs.io/
-   .. _scikits-odes: https://bmcage.github.io/odes/dev/
+   When 'resfn' (or 'eventsfn', or 'jacfn') require data outside of their
+   normal arguments, you can supply 'userdata' as an option. When given,
+   'userdata' must appear in the function signatures for ALL of 'resfn',
+   'eventsfn' (when not None), and 'jacfn' (when not None), even if it is
+   not used in all of these functions. Note that 'userdata' only takes up
+   one argument position; however, 'userdata' can be any Python object.
+   Therefore, to pass more than one extra argument you should pack all of
+   the data into a single tuple, dict, dataclass, etc. and pass them all
+   together as 'userdata'. The data can be unpacked as needed within a
+   function.
 
    .. rubric:: Examples
 
-   The following demonstrates solving a system of ODEs. For ODEs, derivative
-   expressions ``yp`` can be written for each ``y``. Therefore, we can write
-   each residual as ``res[i] = yp[i] - f(t, y)`` where ``f(t, y)`` is an
-   expression for the derivative in terms of ``t`` and ``y``.
-
-   Note that even though the solver requires knowing the initial derivatives,
-   we set ``yp0 = np.zeros_like(y0)``, which are not true ``yp0`` values. The
-   default option ``initcond='yp0'`` solves for the correct ``yp0`` values
-   before starting the integration.
-
-   .. code-block:: python
-
-       import thevenin
-       import numpy as np
-       import matplotlib.pyplot as plt
-
-       def residuals(t, y, yp, res):
-           res[0] = yp[0] - y[1]
-           res[1] = yp[1] - 1e3*(1. - y[0]**2)*y[1] + y[0]
-
-       solver = thevenin.IDASolver(residuals)
-
-       y0 = np.array([0.5, 0.5])
-       yp0 = np.zeros_like(y0)
-       tspan = np.linspace(0., 500., 200)
-
-       solution = solver.solve(tspan, y0, yp0)
-
-       plt.plot(solution.t, solution.y)
-       plt.show()
-
-   The next problem solves a DAE system. DAEs arise when systems of governing
-   equations contain both ODEs and algebraic constraints.
-
-   To solve a DAE, you should specify the ``y`` indices that store algebraic
-   variables. In other words, for which ``y`` can you not write a ``yp``
-   expression? In the example below, we have ``yp[0]`` and ``yp[1]`` filling
-   the first two residual expressions. However, ``yp[2]`` does not appear in
-   any of the residuals. Therefore, ``y[2]`` is an algebraic variable, and we
-   tell this to the solver using the keyword argument ``algidx=[2]``. Even
-   though we only have one algebraic variable, this option input must be a
-   list of integers.
-
-   As in the ODE example, we let the solver determine the ``yp0`` values
-   that provide a consistent initial condition. Prior to plotting, ``y[1]``
-   is scaled for visual purposes. You can see the same example provided by
-   `MATLAB`_.
-
-   .. code-block:: python
-
-       import thevenin
-       import numpy as np
-       import matplotlib.pyplot as plt
-
-       def residuals(t, y, yp, res):
-           res[0] = yp[0] + 0.04*y[0] - 1e4*y[1]*y[2]
-           res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2
-           res[2] = y[0] + y[1] + y[2] - 1.
-
-       solver = thevenin.IDASolver(residuals, algidx=[2])
-
-       y0 = np.array([1., 0., 0.])
-       yp0 = np.zeros_like(y0)
-       tspan = np.hstack([0., 4.*np.logspace(-6, 6)])
-
-       solution = solver.solve(tspan, y0, yp0)
-
-       solution.y[:, 1] *= 1e4
-
-       plt.semilogx(solution.t, solution.y)
-       plt.show()
+   The following example solves the Robertson problem, which is a classic
+   test problem for programs that solve stiff ODEs. A full description of
+   the problem is provided by `MATLAB`_. Note that while initializing the
+   solver, ``algebraic_idx=[2]`` specifies ``y[2]`` is purely algebraic,
+   and ``calc_initcond='yp0'`` tells the solver to determine the values
+   for 'yp0' at 'tspan[0]' before starting to integrate. That is why 'yp0'
+   can be initialized as an array of zeros even though plugging in 'y0'
+   to the residuals expressions actually gives ``yp0 = [-0.04, 0.04, 0]``.
+   The initialization is checked against the correct answer after solving.
 
    .. _MATLAB:
        https://mathworks.com/help/matlab/math/
        solve-differential-algebraic-equations-daes.html
 
+   .. code-block:: python
 
-   .. py:method:: init_step(t0, y0, ydot0)
+       import numpy as np
+       import sksundae as sun
+       import matplotlib.pyplot as plt
 
-      Solve for a consistent initial condition.
+       def resfn(t, y, yp, res):
+           res[0] = yp[0] + 0.04*y[0] - 1e4*y[1]*y[2]
+           res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2
+           res[2] = y[0] + y[1] + y[2] - 1.0
 
-      :param t0: Initial time [s].
+       solver = sun.ida.IDA(resfn, algebraic_idx=[2], calc_initcond='yp0')
+
+       tspan = np.hstack([0, 4*np.logspace(-6, 6)])
+       y0 = np.array([1, 0, 0])
+       yp0 = np.zeros_like(y0)
+
+       soln = solver.solve(tspan, y0, yp0)
+       assert np.allclose(soln.yp[0], [-0.04, 0.04, 0], rtol=1e-3)
+
+       soln.y[:, 1] *= 1e4  # scale y[1] so it is visible in the figure
+       plt.semilogx(soln.t, soln.y)
+       plt.show()
+
+
+   .. py:method:: init_step(t0, y0, yp0)
+
+      Initialize the solver.
+
+      This method is called automatically when using 'solve'. However, it
+      must be run manually, before the 'step' method, when solving with a
+      step-by-step approach.
+
+      :param t0: Initial value of time.
       :type t0: float
-      :param y0: State variables at t0.
-      :type y0: 1D np.array
-      :param yp0: State variable time derivatives at t0.
-      :type yp0: 1D np.array
+      :param y0: State variable values at 't0'. The length must match that of 'yp0'
+                 and the number of residual equations in 'resfn'.
+      :type y0: array_like[float], shape(m,)
+      :param yp0: Time derivatives for the 'y0' array, evaluated at 't0'. The length
+                  and indexing should be consistent with 'y0'.
+      :type yp0: array_like[float], shape(m,)
 
-      :returns: **solution** (*SolverReturn*) -- Solution at time t0.
+      :returns: :class:`~sksundae.ida.IDAResult` -- Custom output class for IDA solutions. Includes pretty-printing
+                consistent with scipy outputs. See the class definition for more
+                information.
 
-
-
-   .. py:method:: solve(tspan, y0, ydot0)
-
-      Solve the system over 'tspan'.
-
-      :param tspan: Times [s] to store the solution.
-      :type tspan: 1D np.array
-      :param y0: State variables at tspan[0].
-      :type y0: 1D np.array
-      :param yp0: State variable time derivatives at tspan[0].
-      :type yp0: 1D np.array
-
-      :returns: **solution** (*SolverReturn*) -- Solution at times in tspan.
+      :raises MemoryError: Failed to allocate memory for the IDA solver.
+      :raises RuntimeError: A SUNDIALS function returned NULL or was unsuccessful.
+      :raises ValueError: 'y0' and 'yp0' must be the same length.
 
 
 
-   .. py:method:: step(t)
+   .. py:method:: solve(tspan, y0, yp0)
 
-      Solve for a successive time step.
+      Return the solution across 'tspan'.
 
-      Before calling step() for the first time, call init_step() to
-      initialize the solver at 't0'.
+      :param tspan: Solution time span. If ``len(tspan) == 2``, the solution will be
+                    saved at internally chosen steps. When ``len(tspan) > 2``, the
+                    solution saves the output at each specified time.
+      :type tspan: array_like[float], shape(n >= 2,)
+      :param y0: State variable values at 'tspan[0]'. The length must match that of
+                 'yp0' and the number of residual equations in 'resfn'.
+      :type y0: array_like[float], shape(m,)
+      :param yp0: Time derivatives for the 'y0' array, evaluated at 'tspan[0]'. The
+                  length and indexing should be consistent with 'y0'.
+      :type yp0: array_like[float], shape(m,)
 
-      :param t: Solution step time [s]. Can be higher or lower than the previous
-                time, however, significantly lower values may return errors.
+      :returns: :class:`~sksundae.ida.IDAResult` -- Custom output class for IDA solutions. Includes pretty-printing
+                consistent with scipy outputs. See the class definition for more
+                information.
+
+      :raises ValueError: 'tspan' must be strictly increasing or decreasing.
+      :raises ValueError: 'tspan' length must be >= 2.
+
+
+
+   .. py:method:: step(t, method='normal', tstop=None)
+
+      Return the solution at time 't'.
+
+      Before calling the 'step' method, you must first initialize the solver
+      by running 'init_step'.
+
+      :param t: Value of time.
       :type t: float
+      :param method: Solve method for the current step. When 'normal' (default), output
+                     is returned at time 't'. If 'onestep', output is returned after one
+                     internal step toward 't'. Both methods stop at events, if given,
+                     regardless of how 'eventsfn.terminal' was set.
+      :type method: {'normal', 'onestep'}, optional
+      :param tstop: Specifies a hard time constraint for which the solver should not
+                    pass, regardless of the 'method'. The default is None.
+      :type tstop: float, optional
 
-      :returns: **solution** (*SolverReturn*) -- Solution at time t.
+      :returns: :class:`~sksundae.ida.IDAResult` -- Custom output class for IDA solutions. Includes pretty-printing
+                consistent with scipy outputs. See the class definition for more
+                information.
+
+      :raises ValueError: 'method' value is invalid. Must be 'normal' or 'onestep'.
+      :raises ValueError: 'init_step' must be run prior to 'step'.
+
+      .. rubric:: Notes
+
+      In general, when solving step by step, times should all be provided in
+      either increasing or decreasing order. The solver can output results at
+      times taken in the opposite direction of integration if the requested
+      time is within the last internal step interval; however, values outside
+      this interval will raise errors. Rather than trying to mix forward and
+      reverse directions, choose each sequential time step carefully so you
+      get all of the values you need.
+
+      SUNDIALS provides a convenient graphic to help users understand how the
+      step method and optional 'tstop' affect where the integrator stops. To
+      read more, see their documentation `here`_.
+
+      .. _here: https://computing.llnl.gov/projects/sundials/usage-notes
 
 
 
@@ -543,7 +579,7 @@ Package Contents
       :param inputs: Dictionary detailing an experimental step.
       :type inputs: dict
 
-      :returns: **res** (*1D np.array*) -- DAE residuals, res = M*ydot - rhs(t, y).
+      :returns: **res** (*1D np.array*) -- DAE residuals, res = M*yp - rhs(t, y).
 
 
 
@@ -652,89 +688,11 @@ Package Contents
 
 
 
-   .. py:property:: errors
-      :type: bool | tuple
-
-      Details regarding whether or not an error stopped the solver.
-
-      :returns: **errors** (*bool | tuple*) -- If an error stopped the solver, this value will be a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the error was triggered. If an error did not
-                stop the solver, this value will be False.
-
-
-   .. py:property:: message
-      :type: str
-
-      Readable solver exit message.
-
-      :returns: **message** (*str*) -- Exit message from the IDASolver.
-
-
-   .. py:property:: roots
-      :type: bool | tuple
-
-      Details regarding whether or not a rootfn stopped the solver.
-
-      :returns: **roots** (*bool | tuple*) -- If a rootfn stopped the solver, this value will be a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the root function was triggered. If a root did
-                not stop the solver, this value will be False.
-
-
    .. py:property:: solvetime
       :type: str
 
       Print a statement specifying how long IDASolver spent integrating.
 
       :returns: **solvetime** (*str*) -- An f-string with the solver integration time in seconds.
-
-
-   .. py:property:: success
-      :type: bool
-
-      Overall solver exit status.
-
-      :returns: **success** (*bool*) -- True if no errors, False otherwise.
-
-
-   .. py:property:: t
-      :type: numpy.ndarray
-
-      Saved solution times.
-
-      :returns: **t** (*1D np.array*) -- Solution times [s].
-
-
-   .. py:property:: tstop
-      :type: bool | tuple
-
-      Details regarding whether or not the tstop option stopped the solver.
-
-      :returns: **tstop** (*bool | tuple*) -- If the tstop option stopped the solver, this value is a tuple. The
-                first argument will be True, and the second argument will provide
-                the index within t, y, and ydot that stores the values of time
-                and solution when the tstop function was triggered. If tstop did
-                not stop the solver, this value will be False.
-
-
-   .. py:property:: y
-      :type: numpy.ndarray
-
-      Solution variables [units]. Rows correspond to solution times and
-      columns to state variables, in the same order as y0.
-
-      :returns: **y** (*2D np.array*) -- Solution variables [units].
-
-
-   .. py:property:: ydot
-      :type: numpy.ndarray
-
-      Solution variable time derivatives [units/s]. Rows and columns share
-      the same organization as y.
-
-      :returns: **ydot** (*2D np.array*) -- Solution variable time derivatives [units/s].
 
 

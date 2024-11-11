@@ -6,13 +6,13 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-import thevenin as thev
+import thevenin as thev  # codespell:ignore thev
 
 project = 'thevenin'
 copyright = '2024, Corey R. Randall'
 author = 'Corey R. Randall'
-version = thev.__version__
-release = thev.__version__
+version = thev.__version__  # codespell:ignore thev
+release = thev.__version__  # codespell:ignore thev
 
 
 # -- General configuration ---------------------------------------------------
@@ -72,7 +72,7 @@ html_theme_options = {
     'icon_links': [
         {
             'name': 'GitHub',
-            'url': 'https://github.com/ROVI-org/thevenin',
+            'url': 'https://github.com/NREL/thevenin',
             'icon': 'fa-brands fa-github',
         },
         # {

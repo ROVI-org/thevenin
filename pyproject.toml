@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "thevenin"
 readme = "README.md"
 dynamic = ["version"]
-description = "Packaged Thevenin equivalent circuit model."
+description = "Equivalent circuit models in Python."
 keywords = ["ECM", "equivalent", "circuit", "model", "battery"]
 requires-python = ">=3.9,<3.14"
 license = { file = "LICENSE" }
@@ -75,7 +75,7 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ROVI-org/thevenin"
+Homepage = "https://github.com/NREL/thevenin"
 Documentation = "https://thevenin.readthedocs.io"
-Repository = "https://github.com/ROVI-org/thevenin"
-Issues = "https://github.com/ROVI-org/thevenin/issues"
+Repository = "https://github.com/NREL/thevenin"
+Issues = "https://github.com/NREL/thevenin/issues"
