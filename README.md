@@ -1,20 +1,20 @@
+<!-- <img alt='Logo' style='width: 75%; min-width: 250px; max-width: 500px;' 
+ src='https://github.com/NREL/thevenin/blob/main/images/dark.png?raw=true#gh-dark-mode-only'/>
 <img alt='Logo' style='width: 75%; min-width: 250px; max-width: 500px;' 
- src='https://github.com/ROVI-org/thevenin/blob/main/images/dark.png?raw=true#gh-dark-mode-only'/>
-<img alt='Logo' style='width: 75%; min-width: 250px; max-width: 500px;' 
- src='https://github.com/ROVI-org/thevenin/blob/main/images/light.png?raw=true#gh-light-mode-only'/>
+ src='https://github.com/NREL/thevenin/blob/main/images/light.png?raw=true#gh-light-mode-only'/> -->
 
- <br>
+ # thevenin
 
 [![CI][ci-b]][ci-l] &nbsp;
 ![tests][test-b] &nbsp;
 ![coverage][cov-b] &nbsp;
 [![pep8][pep-b]][pep-l]
 
-[ci-b]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml/badge.svg
-[ci-l]: https://github.com/ROVI-org/thevenin/actions/workflows/ci.yaml
+[ci-b]: https://github.com/NREL/thevenin/actions/workflows/ci.yaml/badge.svg
+[ci-l]: https://github.com/NREL/thevenin/actions/workflows/ci.yaml
 
-[test-b]: https://github.com/ROVI-org/thevenin/blob/main/images/tests.svg?raw=true
-[cov-b]: https://github.com/ROVI-org/thevenin/blob/main/images/coverage.svg?raw=true
+[test-b]: https://github.com/NREL/thevenin/blob/main/images/tests.svg?raw=true
+[cov-b]: https://github.com/NREL/thevenin/blob/main/images/coverage.svg?raw=true
 
 [pep-b]: https://img.shields.io/badge/code%20style-pep8-orange.svg
 [pep-l]: https://www.python.org/dev/peps/pep-0008
@@ -24,7 +24,7 @@ This package is a wrapper for the well-known Thevenin equivalent circuit model. 
 
 <p align="center">
   <img alt="2RC Thevenin circuit." style="width: 75%; min-width: 250px; max-width: 500px;" 
-   src="https://github.com/ROVI-org/thevenin/blob/main/images/example_circuit.png?raw=true"/>
+   src="https://github.com/NREL/thevenin/blob/main/images/example_circuit.png?raw=true"/>
   </br>
   Figure 1: 2RC Thevenin circuit.
 </p>
@@ -57,36 +57,32 @@ The overall cell voltage is
   V_{\rm cell} = V_{\rm OCV}({\rm SOC}) - \sum_j V_j - IR_0,
 \end{equation}
 ```
-where $R_0$ the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of SOC and $T_{\rm cell}$.
+where $R_0$ is the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of SOC and $T_{\rm cell}$.
 
 ## Installation
-We recommend using [Anaconda](https://anaconda.com) to install this package due to the [scikits-odes-sundials](https://scikits-odes.readthedocs.io) dependency, which is installed separately using `conda install` to avoid having to download and compile SUNDIALS locally. Please refer to the linked `scikits-odes` documentation if you prefer installing without using `conda`. Note that we plan to replace this dependency in a future release to streamline installation.
-
-After cloning the repository, or downloading the files, use your terminal (MacOS/Linux) or Anaconda Prompt (Windows) to navigate into the folder with the `pyproject.toml` file. Once in the correct folder, execute the following commands:
+`thevenin` is installable via either pip or conda. To install from [PyPI](https://pypi.org/project/thevenin) use the following command.
 
 ```
-conda create -n rovi python=3.12 scikits_odes_sundials -c conda-forge
-conda activate rovi
-pip install .
+pip install thevenin
 ```
 
-The first command creates a new Python environment named `rovi`. The environment will be set up using Python 3.12 and will install the `scikits-odes-sundials` dependency from the `conda-forge` channel. Feel free to use an alternate environment name and/or to specify a different Python version >= 3.9. Although the package supports multiple Python versions, development and testing is primarily done using 3.12. Therefore, if you have issues with another version, you should revert to using 3.12. The last two commands activate your new environment and install `thevenin`.
-
-If you plan to make changes to the package, you may also want to consider installing in "editable" mode using the `-e` flag, and including the optional developer dependencies, using `[dev]`, as shown below. If you plan to push any changes back into this repository, you should see the [contributing](#contributing) section first.
+If you prefer using the `conda` package manager, you can install `thevenin` from the `conda-forge` channel using the command below.
 
 ```
-pip install -e .[dev]
+conda install -c conda-forge thevenin
 ```
+
+If you run into issues with installation due to the [scikit-sundae](https://github.com/NREL/scikit-sundae) dependency, please submit an issue [here](https://github.com/NREL/scikit-sundae/issues). We also manage our own solver package, but distribute it separately.
 
 ## Get Started
-The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To see the documentation for any of the classes or their methods, use Python's built in `help()` function. You can also access the documentation by visiting the [website](https://rovi-org.github.io/thevenin) hosted through GitHub pages. The website includes search functionality and more detailed examples compared to those included in the docstrings.
+The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To learn more about the model and see more detailed examples check out the [documentation](https://thevenin.readthedocs.io/) on Read the Docs.
 
 ```python
-import thevenin
+import thevenin as thev
 
-model = thevenin.Model()
+model = thev.Model()
 
-expr = thevenin.Experiment()
+expr = thev.Experiment()
 expr.add_step('current_A', 75., (3600., 1.), limits=('voltage_V', 3.))
 
 soln = model.run(expr)
@@ -96,10 +92,28 @@ soln.plot('time_h', 'voltage_V')
 **Notes:**
 * If you are new to Python, check out [Spyder IDE](https://www.spyder-ide.org/). Spyder is a powerful interactive development environment (IDE) that can make programming in Python more approachable to new users.
 
-## Contributing
-If you'd like to contribute to this package, please look through the existing [issues](https://github.com/ROVI-org/thevenin/issues). If the bug you've caught or the feature you'd like to add isn't already being worked on, please submit a new issue before getting started. You should also read through the [developer guidelines](https://rovi-org.github.io/thevenin/development).
+## Citing this Work
+This work was authored by researchers at the National Renewable Energy Laboratory (NREL). The project is tracked in NREL's software records under SWR-24-132 and has a DOI available for citing the work. If you use use this package in your work, please include the following citation:
+
+> Placeholder... waiting for DOI.
+
+For convenience, we also provide the following for your BibTex:
+
+```
+@misc{Randall2024,
+  title = {{thevenin: Equivalent circuit models in Python}},
+  author = {Randall, Corey R.},
+  year = {2024},
+  doi = {placeholder... waiting for DOI},
+  url = {https://github.com/NREL/thevenin},
+}
+```
 
 ## Acknowledgements
-This work was authored by the National Renewable Energy Laboratory (NREL), operated by Alliance for Sustainable Energy, LLC, for the U.S. Department of Energy (DOE). The views expressed in the repository do not necessarily represent the views of the DOE or the U.S. Government.
-
 The motivation and funding for this project came from the Rapid Operational Validation Initiative (ROVI) sponsored by the Office of Electricity. The focus of ROVI is "to greatly reduce time required for emerging energy storage technologies to go from lab to market by developing new tools that will accelerate the testing and validation process needed to ensure commercial success." If interested, you can read more about ROVI [here](https://www.energy.gov/oe/rapid-operational-validation-initiative-rovi).
+
+## Contributing
+If you'd like to contribute to this package, please look through the existing [issues](https://github.com/NREL/thevenin/issues). If the bug you've caught or the feature you'd like to add isn't already being worked on, please submit a new issue before getting started. You should also read through the [developer guidelines](https://thevenin.readthedocs.io/development).
+
+## Disclaimer
+This work was authored by the National Renewable Energy Laboratory (NREL), operated by Alliance for Sustainable Energy, LLC, for the U.S. Department of Energy (DOE). The views expressed in the repository do not necessarily represent the views of the DOE or the U.S. Government.

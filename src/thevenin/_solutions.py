@@ -1,19 +1,19 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-
 from copy import deepcopy
+import textwrap
 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-from ._ida_solver import SolverReturn
+from ._ida_solver import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
 
 
-class BaseSolution(SolverReturn):
+class BaseSolution(IDAResult):
     """Base solution."""
 
     def __init__(self) -> None:
@@ -38,7 +38,33 @@ class BaseSolution(SolverReturn):
             A console-readable instance representation.
 
         """
-        return repr(self.vars.keys())
+
+        def wrap_string(value: list, width: int, indent: int):
+            if not isinstance(value, list):
+                value = list(value)
+
+            indent = ' '*indent
+
+            text = "[" + ", ".join(f"{v!r}" for v in value) + "]"
+
+            return textwrap.fill(text, width=width, subsequent_indent=indent)
+
+        vars = wrap_string(self.vars.keys(), 70, len('    vars=['))
+
+        data = {
+            'solvetime': self.solvetime,
+            'success': self.success,
+            'status': self.status,
+            'nfev': self.nfev,
+            'njev': self.njev,
+            'vars': vars,
+        }
+
+        summary = "\n    ".join(f"{k}={v}," for k, v in data.items())
+
+        readable = f"{self.__class__.__name__}(\n    {summary}\n)"
+
+        return readable
 
     def plot(self, x: str, y: str, **kwargs) -> None:
         """
@@ -75,7 +101,7 @@ class BaseSolution(SolverReturn):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.show(block=False)
+        plt.show()
 
     def _to_dict(self) -> None:
         """
@@ -128,7 +154,7 @@ class BaseSolution(SolverReturn):
 class StepSolution(BaseSolution):
     """Single-step solution."""
 
-    def __init__(self, model: Model, ida_soln: SolverReturn,
+    def __init__(self, model: Model, ida_soln: IDAResult,
                  timer: float) -> None:
         """
         A solution instance for a single experimental step.
@@ -148,14 +174,21 @@ class StepSolution(BaseSolution):
 
         self._model = deepcopy(model)
 
-        self._success = ida_soln.success
-        self._message = ida_soln.message
-        self._t = ida_soln.t
-        self._y = ida_soln.y
-        self._ydot = ida_soln.ydot
-        self._roots = ida_soln.roots
-        self._tstop = ida_soln.tstop
-        self._errors = ida_soln.errors
+        self.message = ida_soln.message
+        self.success = ida_soln.success
+        self.status = ida_soln.status
+
+        self.t = ida_soln.t
+        self.y = ida_soln.y
+        self.yp = ida_soln.yp
+
+        self.i_events = ida_soln.i_events
+        self.t_events = ida_soln.t_events
+        self.y_events = ida_soln.y_events
+        self.yp_events = ida_soln.yp_events
+
+        self.nfev = ida_soln.nfev
+        self.njev = ida_soln.njev
 
         self._timer = timer
 
@@ -172,7 +205,7 @@ class StepSolution(BaseSolution):
             An f-string with the solver integration time in seconds.
 
         """
-        return f"Solve time: {self._timer:.3f} s"
+        return f"{self._timer:.3f} s"
 
 
 class CycleSolution(BaseSolution):
@@ -199,30 +232,55 @@ class CycleSolution(BaseSolution):
 
         sv_size = self._model._sv0.size
 
-        self._success = []
-        self._message = []
-        self._t = np.empty([0])
-        self._y = np.empty([0, sv_size])
-        self._ydot = np.empty([0, sv_size])
-        self._roots = []
-        self._tstop = []
-        self._errors = []
+        self.message = []
+        self.success = []
+        self.status = []
+
+        self.t = np.empty([0])
+        self.y = np.empty([0, sv_size])
+        self.yp = np.empty([0, sv_size])
+
+        self.t_events = None
+        self.y_events = None
+        self.yp_events = None
+
+        self.nfev = []
+        self.njev = []
+
         self._timers = []
 
         for soln in self._solns:
-            if self._t.size > 0:
-                shifted_times = self._t[-1] + soln.t + 1e-3
+            if self.t.size > 0:
+                shift_t = self.t[-1] + soln.t + 1e-3
             else:
-                shifted_times = soln.t
+                shift_t = soln.t
 
-            self._success.append(soln.success)
-            self._message.append(soln.message)
-            self._t = np.hstack([self._t, shifted_times])
-            self._y = np.vstack([self._y, soln.y])
-            self._ydot = np.vstack([self._ydot, soln.ydot])
-            self._roots.append(soln.roots)
-            self._tstop.append(soln.tstop)
-            self._errors.append(soln.errors)
+            if soln.t_events and self.t.size > 0:
+                shift_t_events = self.t[-1] + soln.t_events + 1e-3
+            elif soln.t_events:
+                shift_t_events = soln.t_events
+
+            self.message.append(soln.message)
+            self.success.append(soln.success)
+            self.status.append(soln.status)
+
+            self.t = np.hstack([self.t, shift_t])
+            self.y = np.vstack([self.y, soln.y])
+            self.yp = np.vstack([self.yp, soln.yp])
+
+            if soln.t_events:
+                if self.t_events is None:
+                    self.t_events = shift_t_events
+                    self.y_events = soln.y_events
+                    self.yp_events = soln.yp_events
+                else:
+                    self.t_events = np.hstack([self.t_events, shift_t_events])
+                    self.y_events = np.vstack([soln.y_events])
+                    self.yp_events = np.vstack([soln.yp_events])
+
+            self.nfev.append(soln.nfev)
+            self.njev.append(soln.njev)
+
             self._timers.append(soln._timer)
 
         self._to_dict()
@@ -238,7 +296,7 @@ class CycleSolution(BaseSolution):
             An f-string with the total solver integration time in seconds.
 
         """
-        return f"Solve time: {sum(self._timers):.3f} s"
+        return f"{sum(self._timers):.3f} s"
 
     def get_steps(self, idx: int | tuple) -> StepSolution | CycleSolution:
         """

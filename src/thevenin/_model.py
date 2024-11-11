@@ -135,9 +135,9 @@ class Model:
         keys = self._repr_keys
         values = [getattr(self, k) for k in keys]
 
-        summary = "\n\t".join([f"{k}={v}," for k, v in zip(keys, values)])
+        summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
 
-        readable = f"Model(\n\t{summary}\n)"
+        readable = f"Model(\n    {summary}\n)"
 
         return readable
 
@@ -298,7 +298,7 @@ class Model:
         Returns
         -------
         res : 1D np.array
-            DAE residuals, res = M*ydot - rhs(t, y).
+            DAE residuals, res = M*yp - rhs(t, y).
 
         """
         return self._mass_matrix.dot(svdot) - self.rhs_funcs(t, sv, inputs)
@@ -353,8 +353,9 @@ class Model:
             value = step['value']
             step['value'] = lambda t: value
 
-        kwargs['inputs'] = step
-        kwargs['algidx'] = self._algidx
+        kwargs['userdata'] = step
+        kwargs['calc_initcond'] = 'yp0'
+        kwargs['algebraic_idx'] = self._algidx
 
         if step['limits'] is not None:
             _setup_rootfn(step['limits'], kwargs)
@@ -369,7 +370,7 @@ class Model:
 
         self._t0 = soln.t[-1]
         self._sv0 = soln.y[-1].copy()
-        self._svdot0 = soln.ydot[-1].copy()
+        self._svdot0 = soln.yp[-1].copy()
 
         return soln
 
@@ -429,7 +430,7 @@ class Model:
         svdot : 1D np.array
             State variable time derivatives at time t.
         res : 1D np.array
-            DAE residuals, res = M*ydot - rhs(t, y).
+            DAE residuals, res = M*yp - rhs(t, y).
         inputs : dict
             Dictionary detailing an experimental step.
 
@@ -444,8 +445,6 @@ class Model:
 
 class _RootFunction:
     """Root function callables."""
-
-    __slots__ = ('keys', 'values', 'size',)
 
     def __init__(self, limits: tuple[str, float]) -> None:
         """
@@ -523,8 +522,8 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
 
     rootfn = _RootFunction(limits)
 
-    kwargs['rootfn'] = rootfn
-    kwargs['nr_rootfns'] = rootfn.size
+    kwargs['eventsfn'] = rootfn
+    kwargs['num_events'] = rootfn.size
 
 
 def _yaml_reader(file: str) -> dict:
@@ -585,7 +584,7 @@ def _yaml_reader(file: str) -> dict:
 
 
 def formatwarning(message, category, filename, lineno, line=None):
-    return f"\n[thevenin {category.__name__}]: {message}\n\n"
+    return f"\n[thevenin {category.__name__}] {message}\n\n"
 
 
 def short_warn(message, category=None, stacklevel=1, source=None):

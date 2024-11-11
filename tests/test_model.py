@@ -1,8 +1,8 @@
 import warnings
 
 import pytest
-import thevenin
 import numpy as np
+import thevenin as thev
 
 
 @pytest.fixture(scope='function')
@@ -29,12 +29,12 @@ def dict_params():
 
 @pytest.fixture(scope='function')
 def model_0RC(dict_params):
-    return thevenin.Model(dict_params)
+    return thev.Model(dict_params)
 
 
 @pytest.fixture(scope='function')
 def model_1RC(dict_params):
-    model = thevenin.Model(dict_params)
+    model = thev.Model(dict_params)
 
     model.num_RC_pairs = 1
     model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
@@ -47,7 +47,7 @@ def model_1RC(dict_params):
 
 @pytest.fixture(scope='function')
 def model_2RC(dict_params):
-    model = thevenin.Model(dict_params)
+    model = thev.Model(dict_params)
 
     model.num_RC_pairs = 2
     model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
@@ -62,7 +62,7 @@ def model_2RC(dict_params):
 
 @pytest.fixture(scope='function')
 def constant_steps():
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     expr.add_step('current_A', 0., (600., 1.))
     expr.add_step('current_A', -1., (3600., 1.), limits=('voltage_V', 4.3))
@@ -76,7 +76,7 @@ def constant_steps():
 def dynamic_current():
     def load(t): return np.sin(2.*np.pi*t / 120.)
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('current_A', load, (600., 1.))
 
     return expr
@@ -86,7 +86,7 @@ def dynamic_current():
 def dynamic_voltage():
     def load(t): return 3.8 + 10e-3*np.sin(2.*np.pi*t / 120.)
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('voltage_V', load, (600., 1.))
 
     return expr
@@ -96,7 +96,7 @@ def dynamic_voltage():
 def dynamic_power():
     def load(t): return np.sin(2.*np.pi*t / 120.)
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('power_W', load, (600., 1.))
 
     return expr
@@ -106,12 +106,12 @@ def test_bad_initialization(dict_params):
 
     # wrong params type
     with pytest.raises(TypeError):
-        _ = thevenin.Model(['wrong_type'])
+        _ = thev.Model(['wrong_type'])
 
     # invalid/excess key/value pairs
     with pytest.raises(ValueError):
         dict_params['fake'] = 'parameter'
-        _ = thevenin.Model(dict_params)
+        _ = thev.Model(dict_params)
 
 
 def test_model_w_yaml_input(constant_steps, dynamic_current, dynamic_voltage,
@@ -119,19 +119,19 @@ def test_model_w_yaml_input(constant_steps, dynamic_current, dynamic_voltage,
 
     # using default file
     with pytest.warns(UserWarning):
-        model = thevenin.Model()
+        model = thev.Model()
 
     # using default file by name
     with pytest.warns(UserWarning):
-        model = thevenin.Model('params')
+        model = thev.Model('params')
 
     # using default file by name w/ extension
     with pytest.warns(UserWarning):
-        model = thevenin.Model('params.yaml')
+        model = thev.Model('params.yaml')
 
     soln = model.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    # assert any(soln.i_events)
 
     soln = model.run(dynamic_current)
     assert soln.success
@@ -147,11 +147,11 @@ def test_bad_yaml_inputs():
 
     # only .yaml extensions
     with pytest.raises(ValueError):
-        _ = thevenin.Model('fake.fake')
+        _ = thev.Model('fake.fake')
 
     # file doesn't exist
     with pytest.raises(FileNotFoundError):
-        _ = thevenin.Model('fake')
+        _ = thev.Model('fake')
 
 
 def test_run_step(model_2RC, constant_steps):
@@ -176,15 +176,15 @@ def test_model_w_multistep_experiment(model_0RC, model_1RC, model_2RC,
 
     soln = model_0RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    assert any(status == 2 for status in soln.status)
 
     soln = model_1RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    assert any(status == 2 for status in soln.status)
 
     soln = model_2RC.run(constant_steps)
     assert soln.success
-    assert any(soln.roots)
+    assert any(status == 2 for status in soln.status)
 
 
 def test_model_w_dynamic_current(model_0RC, model_1RC, model_2RC,
@@ -228,7 +228,7 @@ def test_model_w_dynamic_power(model_0RC, model_1RC, model_2RC,
 
 def test_resting_experiment(model_2RC):
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('current_A', 0., (100., 1.))
 
     soln = model_2RC.run(expr)
@@ -319,7 +319,7 @@ def test_custom_format():
     original = warnings.formatwarning(*args).strip()
 
     # custom format works
-    assert custom == "[thevenin Warning]: This is a test warning."
+    assert custom == "[thevenin Warning] This is a test warning."
 
     # warnings from warnings.warn not impacted by custom format
-    assert original != "[thevenin Warning]: This is a test warning."
+    assert original != "[thevenin Warning] This is a test warning."

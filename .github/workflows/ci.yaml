@@ -9,6 +9,7 @@ on:
       - 'CHANGELOG*'
       - 'docs/*'
       - 'images/*'
+      - 'LICENSE'
       - '.github/ISSUE_TEMPLATE/*'
 
   pull_request:
@@ -20,33 +21,38 @@ on:
       - 'CHANGELOG*'
       - 'docs/*'
       - 'images/*'
+      - 'LICENSE'
       - '.github/ISSUE_TEMPLATE/*'
 
 jobs:
   lint:
     name: (Lint ${{ matrix.python-version }}, ${{ matrix.os }})
-
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest']
-        python-version: ['3.12']
+        os: [ubuntu-latest]
+        python-version: ['3.13']
 
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Spell check
         run: |
           pip install codespell
           codespell --config .github/linters/.codespellrc
+
       - name: Code format
         run: |
           pip install flake8
@@ -55,34 +61,44 @@ jobs:
 
   tests:
     name: (Test ${{ matrix.python-version }}, ${{ matrix.os }})
-
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest', 'macos-13', 'macos-latest']
-        python-version: ['3.9', '3.12']
+        os: [macos-13, macos-latest, windows-latest, ubuntu-latest]
+        python-version: ['3.9', '3.13']
 
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup conda/python
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          activate-environment: 'rovi'
-          python-version: ${{ matrix.python-version }}
-          miniconda-version: 'latest'
           auto-update-conda: true
-      - name: Conda dependencies
-        run: conda install scikits_odes_sundials -c conda-forge
+          miniconda-version: latest
+          python-version: ${{ matrix.python-version }}
+          activate-environment: rovi
+
+      - name: Verify environment
+        run: |
+          conda info
+          conda list
+
       - name: Pip dependencies
         run: pip install .
-      - name: List packages
-        run: conda list
+
+      - name: List info
+        run: |
+          conda info
+          conda list
+
       - name: Pytest
         run: |
           pip install pytest
-          pytest
+          pytest .

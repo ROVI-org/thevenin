@@ -4,14 +4,16 @@ Summary
 The Thevenin equivalent circuit model is a common low-fidelity battery model
 consisting of a single resistor in series with any number of RC pairs, i.e.,
 parallel resistor-capacitor pairs. This Python package contains an API for
-building and running experiments using Thevenin models.
+building and running experiments using Thevenin models. When referring to the
+model itself, we use capitalized "Thevenin", and for the package lowercase
+``thevenin``.
 
-Accessing the documentation
+Accessing the Documentation
 ---------------------------
 Documentation is accessible via Python's ``help()`` function which prints
 docstrings from a package, module, function, class, etc. You can also access
-the documentation by visiting the website, hosted through GitHub pages. The
-website includes search functionality and more detailed examples.
+the documentation by visiting the website, hosted on Read the Docs. The website
+includes search functionality and more detailed examples.
 
 """
 

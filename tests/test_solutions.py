@@ -1,8 +1,8 @@
 import warnings
 
 import pytest
-import thevenin
 import numpy as np
+import thevenin as thev
 import matplotlib.pyplot as plt
 
 
@@ -11,9 +11,9 @@ def soln():
 
     warnings.filterwarnings('ignore')
 
-    model = thevenin.Model()
+    model = thev.Model()
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     expr.add_step('current_A', 0., (3600., 1.))
 
@@ -33,9 +33,10 @@ def test_step_and_cycle_solutions(soln):
         step_soln.plot('fake', 'plot')
 
     # plots w/ and w/o units
-    step_soln.plot('soc', 'soc')
-    step_soln.plot('time_h', 'voltage_V')
-    plt.close('all')
+    with plt.ion():
+        step_soln.plot('soc', 'soc')
+        step_soln.plot('time_h', 'voltage_V')
+        plt.close('all')
 
     # solvetime works and times stacked correctly
     cycle_soln = soln.get_steps((0, 1))
@@ -47,6 +48,7 @@ def test_step_and_cycle_solutions(soln):
         cycle_soln.plot('fake', 'plot')
 
     # plots w/ and w/o units
-    cycle_soln.plot('soc', 'soc')
-    cycle_soln.plot('time_h', 'voltage_V')
-    plt.close('all')
+    with plt.ion():
+        cycle_soln.plot('soc', 'soc')
+        cycle_soln.plot('time_h', 'voltage_V')
+        plt.close('all')
