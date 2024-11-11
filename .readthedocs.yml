@@ -9,7 +9,11 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: latest
+    python: miniconda-latest
+
+# Conda environment to install local thevenin
+conda:
+  environment: environments/rtd_environment.yml
 
 # Location of sphinx configuration file
 sphinx:

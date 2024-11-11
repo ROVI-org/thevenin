@@ -1,0 +1,9 @@
+name: thevenin
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip>=24.3
+  - pip:
+    - ../.[docs]
