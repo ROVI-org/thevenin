@@ -1,8 +1,8 @@
 import warnings
 
 import pytest
-import thevenin
 import numpy as np
+import thevenin as thev
 import matplotlib.pyplot as plt
 
 
@@ -11,9 +11,9 @@ def soln():
 
     warnings.filterwarnings('ignore')
 
-    model = thevenin.Model()
+    model = thev.Model()
 
-    expr = thevenin.Experiment()
+    expr = thev.Experiment()
     expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     expr.add_step('current_A', 0., (3600., 1.))
 

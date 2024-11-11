@@ -1,11 +1,11 @@
 import pytest
-import thevenin
 import numpy as np
+import thevenin as thev
 
 
 @pytest.fixture(scope='function')
 def expr():
-    return thevenin.Experiment()
+    return thev.Experiment()
 
 
 def test_initialization(expr):

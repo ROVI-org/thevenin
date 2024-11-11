@@ -61,10 +61,10 @@ def run_spellcheck(session):
 
     """
 
-    command = ['codespell']
+    command = ['codespell', '--config=.github/linters/.codespellrc']
 
     if 'write' in session.posargs:
-        command.append('-w')
+        command.insert(1, '-w')
 
     run_codespell(session)
 

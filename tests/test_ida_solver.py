@@ -1,6 +1,6 @@
 import pytest
-import thevenin
 import numpy as np
+import thevenin as thev
 
 from thevenin._ida_solver import IDASolver
 
@@ -47,7 +47,7 @@ def test_ida_solver_with_ode():
         res[0] = yp[0] - y[1]
         res[1] = yp[1] - 1e3*(1. - y[0]**2)*y[1] + y[0]
 
-    solver = thevenin.IDASolver(residuals)
+    solver = thev.IDASolver(residuals)
 
     y0 = np.array([0.5, 0.5])
     yp0 = np.zeros_like(y0)
@@ -72,7 +72,7 @@ def test_ida_solver_with_dae():
         res[1] = yp[1] - 0.04*y[0] + 1e4*y[1]*y[2] + 3e7*y[1]**2
         res[2] = y[0] + y[1] + y[2] - 1.
 
-    solver = thevenin.IDASolver(residuals, max_step=0.)
+    solver = thev.IDASolver(residuals, max_step=0.)
 
     y0 = np.array([1., 0., 0.])
     yp0 = np.zeros_like(y0)
