@@ -10,7 +10,7 @@
 
 ### Breaking Changes
 
-## [v1.0.0](https://github.com/NREL/thevenin/tree/v1.0.0)
+## [v0.1.0](https://github.com/NREL/thevenin/tree/v0.1.0)
 This is the first official release of `thevenin`. Main features/capabilities are listed below.
 
 ### Features
