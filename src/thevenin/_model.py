@@ -33,8 +33,8 @@ class Model:
         params : dict | str
             Mapping of model parameter names to their values. Can be either
             a dict or absolute/relateive file path to a yaml file (str). The
-            keys/value pair descriptions are given below. The default uses a
-            .yaml file. Use the templates() function to view this file.
+            keys/value pair descriptions are given below. The default uses an
+            internal yaml file.
 
             ============= ========================== ================
             Key           Value                      *type*, units
@@ -70,10 +70,9 @@ class Model:
         Notes
         -----
         The 'ocv' property needs a signature like ``f(soc: float) -> float``,
-        where 'soc' is the time-dependent state of charged solved for within
-        the model. All R0, Rj, and Cj properties should have signatures like
-        ``f(soc: float, T_cell: float) -> float``, where 'T_cell' is the cell
-        temperature in K determined in the model.
+        where 'soc' is the state of charge. All R0, Rj, and Cj properties need
+        signatures like ``f(soc: float, T_cell: float) -> float``. 'T_cell' is
+        the cell temperature in K.
 
         Rj and Cj are not real property names. These are used generally in the
         documentation. If ``num_RC_pairs=1`` then in addition to R0, you should
@@ -155,11 +154,11 @@ class Model:
         Parameters
         ----------
         initial_state : bool | Solution
-            Controls how the model state is initialized. If boolean it will set
-            the state to a rested state at 'soc0' when True (default) or will
-            bypass the state initialization update when False. Given a Solution
-            object, the internal state will be set to the final state of the
-            solution. See notes for more information.
+            Control how the model state is initialized. If True (default), the
+            state is set to a rested condition at 'soc0'. If False, the state
+            is left untouched and only the parameters and pointers are updated.
+            Given a Solution instance, the state is set to the final state of
+            the solution. See notes for more information.
 
         Returns
         -------
@@ -167,20 +166,24 @@ class Model:
 
         Warning
         -------
-        This method runs the first time during the class initialization. It
-        generally does not have to be run again unless you modify any model
-        attributes. You should manually re-run the pre-processor if you change
-        any properties after initialization. Forgetting to manually re-run the
-        pre-processor may cause inconsistencies between the updated properties
-        and the model's pointers, state, etc.
+        This method runs during the class initialization. It generally does not
+        have to be run again unless you modify model properties or attributes.
+        You should manually re-run the pre-processor if you change properties
+        after initialization. Forgetting to re-run the pre-processor can cause
+        inconsistencies between the updated properties and the pointers, state,
+        etc. If you are updating properties, but want the model's internal state
+        to not be reset back to a rested condition, use the ``initial_state``
+        option.
 
         Notes
         -----
         Using ``initial_state=False`` will raise an error if you are changing
-        the size of your circuit (e.g., changing from one to two RC pairs).
-        The same logic applies when initializing based on a Solution instance.
-        In other words, a 1RC-pair model cannot be initialized given a solution
-        from a 2RC-pair circuit.
+        the size of your circuit (e.g., updating from one to two RC pairs).
+        Without re-initializing, the model's state vector would be a different
+        size than the circuit it is trying to solve. For this same reason, when
+        initializing based on a Solution instance, the solution must also be
+        the same size as the current model. In other words, a 1RC-pair model
+        cannot be initialized given a solution from a 2RC-pair circuit.
 
         """
 
@@ -389,16 +392,18 @@ class Model:
         Returns
         -------
         :class:`~thevenin.StepSolution`
-            Solution to the experiment step.
+            Solution to the experimental step.
 
         Warning
         -------
-        The model's internal state is changed at the end of each experiment
+        The model's internal state is changed at the end of each experimental
         step. Consequently, you should not run steps out of order. You should
         always start with ``stepidx = 0`` and then progress to the subsequent
         steps afterward. Run ``pre()`` after your last step to reset the state
-        back to a rested state at 'soc0'. Otherwise the internal state will
-        match the final state from the last step that was run.
+        back to a rested condition at 'soc0', if needed. Alternatively, you
+        can continue running experiments back-to-back without a pre-processing
+        in between if you want the following experiment to pick up from the
+        same state that the last experiment ended.
 
         See also
         --------
@@ -407,11 +412,11 @@ class Model:
 
         Notes
         -----
-        Using the ``run()`` method will automatically run all steps in an
-        experiment and will stitch the solutions together for you. You should
-        only run step by step if you are trying to fine tune solver options, or
-        if you have a complex protocol and you can't set an experimental step
-        until interpreting a previous step.
+        Using the ``run()`` loops through all steps in an experiment and then
+        stitches their solutions together. Most of the time, this is more
+        convenient. However, advantages for running step-by-step is that it
+        makes it easier to fine tune solver options, and allows for analyses
+        or control decisions in the middle of an experiment.
 
         """
 
@@ -449,7 +454,7 @@ class Model:
     def run(self, exp: Experiment, reset_state: bool = True,
             t_shift: float = 1e-3) -> CycleSolution:
         """
-        Run an experiment.
+        Run a full experiment.
 
         Parameters
         ----------
@@ -457,9 +462,9 @@ class Model:
             An experiment instance.
         reset_state : bool
             If True (default), the internal state of the model will be reset
-            back to a rested condition at 'soc0' at the end of the experiment.
-            When False the state does not reset instead matches the final state
-            of the last experimental step.
+            back to a rested condition at 'soc0' at the end of all steps. When
+            False, the state does not reset. Instead it will update to match
+            the final state of the last experimental step.
         t_shift : float
             Time (in seconds) to shift step solutions by when stitching them
             together. If zero the end time of each step overlaps the starting
@@ -468,14 +473,17 @@ class Model:
         Returns
         -------
         :class:`~thevenin.CycleSolution`
-            A stitched solution will all experimental steps.
+            A stitched solution with all experimental steps.
 
         Warning
         -------
         The default behavior resets the model's internal state back to a rested
-        condition at 'soc0' by calling the ``pre()`` method. You can bypass this
-        by using ``reset_state=False``, which will keep the state at the end of
-        the final experimental step.
+        condition at 'soc0' by calling the ``pre()`` method at the end of all
+        steps. This means that if you run a second experiment afterward, it
+        will not start where the previous one left off. Instead, it will start
+        from the original rested condition that the model initialized with. You
+        can bypass this by using ``reset_state=False``, which keeps the state
+        at the end of the final experimental step.
 
         See also
         --------
@@ -534,10 +542,7 @@ class _RootFunction:
 
     def __init__(self, limits: tuple[str, float]) -> None:
         """
-        This class is a generalize root function callable. All possible root
-        functions only have one event that can be triggered. Therefore, the
-        'size' property is always unity, and is passed to the IDASolver as
-        the 'nr_rootfns' argument.
+        This class is a generalized root function callable.
 
         Parameters
         ----------
@@ -592,7 +597,7 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
 
     The IDASolver requires two keyword arguments to be set when using root
     functions. The first is 'rootfn' which requires a Callable. The second
-    is 'nr_rootfns' with allocates memory to an array that stores the root
+    is 'num_events' with allocates memory to an array that stores the root
     function values.
 
     Parameters
@@ -601,8 +606,8 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
         A tuple of root function criteria arranged as ordered pairs of limit
         names and values, e.g., ('time_h', 10., 'voltage_V', 4.2).
     kwargs : dict
-        The IDASolver keyword argumnents dictionary. Both the 'rootfn' and
-        'nr_rootfns' keyword arguments must be added to 'kwargs'.
+        The IDASolver keyword argumnents dictionary. Both the 'eventsfn' and
+        'num_events' keyword arguments must be added to 'kwargs'.
 
     Returns
     -------

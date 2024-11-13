@@ -25,7 +25,7 @@
      inkscape:document-units="mm"
      inkscape:zoom="0.6637929"
      inkscape:cx="134.83121"
-     inkscape:cy="568.70147"
+     inkscape:cy="567.19498"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -92,9 +92,9 @@
      inkscape:groupmode="layer"
      id="layer1"><g
        id="g2"
-       inkscape:export-filename="thevenin_circuit.png"
-       inkscape:export-xdpi="500"
-       inkscape:export-ydpi="500"
+       inkscape:export-filename="example_circuit.png"
+       inkscape:export-xdpi="149.41176"
+       inkscape:export-ydpi="149.41176"
        transform="translate(-52.567891,-12.740328)"><rect
          style="fill:#ffffff;fill-opacity:0.412137;stroke:none;stroke-width:0.428014"
          id="rect1"

@@ -19,8 +19,8 @@ class Experiment:
 
         Parameters
         ----------
-        kwargs : dict, optional
-            IDASolver keyword arguments that will span all steps.
+        **kwargs : dict, optional
+            IDASolver keyword arguments that span all steps.
 
         See also
         --------
@@ -105,24 +105,24 @@ class Experiment:
         Parameters
         ----------
         mode : str
-            Control mode, from {'current_A', 'voltage_V', 'power_W'}.
+            Control mode, {'current_A', 'current_C', 'voltage_V', 'power_W'}.
         value : float | Callable
-            Value of boundary contion in the appropriate units.
+            Value of boundary contion mode, in the appropriate units.
         tspan : tuple | 1D np.array
             Relative times for recording solution [s]. Providing a tuple as
             (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
-            tspan using ``np.linspace`` or ``np.arange``, respectively. See
-            the notes for more information. Given an array simply uses the
-            values supplied as the evaluation times. Arrays must be monotonic
-            increasing and start with zero.
+            tspan using ``np.linspace`` or ``np.arange``, respectively. Given
+            an array uses the values supplied as the evaluation times. Arrays
+            must be monotonically increasing and start with zero. See the notes
+            for more information.
         limits : tuple[str, float], optional
             Stopping criteria for the new step, must be entered in sequential
             name/value pairs. Allowable names are {'soc', 'temperature_K',
-            'current_A', 'voltage_V', 'power_W', 'capacity_Ah', 'time_s',
-            'time_min', 'time_h'}. Values for each limit should immediately
-            follow a corresponding name and be the appropriate units. All of
-            the time limits represent the total experiment time. The default
-            is None.
+            'current_A', 'current_C', 'voltage_V', 'power_W', 'capacity_Ah',
+            'time_s', 'time_min', 'time_h'}. Values for each limit should
+            immediately follow a corresponding name and match its units. Time
+            limits are in reference to total experiment time. The default is
+            None.
         **kwargs : dict, optional
             IDASolver keyword arguments specific to the new step only.
 
@@ -158,11 +158,11 @@ class Experiment:
         Notes
         -----
         For time-dependent loads, use a Callable for 'value' with a function
-        signature like def load(t: float) -> float, where t is the step's
+        signature like ``def load(t: float) -> float``, where 't' is the step's
         relative time, in seconds.
 
-        The solution times array is constructed depending on the 'tspan'
-        input types:
+        Solution times are constructed and saved depending on the 'tspan' input
+        types that were supplied:
 
         * Given (float, int):
             ``tspan = np.linspace(0., tspan[0], tspan[1])``
