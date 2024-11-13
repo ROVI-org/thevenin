@@ -64,7 +64,7 @@ def model_2RC(dict_params):
 def constant_steps():
     expr = thev.Experiment()
     expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
-    expr.add_step('current_A', 0., (600., 1.))
+    expr.add_step('current_C', 0., (600., 1.))
     expr.add_step('current_A', -1., (3600., 1.), limits=('voltage_V', 4.3))
     expr.add_step('voltage_V', 4.3, (600., 1.))
     expr.add_step('power_W', 1., (600., 1.), limits=('voltage_V', 3.))
@@ -154,6 +154,79 @@ def test_bad_yaml_inputs():
         _ = thev.Model('fake')
 
 
+def test_preprocessor_raises(dict_params, dynamic_current):
+
+    # missing attrs
+    with pytest.raises(AttributeError):
+        model = thev.Model(dict_params)
+
+        model.num_RC_pairs = 1
+        model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+
+        model.pre()
+
+    with pytest.raises(AttributeError):
+        model = thev.Model(dict_params)
+
+        model.num_RC_pairs = 1
+        model.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
+
+        model.pre()
+
+    # extra attrs - warning
+    with pytest.warns(UserWarning):
+        model = thev.Model(dict_params)
+
+        model.num_RC_pairs = 1
+        model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+        model.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
+        model.R2 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+
+        model.pre()
+
+    # changed sv size w/o reset
+    with pytest.raises(ValueError):
+        model = thev.Model(dict_params)
+
+        model.num_RC_pairs = 1
+        model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+        model.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
+
+        model.pre(initial_state=False)
+
+    # soln size inconsistent with model
+    with pytest.raises(ValueError):
+        model = thev.Model(dict_params)
+        soln = model.run(dynamic_current)
+
+        model.num_RC_pairs = 1
+        model.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+        model.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
+
+        model.pre(initial_state=soln)
+
+
+def test_preprocessing_initial_state_options(model_0RC, constant_steps):
+    sv0 = model_0RC._sv0.copy()
+    svdot0 = model_0RC._svdot0.copy()
+
+    soln = model_0RC.run(constant_steps)
+    assert np.allclose(sv0, model_0RC._sv0)
+    assert np.allclose(svdot0, model_0RC._svdot0)
+
+    model_0RC.pre(initial_state=soln)
+    assert np.allclose(soln.y[-1], model_0RC._sv0)
+    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
+
+    model_0RC.pre(initial_state=False)
+    assert np.allclose(soln.y[-1], model_0RC._sv0)
+    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
+
+    model_0RC.pre()
+    assert np.allclose(sv0, model_0RC._sv0)
+    assert np.allclose(svdot0, model_0RC._svdot0)
+
+
 def test_run_step(model_2RC, constant_steps):
 
     sv0 = model_2RC._sv0.copy()
@@ -169,6 +242,19 @@ def test_run_step(model_2RC, constant_steps):
 
     assert np.allclose(sv0, model_2RC._sv0)
     assert np.allclose(svdot0, model_2RC._svdot0)
+
+
+def test_run_options(model_0RC, constant_steps):
+    sv0 = model_0RC._sv0.copy()
+    svdot0 = model_0RC._svdot0.copy()
+
+    soln = model_0RC.run(constant_steps)
+    assert np.allclose(sv0, model_0RC._sv0)
+    assert np.allclose(svdot0, model_0RC._svdot0)
+
+    soln = model_0RC.run(constant_steps, reset_state=False)
+    assert np.allclose(soln.y[-1], model_0RC._sv0)
+    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
 
 
 def test_model_w_multistep_experiment(model_0RC, model_1RC, model_2RC,

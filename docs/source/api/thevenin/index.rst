@@ -40,6 +40,7 @@ Classes
 
    thevenin.CycleSolution
    thevenin.Experiment
+   thevenin.IDAResult
    thevenin.IDASolver
    thevenin.Model
    thevenin.StepSolution
@@ -48,7 +49,7 @@ Classes
 Package Contents
 ----------------
 
-.. py:class:: CycleSolution(*soln)
+.. py:class:: CycleSolution(*soln, t_shift = 0.001)
 
 
 
@@ -61,6 +62,10 @@ Package Contents
                   steps should be given in the same sequential order that they were
                   run.
    :type \*soln: StepSolution
+   :param t_shift: Time (in seconds) to shift step solutions by when stitching them
+                   together. If zero the end time of each step overlaps the starting
+                   time of its following step. The default is 1e-3.
+   :type t_shift: float
 
 
    .. py:method:: get_steps(idx)
@@ -70,7 +75,7 @@ Package Contents
       :param idx: The step index (int) or first/last indices (tuple) to return.
       :type idx: int | tuple
 
-      :returns: **soln** (*StepSolution | CycleSolution*) -- The returned solution subset. A StepSolution is returned if 'idx'
+      :returns: :class:`StepSolution` | :class:`CycleSolution` -- The returned solution subset. A StepSolution is returned if 'idx'
                 is an int, and a CycleSolution will be returned for the range of
                 requested steps when 'idx' is a tuple.
 
@@ -127,8 +132,10 @@ Package Contents
       :param tspan: Relative times for recording solution [s]. Providing a tuple as
                     (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
                     tspan using ``np.linspace`` or ``np.arange``, respectively. See
-                    the notes for more information.
-      :type tspan: tuple
+                    the notes for more information. Given an array simply uses the
+                    values supplied as the evaluation times. Arrays must be monotonic
+                    increasing and start with zero.
+      :type tspan: tuple | 1D np.array
       :param limits: Stopping criteria for the new step, must be entered in sequential
                      name/value pairs. Allowable names are {'soc', 'temperature_K',
                      'current_A', 'voltage_V', 'power_W', 'capacity_Ah', 'time_s',
@@ -146,6 +153,10 @@ Package Contents
       :raises ValueError: A 'limits' name is invalid.
       :raises ValueError: 'tspan' tuple must be length 2.
       :raises TypeError: 'tspan[1]' must be type int or float.
+      :raises ValueError: 'tspan' arrays must be one-dimensional.
+      :raises ValueError: 'tspan[0]' must be zero when given an array.
+      :raises ValueError: 'tspan' array length must be at least two.
+      :raises ValueError: 'tspan' arrays must be monotonically increasing.
 
       .. seealso::
 
@@ -169,6 +180,10 @@ Package Contents
           In this case, 't_max' is also appended to the end. This results
           in the final 'dt' being different from the others if 't_max' is
           not evenly divisible by the given 'dt'.
+      * Given 1D np.array:
+          When you provide a numpy array it is checked for compatibility.
+          If the array is not 1D, is not monotonically increasing, or starts
+          with a value other than zero then an error is raised.
 
 
 
@@ -194,6 +209,68 @@ Package Contents
       Return steps list.
 
       :returns: **steps** (*list[dict]*) -- List of the step dictionaries.
+
+
+.. py:class:: IDAResult(**kwargs)
+
+
+
+   Results class for IDA solver.
+
+   Inherits from :class:`~sksundae.common.RichResult`. The solution class
+   groups output from :class:`IDA` into an object with the fields:
+
+   :param message: Human-readable description of the status value.
+   :type message: str
+   :param success: True if the solver was successful (status >= 0). False otherwise.
+   :type success: bool
+   :param status: Reason for the algorithm termination. Negative values correspond
+                  to errors, and non-negative values to different successful criteria.
+   :type status: int
+   :param t: Solution time(s). The dimension depends on the method. Stepwise
+             solutions will only have 1 value whereas solutions across a full
+             'tspan' will have many.
+   :type t: ndarray, shape(n,)
+   :param y: State variable values at each solution time. Rows correspond to
+             indices in 't' and columns match indexing from 'y0'.
+   :type y: ndarray, shape(n, m)
+   :param yp: State variable time derivate values at each solution time. Row
+              and column indexing matches 'y'.
+   :type yp: ndarray, shape(n, m)
+   :param i_events: Provides an array for each detected event 'k' specifying indices
+                    for which event(s) occurred. ``i_events[k,i] != 0`` if 'events[i]'
+                    occurred at 't_events[k]'. The sign of 'i_events' indicates the
+                    direction of zero-crossing:
+
+                        * -1 indicates 'events[i]' was decreasing
+                        * +1 indicates 'events[i]' was increasing
+
+                    Output for 'i_events' will be None when either 'eventsfn' was None
+                    or if no events occurred during the solve.
+   :type i_events: ndarray, shape(k, num_events) or None
+   :param t_events: Times at which events occurred or None if 'eventsfn' was None or
+                    no events were triggered during the solve.
+   :type t_events: ndarray, shape(k,) or None
+   :param y_events: State variable values at each 't_events' value or None. Rows and
+                    columns correspond to 't_events' and 'y0' indexing, respectively.
+   :type y_events: ndarray, shape(k, m) or None
+   :param yp_events: State variable time derivative values at each 't_events' value or
+                     None. Row and column indexing matches 'y_events'.
+   :type yp_events: ndarray, shape(k, m) or None
+   :param nfev: Number of times that 'resfn' was evaluated.
+   :type nfev: int
+   :param njev: Number of times the Jacobian was evaluated, 'jacfn' or internal
+                finite difference method.
+   :type njev: int
+
+   .. rubric:: Notes
+
+   Terminal events are appended to the end of 't', 'y', and 'yp'. However,
+   if an event was not terminal then it will only appear in '\*_events'
+   outputs and not within the main output arrays.
+
+   'nfev' and 'njev' are cumulative for stepwise solution approaches. The
+   values are reset each time 'init_step' is called.
 
 
 .. py:class:: IDASolver(resfn, **options)
@@ -498,23 +575,23 @@ Package Contents
                   keys/value pair descriptions are given below. The default uses a
                   .yaml file. Use the templates() function to view this file.
 
-                  ============= =========================================
-                  Key           Value (*type*, units)
-                  ============= =========================================
-                  num_RC_pairs  number of RC pairs (*int*, -)
-                  soc0          initial state of charge (*float*, -)
-                  capacity      maximum battery capacity (*float*, Ah)
-                  mass          total battery mass (*float*, kg)
-                  isothermal    flag for isothermal model (*bool*, -)
-                  Cp            specific heat capacity (*float*, J/kg/K)
-                  T_inf         room/air temperature (*float*, K)
-                  h_therm       convective coefficient (*float*, W/m2/K)
-                  A_therm       heat loss area (*float*, m2)
-                  ocv           open circuit voltage (*callable*, V)
-                  R0            series resistance (*callable*, Ohm)
-                  Rj            resistance in RCj (*callable*, Ohm)
-                  Cj            capacity in RCj (*callable*, F)
-                  ============= =========================================
+                  ============= ========================== ================
+                  Key           Value                      *type*, units
+                  ============= ========================== ================
+                  num_RC_pairs  number of RC pairs         *int*, -
+                  soc0          initial state of charge    *float*, -
+                  capacity      maximum battery capacity   *float*, Ah
+                  mass          total battery mass         *float*, kg
+                  isothermal    flag for isothermal model  *bool*, -
+                  Cp            specific heat capacity     *float*, J/kg/K
+                  T_inf         room/air temperature       *float*, K
+                  h_therm       convective coefficient     *float*, W/m2/K
+                  A_therm       heat loss area             *float*, m2
+                  ocv           open circuit voltage       *callable*, V
+                  R0            series resistance          *callable*, Ohm
+                  Rj            resistance in RCj          *callable*, Ohm
+                  Cj            capacity in RCj            *callable*, F
+                  ============= ========================== ================
    :type params: dict | str
 
    :raises TypeError: 'params' must be type dict or str.
@@ -524,30 +601,37 @@ Package Contents
 
       A pre-processor runs at the end of the model initialization. If you
       modify any parameters after class instantiation, you will need to
-      manually re-run the pre-processor (i.e., the pre() method) afterward.
+      re-run the pre-processor (i.e., the ``pre()`` method) afterward.
 
    .. rubric:: Notes
 
-   The ocv property should have a signature like f(soc: float) -> float,
-   where soc is the time-dependent state of charged solved for within
+   The 'ocv' property needs a signature like ``f(soc: float) -> float``,
+   where 'soc' is the time-dependent state of charged solved for within
    the model. All R0, Rj, and Cj properties should have signatures like
-   f(soc: float, T_cell: float) -> float, where T_cell is the temperature
-   in K determined in the model.
+   ``f(soc: float, T_cell: float) -> float``, where 'T_cell' is the cell
+   temperature in K determined in the model.
 
-   Rj and Cj are not true property names. These are just used generally
-   in the documentation. If num_RC_pairs=1 then in addition to R0, you
-   should define R1 and C1. If num_RC_pairs=2 then you should also give
-   values for R2 and C2, etc. For the special case where num_RC_pairs=0,
-   you should not provide any resistance or capacitance values besides
-   the series resistance R0, which is always required.
+   Rj and Cj are not real property names. These are used generally in the
+   documentation. If ``num_RC_pairs=1`` then in addition to R0, you should
+   define R1 and C1. If ``num_RC_pairs=2`` then you should also give R2
+   and C2, etc. For the special case where ``num_RC_pairs=0``, you should
+   not provide any resistance or capacitance values besides the series
+   resistance R0, which is always required.
 
 
-   .. py:method:: pre()
+   .. py:method:: pre(initial_state = True)
 
       Pre-process and prepare the model for running experiments.
 
       This method builds solution pointers, registers algebraic variable
       indices, stores the mass matrix, and initializes the battery state.
+
+      :param initial_state: Controls how the model state is initialized. If boolean it will set
+                            the state to a rested state at 'soc0' when True (default) or will
+                            bypass the state initialization update when False. Given a Solution
+                            object, the internal state will be set to the final state of the
+                            solution. See notes for more information.
+      :type initial_state: bool | Solution
 
       :returns: *None.*
 
@@ -555,10 +639,18 @@ Package Contents
 
          This method runs the first time during the class initialization. It
          generally does not have to be run again unless you modify any model
-         attributes. You should manually re-run the pre-processor if you alter
+         attributes. You should manually re-run the pre-processor if you change
          any properties after initialization. Forgetting to manually re-run the
          pre-processor may cause inconsistencies between the updated properties
          and the model's pointers, state, etc.
+
+      .. rubric:: Notes
+
+      Using ``initial_state=False`` will raise an error if you are changing
+      the size of your circuit (e.g., changing from one to two RC pairs).
+      The same logic applies when initializing based on a Solution instance.
+      In other words, a 1RC-pair model cannot be initialized given a solution
+      from a 2RC-pair circuit.
 
 
 
@@ -588,8 +680,9 @@ Package Contents
       Right hand side functions.
 
       Returns the right hand side for the DAE system. For any differential
-      variable i, rhs[i] must be equivalent to M[i, i]*y[i]. For algebraic
-      variables rhs[i] must be an expression that equals zero.
+      variable i, rhs[i] must be equivalent to M[i, i]*y[i] where M is the
+      mass matrix and y is an array of states. For algebraic variables rhs[i]
+      must be an expression that equals zero.
 
       :param t: Value of time [s].
       :type t: float
@@ -602,14 +695,30 @@ Package Contents
 
 
 
-   .. py:method:: run(exp)
+   .. py:method:: run(exp, reset_state = True, t_shift = 0.001)
 
       Run an experiment.
 
       :param exp: An experiment instance.
       :type exp: Experiment
+      :param reset_state: If True (default), the internal state of the model will be reset
+                          back to a rested condition at 'soc0' at the end of the experiment.
+                          When False the state does not reset instead matches the final state
+                          of the last experimental step.
+      :type reset_state: bool
+      :param t_shift: Time (in seconds) to shift step solutions by when stitching them
+                      together. If zero the end time of each step overlaps the starting
+                      time of its following step. The default is 1e-3.
+      :type t_shift: float
 
-      :returns: **soln** (*CycleSolution*) -- A stitched solution will all experimental steps.
+      :returns: :class:`~thevenin.CycleSolution` -- A stitched solution will all experimental steps.
+
+      .. warning::
+
+         The default behavior resets the model's internal state back to a rested
+         condition at 'soc0' by calling the ``pre()`` method. You can bypass this
+         by using ``reset_state=False``, which will keep the state at the end of
+         the final experimental step.
 
       .. seealso::
 
@@ -630,16 +739,16 @@ Package Contents
       :param stepidx: Step index to run. The first step has index 0.
       :type stepidx: int
 
-      :returns: **soln** (*StepSolution*) -- Solution to the experiment step.
+      :returns: :class:`~thevenin.StepSolution` -- Solution to the experiment step.
 
       .. warning::
 
          The model's internal state is changed at the end of each experiment
          step. Consequently, you should not run steps out of order. You should
          always start with ``stepidx = 0`` and then progress to the subsequent
-         steps afterward. After the last step, you should manually run the
-         preprocessor ``pre()`` to reset the model before running additional
-         experiments.
+         steps afterward. Run ``pre()`` after your last step to reset the state
+         back to a rested state at 'soc0'. Otherwise the internal state will
+         match the final state from the last step that was run.
 
       .. seealso::
 
@@ -653,7 +762,7 @@ Package Contents
 
       Using the ``run()`` method will automatically run all steps in an
       experiment and will stitch the solutions together for you. You should
-      only run step by step if you trying to fine tune solver options, or
+      only run step by step if you are trying to fine tune solver options, or
       if you have a complex protocol and you can't set an experimental step
       until interpreting a previous step.
 
@@ -670,7 +779,7 @@ Package Contents
    :param model: The model instance that was run to produce the solution.
    :type model: Model
    :param ida_soln: The unformatted solution returned by IDASolver.
-   :type ida_soln: SolverReturn
+   :type ida_soln: IDAResult
    :param timer: Amount of time it took for IDASolver to perform the integration.
    :type timer: float
 

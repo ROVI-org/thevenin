@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from copy import deepcopy
+from typing import Iterable, TYPE_CHECKING
+
 import textwrap
+from copy import deepcopy
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -39,30 +40,36 @@ class BaseSolution(IDAResult):
 
         """
 
-        def wrap_string(value: list, width: int, indent: int):
-            if not isinstance(value, list):
+        classname = self.__class__.__name__
+
+        def wrap_string(label: str, value: list, width: int):
+            if isinstance(value, Iterable):
                 value = list(value)
+            else:
+                value = [value]
 
-            indent = ' '*indent
+            indent = ' '*(len(label) + 1)
 
-            text = "[" + ", ".join(f"{v!r}" for v in value) + "]"
+            if classname == 'StepSolution' and len(value) == 1:
+                text = label + f"{value[0]!r}"
+            else:
+                text = label + "[" + ", ".join(f"{v!r}" for v in value) + "]"
 
             return textwrap.fill(text, width=width, subsequent_indent=indent)
 
-        vars = wrap_string(self.vars.keys(), 70, len('    vars=['))
+        data = [
+            wrap_string('    success=', self.success, 79),
+            wrap_string('    status=', self.status, 79),
+            wrap_string('    nfev=', self.nfev, 79),
+            wrap_string('    njev=', self.njev, 79),
+            wrap_string('    vars=', self.vars.keys(), 79),
+        ]
 
-        data = {
-            'solvetime': self.solvetime,
-            'success': self.success,
-            'status': self.status,
-            'nfev': self.nfev,
-            'njev': self.njev,
-            'vars': vars,
-        }
+        summary = f"    solvetime={self.solvetime},"
+        for d in data:
+            summary += f"\n{d},"
 
-        summary = "\n    ".join(f"{k}={v}," for k, v in data.items())
-
-        readable = f"{self.__class__.__name__}(\n    {summary}\n)"
+        readable = f"{classname}(\n{summary}\n)"
 
         return readable
 
@@ -101,7 +108,7 @@ class BaseSolution(IDAResult):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.show()
+        plt.show(block=False)
 
     def _to_dict(self) -> None:
         """
@@ -163,7 +170,7 @@ class StepSolution(BaseSolution):
         ----------
         model : Model
             The model instance that was run to produce the solution.
-        ida_soln : SolverReturn
+        ida_soln : IDAResult
             The unformatted solution returned by IDASolver.
         timer : float
             Amount of time it took for IDASolver to perform the integration.
@@ -211,7 +218,7 @@ class StepSolution(BaseSolution):
 class CycleSolution(BaseSolution):
     """All-step solution."""
 
-    def __init__(self, *soln: StepSolution) -> None:
+    def __init__(self, *soln: StepSolution, t_shift: float = 1e-3) -> None:
         """
         A solution instance with all experiment steps stitch together into
         a single cycle.
@@ -222,6 +229,10 @@ class CycleSolution(BaseSolution):
             All unpacked StepSolution instances to stitch together. The given
             steps should be given in the same sequential order that they were
             run.
+        t_shift : float
+            Time (in seconds) to shift step solutions by when stitching them
+            together. If zero the end time of each step overlaps the starting
+            time of its following step. The default is 1e-3.
 
         """
 
@@ -251,12 +262,12 @@ class CycleSolution(BaseSolution):
 
         for soln in self._solns:
             if self.t.size > 0:
-                shift_t = self.t[-1] + soln.t + 1e-3
+                shift_t = self.t[-1] + soln.t + t_shift
             else:
                 shift_t = soln.t
 
             if soln.t_events and self.t.size > 0:
-                shift_t_events = self.t[-1] + soln.t_events + 1e-3
+                shift_t_events = self.t[-1] + soln.t_events + t_shift
             elif soln.t_events:
                 shift_t_events = soln.t_events
 
@@ -309,7 +320,7 @@ class CycleSolution(BaseSolution):
 
         Returns
         -------
-        soln : StepSolution | CycleSolution
+        :class:`StepSolution` | :class:`CycleSolution`
             The returned solution subset. A StepSolution is returned if 'idx'
             is an int, and a CycleSolution will be returned for the range of
             requested steps when 'idx' is a tuple.

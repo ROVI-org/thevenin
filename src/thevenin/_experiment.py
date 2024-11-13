@@ -108,11 +108,13 @@ class Experiment:
             Control mode, from {'current_A', 'voltage_V', 'power_W'}.
         value : float | Callable
             Value of boundary contion in the appropriate units.
-        tspan : tuple
+        tspan : tuple | 1D np.array
             Relative times for recording solution [s]. Providing a tuple as
             (t_max: float, Nt: int) or (t_max: float, dt: float) constructs
             tspan using ``np.linspace`` or ``np.arange``, respectively. See
-            the notes for more information.
+            the notes for more information. Given an array simply uses the
+            values supplied as the evaluation times. Arrays must be monotonic
+            increasing and start with zero.
         limits : tuple[str, float], optional
             Stopping criteria for the new step, must be entered in sequential
             name/value pairs. Allowable names are {'soc', 'temperature_K',
@@ -138,6 +140,14 @@ class Experiment:
             'tspan' tuple must be length 2.
         TypeError
             'tspan[1]' must be type int or float.
+        ValueError
+            'tspan' arrays must be one-dimensional.
+        ValueError
+            'tspan[0]' must be zero when given an array.
+        ValueError
+            'tspan' array length must be at least two.
+        ValueError
+            'tspan' arrays must be monotonically increasing.
 
         See also
         --------
@@ -162,6 +172,10 @@ class Experiment:
             In this case, 't_max' is also appended to the end. This results
             in the final 'dt' being different from the others if 't_max' is
             not evenly divisible by the given 'dt'.
+        * Given 1D np.array:
+            When you provide a numpy array it is checked for compatibility.
+            If the array is not 1D, is not monotonically increasing, or starts
+            with a value other than zero then an error is raised.
 
         """
 
@@ -170,20 +184,34 @@ class Experiment:
 
         mode, units = mode.split('_')
 
-        if not len(tspan) == 2:
-            raise ValueError("'tspan' tuple must be length 2.")
+        if isinstance(tspan, tuple):
 
-        if isinstance(tspan[1], int):
-            t_max, Nt = tspan
-            tspan = np.linspace(0., t_max, Nt)
-        elif isinstance(tspan[1], float):
-            t_max, dt = tspan
-            tspan = np.arange(0., t_max, dt, dtype=float)
+            if not len(tspan) == 2:
+                raise ValueError("'tspan' tuple must be length 2.")
+
+            if isinstance(tspan[1], int):
+                t_max, Nt = tspan
+                tspan = np.linspace(0., t_max, Nt)
+            elif isinstance(tspan[1], float):
+                t_max, dt = tspan
+                tspan = np.arange(0., t_max, dt, dtype=float)
+            else:
+                raise TypeError("'tspan[1]' must be type int or float.")
+
+            if tspan[-1] != t_max:
+                tspan = np.hstack([tspan, t_max])
+
         else:
-            raise TypeError("'tspan[1]' must be type int or float.")
+            tspan = np.asarray(tspan)
 
-        if tspan[-1] != t_max:
-            tspan = np.hstack([tspan, t_max])
+        if tspan.ndim != 1:
+            raise ValueError("'tspan' must be one-dimensional.")
+        elif tspan[0] != 0.:
+            raise ValueError("'tspan[0]' must be zero.")
+        elif tspan.size < 2:
+            raise ValueError("'tspan' array length must be at least two.")
+        elif not all(np.diff(tspan) > 0.):
+            raise ValueError("'tspan' must be monotonically increasing.")
 
         step = {}
         step['mode'] = mode
@@ -216,7 +244,7 @@ def _check_mode(mode: str) -> None:
 
     """
 
-    valid = ['current_A', 'voltage_V', 'power_W']
+    valid = ['current_A', 'current_C', 'voltage_V', 'power_W']
 
     if mode not in valid:
         raise ValueError(f"{mode=} is invalid; valid values are {valid}.")
@@ -244,8 +272,8 @@ def _check_limits(limits: tuple[str, float]) -> None:
 
     """
 
-    valid = ['soc', 'temperature_K', 'current_A', 'voltage_V', 'power_W',
-             'capacity_Ah', 'time_s', 'time_min', 'time_h']
+    valid = ['soc', 'temperature_K', 'current_A', 'current_C', 'voltage_V',
+             'power_W', 'capacity_Ah', 'time_s', 'time_min', 'time_h']
 
     if limits is None:
         pass

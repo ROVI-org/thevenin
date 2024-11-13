@@ -1,9 +1,11 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TypeVar, TYPE_CHECKING
 
 import os
+import re
 import time
 import warnings
+from copy import deepcopy
 
 import numpy as np
 import scipy.sparse as sparse
@@ -11,7 +13,9 @@ from ruamel.yaml import YAML, add_constructor, SafeConstructor
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._experiment import Experiment
-    from ._solutions import StepSolution, CycleSolution
+    from ._solutions import BaseSolution, StepSolution, CycleSolution
+
+    Solution = TypeVar('Solution', bound='BaseSolution')
 
 
 class Model:
@@ -32,23 +36,23 @@ class Model:
             keys/value pair descriptions are given below. The default uses a
             .yaml file. Use the templates() function to view this file.
 
-            ============= =========================================
-            Key           Value (*type*, units)
-            ============= =========================================
-            num_RC_pairs  number of RC pairs (*int*, -)
-            soc0          initial state of charge (*float*, -)
-            capacity      maximum battery capacity (*float*, Ah)
-            mass          total battery mass (*float*, kg)
-            isothermal    flag for isothermal model (*bool*, -)
-            Cp            specific heat capacity (*float*, J/kg/K)
-            T_inf         room/air temperature (*float*, K)
-            h_therm       convective coefficient (*float*, W/m2/K)
-            A_therm       heat loss area (*float*, m2)
-            ocv           open circuit voltage (*callable*, V)
-            R0            series resistance (*callable*, Ohm)
-            Rj            resistance in RCj (*callable*, Ohm)
-            Cj            capacity in RCj (*callable*, F)
-            ============= =========================================
+            ============= ========================== ================
+            Key           Value                      *type*, units
+            ============= ========================== ================
+            num_RC_pairs  number of RC pairs         *int*, -
+            soc0          initial state of charge    *float*, -
+            capacity      maximum battery capacity   *float*, Ah
+            mass          total battery mass         *float*, kg
+            isothermal    flag for isothermal model  *bool*, -
+            Cp            specific heat capacity     *float*, J/kg/K
+            T_inf         room/air temperature       *float*, K
+            h_therm       convective coefficient     *float*, W/m2/K
+            A_therm       heat loss area             *float*, m2
+            ocv           open circuit voltage       *callable*, V
+            R0            series resistance          *callable*, Ohm
+            Rj            resistance in RCj          *callable*, Ohm
+            Cj            capacity in RCj            *callable*, F
+            ============= ========================== ================
 
         Raises
         ------
@@ -57,26 +61,26 @@ class Model:
         ValueError
             'params' contains invalid and/or excess key/value pairs.
 
-        Warnings
-        --------
+        Warning
+        -------
         A pre-processor runs at the end of the model initialization. If you
         modify any parameters after class instantiation, you will need to
-        manually re-run the pre-processor (i.e., the pre() method) afterward.
+        re-run the pre-processor (i.e., the ``pre()`` method) afterward.
 
         Notes
         -----
-        The ocv property should have a signature like f(soc: float) -> float,
-        where soc is the time-dependent state of charged solved for within
+        The 'ocv' property needs a signature like ``f(soc: float) -> float``,
+        where 'soc' is the time-dependent state of charged solved for within
         the model. All R0, Rj, and Cj properties should have signatures like
-        f(soc: float, T_cell: float) -> float, where T_cell is the temperature
-        in K determined in the model.
+        ``f(soc: float, T_cell: float) -> float``, where 'T_cell' is the cell
+        temperature in K determined in the model.
 
-        Rj and Cj are not true property names. These are just used generally
-        in the documentation. If num_RC_pairs=1 then in addition to R0, you
-        should define R1 and C1. If num_RC_pairs=2 then you should also give
-        values for R2 and C2, etc. For the special case where num_RC_pairs=0,
-        you should not provide any resistance or capacitance values besides
-        the series resistance R0, which is always required.
+        Rj and Cj are not real property names. These are used generally in the
+        documentation. If ``num_RC_pairs=1`` then in addition to R0, you should
+        define R1 and C1. If ``num_RC_pairs=2`` then you should also give R2
+        and C2, etc. For the special case where ``num_RC_pairs=0``, you should
+        not provide any resistance or capacitance values besides the series
+        resistance R0, which is always required.
 
         """
 
@@ -110,9 +114,9 @@ class Model:
         self.ocv = params.pop('ocv')
         self.R0 = params.pop('R0')
 
-        for i in range(self.num_RC_pairs):
-            setattr(self, 'R' + str(i+1), params.pop('R' + str(i+1)))
-            setattr(self, 'C' + str(i+1), params.pop('C' + str(i+1)))
+        for j in range(1, self.num_RC_pairs + 1):
+            setattr(self, 'R' + str(j), params.pop('R' + str(j)))
+            setattr(self, 'C' + str(j), params.pop('C' + str(j)))
 
         if len(params) != 0:
             extra_keys = list(params.keys())
@@ -141,29 +145,71 @@ class Model:
 
         return readable
 
-    def pre(self) -> None:
+    def pre(self, initial_state: bool | Solution = True) -> None:
         """
         Pre-process and prepare the model for running experiments.
 
         This method builds solution pointers, registers algebraic variable
         indices, stores the mass matrix, and initializes the battery state.
 
+        Parameters
+        ----------
+        initial_state : bool | Solution
+            Controls how the model state is initialized. If boolean it will set
+            the state to a rested state at 'soc0' when True (default) or will
+            bypass the state initialization update when False. Given a Solution
+            object, the internal state will be set to the final state of the
+            solution. See notes for more information.
+
         Returns
         -------
         None.
 
-        Warnings
-        --------
+        Warning
+        -------
         This method runs the first time during the class initialization. It
         generally does not have to be run again unless you modify any model
-        attributes. You should manually re-run the pre-processor if you alter
+        attributes. You should manually re-run the pre-processor if you change
         any properties after initialization. Forgetting to manually re-run the
         pre-processor may cause inconsistencies between the updated properties
         and the model's pointers, state, etc.
 
+        Notes
+        -----
+        Using ``initial_state=False`` will raise an error if you are changing
+        the size of your circuit (e.g., changing from one to two RC pairs).
+        The same logic applies when initializing based on a Solution instance.
+        In other words, a 1RC-pair model cannot be initialized given a solution
+        from a 2RC-pair circuit.
+
         """
 
-        self._t0 = 0.
+        from ._solutions import BaseSolution
+
+        missing_attrs = []
+        for j in range(1, self.num_RC_pairs + 1):
+            if not hasattr(self, 'R' + str(j)):
+                missing_attrs.append('R' + str(j))
+            if not hasattr(self, 'C' + str(j)):
+                missing_attrs.append('C' + str(j))
+
+        if missing_attrs:
+            raise AttributeError(f"Model is missing attrs {missing_attrs} to"
+                                 " be consistent with 'num_RC_pairs'.")
+
+        extra_attrs = []
+        pattern = re.compile(r"^[RC](\d+)")
+        for attr in list(self.__dict__.keys()):
+
+            matches = pattern.match(attr)
+            if matches is None:
+                pass
+            elif int(matches.group(1)) > self.num_RC_pairs:
+                extra_attrs.append(attr)
+
+        if extra_attrs:
+            short_warn(f"Extra RC attributes {extra_attrs} are present, beyond"
+                       " what was expected based on 'num_RC_pairs'.")
 
         ptr = {}
         ptr['soc'] = 0
@@ -190,16 +236,35 @@ class Model:
         self._ptr = ptr
         self._algidx = algidx
         self._mass_matrix = sparse.diags(mass_matrix)
-        self._sv0 = sv0
-        self._svdot0 = svdot0
+
+        self._t0 = 0.
+        if isinstance(initial_state, BaseSolution):
+            soln = deepcopy(initial_state)
+            if soln.y[-1].size != sv0.size:
+                raise ValueError("Cannot initialize state based on Solution"
+                                 " object given in 'initial_state'. The model"
+                                 " and solution have incompatible sizes.")
+
+            self._sv0 = soln.y[-1].copy()
+            self._svdot0 = soln.yp[-1].copy()
+
+        elif not initial_state:
+            if self._sv0.size != sv0.size:
+                raise ValueError("The pre-processor failed. The model state is"
+                                 " changing sizes but 'initial_state=False'.")
+
+        elif initial_state:
+            self._sv0 = sv0
+            self._svdot0 = svdot0
 
     def rhs_funcs(self, t: float, sv: np.ndarray, inputs: dict) -> np.ndarray:
         """
         Right hand side functions.
 
         Returns the right hand side for the DAE system. For any differential
-        variable i, rhs[i] must be equivalent to M[i, i]*y[i]. For algebraic
-        variables rhs[i] must be an expression that equals zero.
+        variable i, rhs[i] must be equivalent to M[i, i]*y[i] where M is the
+        mass matrix and y is an array of states. For algebraic variables rhs[i]
+        must be an expression that equals zero.
 
         Parameters
         ----------
@@ -249,12 +314,18 @@ class Model:
             rhs[ptr] = -sv[ptr] / (Rj*Cj) + current / Cj
 
         # cell voltage (algebraic)
-        if inputs['mode'] == 'current':
-            rhs[self._ptr['V_cell']] = current - inputs['value'](t)
-        elif inputs['mode'] == 'voltage':
-            rhs[self._ptr['V_cell']] = voltage - inputs['value'](t)
-        elif inputs['mode'] == 'power':
-            rhs[self._ptr['V_cell']] = power - inputs['value'](t)
+        mode = inputs['mode']
+        units = inputs['units']
+        value = inputs['value']
+
+        if mode == 'current' and units == 'A':
+            rhs[self._ptr['V_cell']] = current - value(t)
+        elif mode == 'current' and units == 'C':
+            rhs[self._ptr['V_cell']] = current - self.capacity*value(t)
+        elif mode == 'voltage':
+            rhs[self._ptr['V_cell']] = voltage - value(t)
+        elif mode == 'power':
+            rhs[self._ptr['V_cell']] = power - value(t)
 
         # values for rootfns
         total_time = self._t0 + t
@@ -263,6 +334,7 @@ class Model:
             'soc': soc,
             'temperature_K': T_cell,
             'current_A': current,
+            'current_C': current / self.capacity,
             'voltage_V': voltage,
             'power_W': power,
             'capacity_Ah': soc*self.capacity,
@@ -316,7 +388,7 @@ class Model:
 
         Returns
         -------
-        soln : StepSolution
+        :class:`~thevenin.StepSolution`
             Solution to the experiment step.
 
         Warning
@@ -324,9 +396,9 @@ class Model:
         The model's internal state is changed at the end of each experiment
         step. Consequently, you should not run steps out of order. You should
         always start with ``stepidx = 0`` and then progress to the subsequent
-        steps afterward. After the last step, you should manually run the
-        preprocessor ``pre()`` to reset the model before running additional
-        experiments.
+        steps afterward. Run ``pre()`` after your last step to reset the state
+        back to a rested state at 'soc0'. Otherwise the internal state will
+        match the final state from the last step that was run.
 
         See also
         --------
@@ -337,7 +409,7 @@ class Model:
         -----
         Using the ``run()`` method will automatically run all steps in an
         experiment and will stitch the solutions together for you. You should
-        only run step by step if you trying to fine tune solver options, or
+        only run step by step if you are trying to fine tune solver options, or
         if you have a complex protocol and you can't set an experimental step
         until interpreting a previous step.
 
@@ -374,7 +446,8 @@ class Model:
 
         return soln
 
-    def run(self, exp: Experiment) -> CycleSolution:
+    def run(self, exp: Experiment, reset_state: bool = True,
+            t_shift: float = 1e-3) -> CycleSolution:
         """
         Run an experiment.
 
@@ -382,11 +455,27 @@ class Model:
         ----------
         exp : Experiment
             An experiment instance.
+        reset_state : bool
+            If True (default), the internal state of the model will be reset
+            back to a rested condition at 'soc0' at the end of the experiment.
+            When False the state does not reset instead matches the final state
+            of the last experimental step.
+        t_shift : float
+            Time (in seconds) to shift step solutions by when stitching them
+            together. If zero the end time of each step overlaps the starting
+            time of its following step. The default is 1e-3.
 
         Returns
         -------
-        soln : CycleSolution
+        :class:`~thevenin.CycleSolution`
             A stitched solution will all experimental steps.
+
+        Warning
+        -------
+        The default behavior resets the model's internal state back to a rested
+        condition at 'soc0' by calling the ``pre()`` method. You can bypass this
+        by using ``reset_state=False``, which will keep the state at the end of
+        the final experimental step.
 
         See also
         --------
@@ -397,18 +486,15 @@ class Model:
 
         from ._solutions import CycleSolution
 
-        sv0 = self._sv0.copy()
-        svdot0 = self._svdot0.copy()
-
         solns = []
         for i in range(exp.num_steps):
             solns.append(self.run_step(exp, i))
 
-        soln = CycleSolution(*solns)
+        soln = CycleSolution(*solns, t_shift=t_shift)
 
         self._t0 = 0.
-        self._sv0 = sv0
-        self._svdot0 = svdot0
+        if reset_state:
+            self.pre()
 
         return soln
 
@@ -518,6 +604,10 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
         The IDASolver keyword argumnents dictionary. Both the 'rootfn' and
         'nr_rootfns' keyword arguments must be added to 'kwargs'.
 
+    Returns
+    -------
+    None.
+
     """
 
     rootfn = _RootFunction(limits)
@@ -584,10 +674,12 @@ def _yaml_reader(file: str) -> dict:
 
 
 def formatwarning(message, category, filename, lineno, line=None):
+    """Shortened warning format - used for parameter/pre warnings."""
     return f"\n[thevenin {category.__name__}] {message}\n\n"
 
 
 def short_warn(message, category=None, stacklevel=1, source=None):
+    """Print a warning with the short format from ``formatwarning``."""
     original_format = warnings.formatwarning
 
     warnings.formatwarning = formatwarning
