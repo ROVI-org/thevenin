@@ -4,25 +4,19 @@ on:
   push:
     paths-ignore:
       - '*.md'
-      - '*.txt'
-      - 'README*'
-      - 'CHANGELOG*'
-      - 'docs/*'
-      - 'images/*'
       - 'LICENSE'
-      - '.github/ISSUE_TEMPLATE/*'
+      - 'docs/**'
+      - 'images/**'
+      - '.github/ISSUE_TEMPLATE/**'
 
   pull_request:
     branches: [main]
     paths-ignore:
       - '*.md'
-      - '*.txt'
-      - 'README*'
-      - 'CHANGELOG*'
-      - 'docs/*'
-      - 'images/*'
       - 'LICENSE'
-      - '.github/ISSUE_TEMPLATE/*'
+      - 'docs/**'
+      - 'images/**'
+      - '.github/ISSUE_TEMPLATE/**'
 
 jobs:
   lint:
