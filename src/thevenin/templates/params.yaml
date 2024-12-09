@@ -1,6 +1,7 @@
 num_RC_pairs: 1
 soc0: 1.
 capacity: 75.
+ce: 1.
 mass: 1.9
 isothermal: False
 Cp: 745.
