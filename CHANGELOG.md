@@ -3,12 +3,19 @@
 ## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
+- Added Coulombic efficiency (`ce`) as a parameter option ([#4](https://github.com/NREL/thevenin/pull/4))
 
 ### Optimizations
 
 ### Bug Fixes
 
 ### Breaking Changes
+- New Coulombic efficiency option means users will need to update old `params` inputs to also include `ce`
+
+## [v0.1.1](https://github.com/NREL/thevenin/tree/v0.1.1)
+
+### Bug Fixes
+- Corrected some docstrings
 
 ## [v0.1.0](https://github.com/NREL/thevenin/tree/v0.1.0)
 This is the first official release of `thevenin`. Main features/capabilities are listed below.

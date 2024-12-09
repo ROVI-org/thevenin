@@ -3,6 +3,7 @@ import warnings
 import pytest
 import numpy as np
 import thevenin as thev
+from scipy.integrate import cumulative_trapezoid
 
 
 @pytest.fixture(scope='function')
@@ -14,6 +15,7 @@ def dict_params():
         'num_RC_pairs': 0,
         'soc0': 0.5,
         'capacity': 1.,
+        'ce': 1.,
         'mass': 0.5,
         'isothermal': False,
         'Cp': 1150.,
@@ -366,6 +368,51 @@ def test_isothermal_flag(model_2RC, constant_steps):
 
     soln = model_2RC.run(constant_steps)
     assert np.allclose(soln.vars['temperature_K'], model_2RC.T_inf)
+
+
+def test_coulombic_efficiency():
+
+    model_100 = thev.Model()
+    model_100.soc0 = 1.
+    model_100.ce = 1.
+    model_100.pre()
+
+    model_80 = thev.Model()
+    model_80.soc0 = 1.
+    model_80.ce = 0.8
+    model_80.pre()
+
+    expr = thev.Experiment()
+    expr.add_step('current_C', 0.05, (3600.*30., 10.), limits=('soc', 0.))
+    expr.add_step('current_C', -0.05, (3600.*30., 10.), limits=('soc', 1.))
+
+    # check discharge capacity / charge capacity ~ 1.0
+    soln_100 = model_100.run(expr)
+    assert all(soln_100.success)
+
+    dis = soln_100.get_steps(0)
+    chg = soln_100.get_steps(1)
+
+    cap_dis = cumulative_trapezoid(dis.vars['current_A'], dis.vars['time_h'],
+                                   initial=0.)
+    cap_chg = cumulative_trapezoid(chg.vars['current_A'], chg.vars['time_h'],
+                                   initial=0.)
+
+    assert round(abs(cap_dis).max() / abs(cap_chg).max(), 1) == 1.0
+
+    # check discharge capacity / charge capacity ~ 0.8
+    soln_80 = model_80.run(expr)
+    assert all(soln_80.success)
+
+    dis = soln_80.get_steps(0)
+    chg = soln_80.get_steps(1)
+
+    cap_dis = cumulative_trapezoid(dis.vars['current_A'], dis.vars['time_h'],
+                                   initial=0.)
+    cap_chg = cumulative_trapezoid(chg.vars['current_A'], chg.vars['time_h'],
+                                   initial=0.)
+
+    assert round(abs(cap_dis).max() / abs(cap_chg).max(), 1) == 0.8
 
 
 def test_mutable_warning():

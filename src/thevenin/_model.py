@@ -42,6 +42,7 @@ class Model:
             num_RC_pairs  number of RC pairs         *int*, -
             soc0          initial state of charge    *float*, -
             capacity      maximum battery capacity   *float*, Ah
+            ce            coulombic efficiency       *float*, -
             mass          total battery mass         *float*, kg
             isothermal    flag for isothermal model  *bool*, -
             Cp            specific heat capacity     *float*, J/kg/K
@@ -92,6 +93,7 @@ class Model:
             'num_RC_pairs',
             'soc0',
             'capacity',
+            'ce',
             'mass',
             'isothermal',
             'Cp',
@@ -103,6 +105,7 @@ class Model:
         self.num_RC_pairs = params.pop('num_RC_pairs')
         self.soc0 = params.pop('soc0')
         self.capacity = params.pop('capacity')
+        self.ce = params.pop('ce')
         self.mass = params.pop('mass')
         self.isothermal = params.pop('isothermal')
         self.Cp = params.pop('Cp')
@@ -302,7 +305,8 @@ class Model:
         power = current*voltage
 
         # state of charge (differential)
-        rhs[self._ptr['soc']] = -current / 3600. / self.capacity
+        ce = 1. if current >= 0. else self.ce
+        rhs[self._ptr['soc']] = -ce*current / 3600. / self.capacity
 
         # temperature (differential)
         Q_gen = current*(ocv - voltage)
