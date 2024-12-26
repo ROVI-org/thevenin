@@ -23,8 +23,8 @@ thevenin
 
 
 
-Subpackages
------------
+Submodules
+----------
 
 .. toctree::
    :maxdepth: 1
@@ -81,7 +81,7 @@ Package Contents
 
 
 
-   .. py:method:: plot(x, y, **kwargs)
+   .. py:method:: plot(x, y, show_plot = True, **kwargs)
 
       Plot any two variables in 'vars' against each other.
 
@@ -89,6 +89,13 @@ Package Contents
       :type x: str
       :param y: A variable key in 'vars' to be used for the y-axis.
       :type y: str
+      :param show_plot: For non-interactive environments only. When True (default) this
+                        registers `plt.show()` to run at the end of the program. If False,
+                        you must call `plt.show()` manually.
+      :type show_plot: bool, optional
+      :param \*\*kwargs: Keyword arguments to pass through to `plt.plot()`. For more info
+                         please refer to documentation for `maplotlib.pyplot.plot()`.
+      :type \*\*kwargs: dict, optional
 
       :returns: *None.*
 
@@ -96,6 +103,7 @@ Package Contents
 
    .. py:property:: solvetime
       :type: str
+
 
       Print a statement specifying how long IDASolver spent integrating.
 
@@ -198,6 +206,7 @@ Package Contents
    .. py:property:: num_steps
       :type: int
 
+
       Return number of steps.
 
       :returns: **num_steps** (*int*) -- Number of steps.
@@ -205,6 +214,7 @@ Package Contents
 
    .. py:property:: steps
       :type: list[dict]
+
 
       Return steps list.
 
@@ -581,6 +591,7 @@ Package Contents
                   num_RC_pairs  number of RC pairs         *int*, -
                   soc0          initial state of charge    *float*, -
                   capacity      maximum battery capacity   *float*, Ah
+                  ce            coulombic efficiency       *float*, -
                   mass          total battery mass         *float*, kg
                   isothermal    flag for isothermal model  *bool*, -
                   Cp            specific heat capacity     *float*, J/kg/K
@@ -792,7 +803,7 @@ Package Contents
    :type timer: float
 
 
-   .. py:method:: plot(x, y, **kwargs)
+   .. py:method:: plot(x, y, show_plot = True, **kwargs)
 
       Plot any two variables in 'vars' against each other.
 
@@ -800,6 +811,13 @@ Package Contents
       :type x: str
       :param y: A variable key in 'vars' to be used for the y-axis.
       :type y: str
+      :param show_plot: For non-interactive environments only. When True (default) this
+                        registers `plt.show()` to run at the end of the program. If False,
+                        you must call `plt.show()` manually.
+      :type show_plot: bool, optional
+      :param \*\*kwargs: Keyword arguments to pass through to `plt.plot()`. For more info
+                         please refer to documentation for `maplotlib.pyplot.plot()`.
+      :type \*\*kwargs: dict, optional
 
       :returns: *None.*
 
@@ -807,6 +825,7 @@ Package Contents
 
    .. py:property:: solvetime
       :type: str
+
 
       Print a statement specifying how long IDASolver spent integrating.
 

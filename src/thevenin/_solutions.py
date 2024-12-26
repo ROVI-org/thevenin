@@ -4,6 +4,7 @@ from typing import Iterable, TYPE_CHECKING
 import textwrap
 from copy import deepcopy
 
+import atexit
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
@@ -73,7 +74,7 @@ class BaseSolution(IDAResult):
 
         return readable
 
-    def plot(self, x: str, y: str, **kwargs) -> None:
+    def plot(self, x: str, y: str, show_plot: bool = True, **kwargs) -> None:
         """
         Plot any two variables in 'vars' against each other.
 
@@ -83,6 +84,13 @@ class BaseSolution(IDAResult):
             A variable key in 'vars' to be used for the x-axis.
         y : str
             A variable key in 'vars' to be used for the y-axis.
+        show_plot : bool, optional
+            For non-interactive environments only. When True (default) this
+            registers `plt.show()` to run at the end of the program. If False,
+            you must call `plt.show()` manually.
+        **kwargs : dict, optional
+            Keyword arguments to pass through to `plt.plot()`. For more info
+            please refer to documentation for `maplotlib.pyplot.plot()`.
 
         Returns
         -------
@@ -108,7 +116,8 @@ class BaseSolution(IDAResult):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        plt.show(block=False)
+        if show_plot and not plt.isinteractive():
+            atexit.register(plt.show)
 
     def _to_dict(self) -> None:
         """

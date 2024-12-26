@@ -3,11 +3,22 @@
 ## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
+
+### Optimizations
+
+### Bug Fixes
+
+### Breaking Changes
+
+## [v0.1.2](https://github.com/NREL/thevenin/tree/v0.1.2)
+
+### New Features
 - Added Coulombic efficiency (`ce`) as a parameter option ([#4](https://github.com/NREL/thevenin/pull/4))
 
 ### Optimizations
 
 ### Bug Fixes
+- `*Solution.plot()` now has a `show_plot` option to register `plt.show()` and block at the end of a program ([#5](https://github.com/NREL/thevenin/pull/5)). This keeps figures from auto-closing at the end of scripts run in non-interactive environments. Interactive environments (IPython, Jupyter Notebook) are not affected. When set to `False`, users running in non-interactive environments must manually call `plt.show()`. The default is `True`.
 
 ### Breaking Changes
 - New Coulombic efficiency option means users will need to update old `params` inputs to also include `ce`
