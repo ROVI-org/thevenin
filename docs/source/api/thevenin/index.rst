@@ -81,7 +81,7 @@ Package Contents
 
 
 
-   .. py:method:: plot(x, y, **kwargs)
+   .. py:method:: plot(x, y, show_plot = True, **kwargs)
 
       Plot any two variables in 'vars' against each other.
 
@@ -89,6 +89,13 @@ Package Contents
       :type x: str
       :param y: A variable key in 'vars' to be used for the y-axis.
       :type y: str
+      :param show_plot: For non-interactive environments only. When True (default) this
+                        registers `plt.show()` to run at the end of the program. If False,
+                        you must call `plt.show()` manually.
+      :type show_plot: bool, optional
+      :param \*\*kwargs: Keyword arguments to pass through to `plt.plot()`. For more info
+                         please refer to documentation for `maplotlib.pyplot.plot()`.
+      :type \*\*kwargs: dict, optional
 
       :returns: *None.*
 
@@ -796,7 +803,7 @@ Package Contents
    :type timer: float
 
 
-   .. py:method:: plot(x, y, **kwargs)
+   .. py:method:: plot(x, y, show_plot = True, **kwargs)
 
       Plot any two variables in 'vars' against each other.
 
@@ -804,6 +811,13 @@ Package Contents
       :type x: str
       :param y: A variable key in 'vars' to be used for the y-axis.
       :type y: str
+      :param show_plot: For non-interactive environments only. When True (default) this
+                        registers `plt.show()` to run at the end of the program. If False,
+                        you must call `plt.show()` manually.
+      :type show_plot: bool, optional
+      :param \*\*kwargs: Keyword arguments to pass through to `plt.plot()`. For more info
+                         please refer to documentation for `maplotlib.pyplot.plot()`.
+      :type \*\*kwargs: dict, optional
 
       :returns: *None.*
 

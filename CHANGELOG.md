@@ -18,7 +18,7 @@
 ### Optimizations
 
 ### Bug Fixes
-- `Solution.plot` now blocks at the end of a program ([#5](https://github.com/NREL/thevenin/pull/5)). Figures no longer automatically close when programs are run from scripts. Blocking only occurs at the end of a program so that opening figures do not stop other lines of code from running.
+- `*Solution.plot()` now has a `show_plot` option to register `plt.show()` and block at the end of a program ([#5](https://github.com/NREL/thevenin/pull/5)). This keeps figures from auto-closing at the end of scripts run in non-interactive environments. Interactive environments (IPython, Jupyter Notebook) are not affected. When set to `False`, users running in non-interactive environments must manually call `plt.show()`. The default is `True`.
 
 ### Breaking Changes
 - New Coulombic efficiency option means users will need to update old `params` inputs to also include `ce`

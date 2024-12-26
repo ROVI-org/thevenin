@@ -88,6 +88,9 @@ class BaseSolution(IDAResult):
             For non-interactive environments only. When True (default) this
             registers `plt.show()` to run at the end of the program. If False,
             you must call `plt.show()` manually.
+        **kwargs : dict, optional
+            Keyword arguments to pass through to `plt.plot()`. For more info
+            please refer to documentation for `maplotlib.pyplot.plot()`.
 
         Returns
         -------

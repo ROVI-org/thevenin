@@ -9,7 +9,7 @@
 import thevenin as thev
 
 project = 'thevenin'
-copyright = '2024, Corey R. Randall'
+copyright = 'Alliance for Sustainable Energy, LLC'
 author = 'Corey R. Randall'
 version = thev.__version__
 release = thev.__version__
