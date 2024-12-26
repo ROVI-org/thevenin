@@ -94,7 +94,7 @@ class Ramp2Constant:
     def __call__(self, t: float) -> float:
 
         linear = self._m*t + self._b
-        
+
         z = self._sharpness*(linear - self._step)
         sigmoid = 1. / (1. + np.exp(-np.clip(z, -700, None)))
 
