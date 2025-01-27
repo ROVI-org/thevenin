@@ -16,6 +16,7 @@ def dict_params():
         'soc0': 0.5,
         'capacity': 1.,
         'ce': 1.,
+        'gamma': 0.,
         'mass': 0.5,
         'isothermal': False,
         'Cp': 1150.,
@@ -23,6 +24,7 @@ def dict_params():
         'h_therm': 12.,
         'A_therm': 1.,
         'ocv': lambda soc: np.polyval(coeffs, soc),
+        'M_hyst': lambda soc: 0.,
         'R0': lambda soc, T_cell: 0.05 + 0.05*soc - T_cell/1e4,
     }
 
