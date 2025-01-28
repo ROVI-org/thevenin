@@ -72,10 +72,11 @@ class Model:
 
         Notes
         -----
-        The 'ocv' property needs a signature like ``f(soc: float) -> float``,
-        where 'soc' is the state of charge. All R0, Rj, and Cj properties need
-        signatures like ``f(soc: float, T_cell: float) -> float``. 'T_cell' is
-        the cell temperature in K.
+        The 'ocv' and 'M_hyst' properties need to be callables with signatures
+        like ``f(soc: float) -> float``, where 'soc' is the state of charge.
+        All other properties that require callables (e.g., R0, Rj, and Cj) need
+        signatures like ``f(soc: float, T_cell: float) -> float``, with 'T_cell'
+        being the cell temperature in K.
 
         Rj and Cj are not real property names. These are used generally in the
         documentation. If ``num_RC_pairs=1`` then in addition to R0, you should

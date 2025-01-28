@@ -29,25 +29,33 @@ This package is a wrapper for the well-known Thevenin equivalent circuit model. 
   Figure 1: 2RC Thevenin circuit.
 </p>
 
-This system is governed by the evolution of the state of charge (SOC, -), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). SOC and $V_j$ evolve in time as
+This system is governed by the evolution of the state of charge (SOC, -), hysteresis ($h$, V), RC overpotentials ($V_j$, V), cell voltage ($V_{\rm cell}$, V), and temperature ($T_{\rm cell}$, K). SOC and $V_j$ evolve in time as
 
 $$\frac{d\rm SOC}{dt} = \frac{-I \eta_{\rm ce}}{3600 Q_{\rm max}},$$
 $$\frac{dV_j}{dt} = -\frac{V_j}{R_jC_j} + \frac{I}{C_j},$$
 
-where $I$ is the load current (A), $Q_{\rm max}$ is the maximum nominal cell capacity (Ah), and $R_j$ and $C_j$ are the resistance (Ohm) and capacitance (F) of each RC pair $j$. $\eta_{\rm ce}$ is the cell's Coulombic efficiency, which is always equal to unity during discharge. Note that the sign convention for $I$ is chosen such that positive $I$ discharges the battery (reduces SOC) and negative $I$ charges the battery (increases SOC). This convention is consistent with common physics-based models, e.g., the single particle model or pseudo-2D model. While not explicitly included in the equations above, $R_j$ and $C_j$ are functions of SOC and $T_{\rm cell}$. The temperature increases while the cell is active according to
+where $I$ is the load current (A), $Q_{\rm max}$ is the maximum nominal cell capacity (Ah), and $R_j$ and $C_j$ are the resistance (Ohm) and capacitance (F) of each RC pair $j$. $\eta_{\rm ce}$ is the cell's Coulombic efficiency, which is always equal to unity during discharge. Note that the sign convention for $I$ is chosen such that positive $I$ discharges the battery (reduces SOC) and negative $I$ charges the battery (increases SOC). This convention is consistent with common physics-based models, e.g., the single particle model or pseudo-2D model. While not explicitly included in the equations above, $R_j$ and $C_j$ are functions of SOC and $T_{\rm cell}$.
+
+The hysteresis only includes a dynamic component and neglects any instantaneous effects when switching between charging and discharging directions. The hysteresis dynamics are captured by 
+
+$$\frac{dh}{dt} = \bigg| \frac{\eta_{\rm ce} I \gamma}{3600 Q_{\rm max}}\bigg| \times (-{\rm sign}(I)M({\rm SOC}) - h),$$
+
+The solution to this expression causes $h$ to exponentially decaying toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internal evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis you can set both $\gamma$ and $M$ to zero.
+
+The thermal submodel assumes uniform temperature within the cell. The temperature increases while the cell is active according to
 
 $$mC_p\frac{dT_{\rm cell}}{dt} = Q_{\rm gen} + Q_{\rm conv},$$
 
 where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $Q_{\rm gen}$ is the heat generation (W), and $Q_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
 
 $$Q_{\rm gen} = I \times (V_{\rm OCV}({\rm SOC}) - V_{\rm cell}),$$
-$$Q_{\rm conv} = hA(T_{\infty} - T_{\rm cell}),$$
+$$Q_{\rm conv} = h_TA(T_{\infty} - T_{\rm cell}),$$
 
-where $h$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm OCV}$ is the open circuit voltage (V) and is a function of SOC.
+where $h_T$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm OCV}$ is the open circuit voltage (V) and is a function of SOC.
 
 The overall cell voltage is
 
-$$V_{\rm cell} = V_{\rm OCV}({\rm SOC}) - \sum_j V_j - IR_0,$$
+$$V_{\rm cell} = V_{\rm OCV}({\rm SOC}) + h - \sum_j V_j - IR_0,$$
 
 where $R_0$ is the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, $R_0$ is a function of SOC and $T_{\rm cell}$.
 

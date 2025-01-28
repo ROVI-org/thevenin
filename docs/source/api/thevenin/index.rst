@@ -592,6 +592,7 @@ Package Contents
                   soc0          initial state of charge    *float*, -
                   capacity      maximum battery capacity   *float*, Ah
                   ce            coulombic efficiency       *float*, -
+                  gamma         hysteresis approach rate   *float*, -
                   mass          total battery mass         *float*, kg
                   isothermal    flag for isothermal model  *bool*, -
                   Cp            specific heat capacity     *float*, J/kg/K
@@ -599,6 +600,7 @@ Package Contents
                   h_therm       convective coefficient     *float*, W/m2/K
                   A_therm       heat loss area             *float*, m2
                   ocv           open circuit voltage       *callable*, V
+                  M_hyst        max hysteresis magnitude   *callable*, V
                   R0            series resistance          *callable*, Ohm
                   Rj            resistance in RCj          *callable*, Ohm
                   Cj            capacity in RCj            *callable*, F
