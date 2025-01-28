@@ -144,7 +144,7 @@ class BaseSolution(IDAResult):
         ocv = model.ocv(soc)
         R0 = model.R0(soc, T_cell)
 
-        current = -(voltage - ocv + np.sum(eta_j, axis=1)) / R0
+        current = -(voltage - ocv - hyst + np.sum(eta_j, axis=1)) / R0
 
         # stored time
         self.vars['time_s'] = time
