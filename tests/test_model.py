@@ -488,6 +488,14 @@ def test_hysteresis():
         decimal=2,
     )
 
+    # Check current is unaffected by hysteresis
+    step = soln.get_steps(0)
+    np.testing.assert_allclose(
+        step.vars['current_A'],
+        -1.*model_wh.capacity,
+        rtol=1e-3,
+    )
+
 
 def test_mutable_warning():
     from thevenin._model import short_warn
