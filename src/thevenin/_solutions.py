@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, Callable, TYPE_CHECKING
 
 import textwrap
 from copy import deepcopy
@@ -12,6 +12,24 @@ from ._ida_solver import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
+
+
+class ExitHandler:
+    """
+    Exit handler.
+
+    Use this class to register functions that you want to run just before a
+    file exits. This is primarily used to register plt.show() so plots appear
+    in both interactive and non-interactive environments, even if the user
+    forgets to explicitly call it.
+
+    """
+    _registered = []
+
+    @classmethod
+    def register_atexit(cls, func: Callable) -> None:
+        if func not in cls._registered:
+            atexit.register(func)
 
 
 class BaseSolution(IDAResult):
@@ -116,7 +134,7 @@ class BaseSolution(IDAResult):
         plt.ylabel(ylabel)
 
         if show_plot and not plt.isinteractive():
-            atexit.register(plt.show)
+            ExitHandler.register_atexit(plt.show)
 
     def _fill_vars(self) -> None:
         """
