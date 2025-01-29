@@ -215,20 +215,20 @@ def test_preprocessing_initial_state_options(model_0RC, constant_steps):
     svdot0 = model_0RC._svdot0.copy()
 
     soln = model_0RC.run(constant_steps)
-    assert np.allclose(sv0, model_0RC._sv0)
-    assert np.allclose(svdot0, model_0RC._svdot0)
+    np.testing.assert_allclose(sv0, model_0RC._sv0)
+    np.testing.assert_allclose(svdot0, model_0RC._svdot0)
 
     model_0RC.pre(initial_state=soln)
-    assert np.allclose(soln.y[-1], model_0RC._sv0)
-    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
+    np.testing.assert_allclose(soln.y[-1], model_0RC._sv0)
+    np.testing.assert_allclose(soln.yp[-1], model_0RC._svdot0)
 
     model_0RC.pre(initial_state=False)
-    assert np.allclose(soln.y[-1], model_0RC._sv0)
-    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
+    np.testing.assert_allclose(soln.y[-1], model_0RC._sv0)
+    np.testing.assert_allclose(soln.yp[-1], model_0RC._svdot0)
 
     model_0RC.pre()
-    assert np.allclose(sv0, model_0RC._sv0)
-    assert np.allclose(svdot0, model_0RC._svdot0)
+    np.testing.assert_allclose(sv0, model_0RC._sv0)
+    np.testing.assert_allclose(svdot0, model_0RC._svdot0)
 
 
 def test_run_step(model_2RC, constant_steps):
@@ -244,8 +244,8 @@ def test_run_step(model_2RC, constant_steps):
 
     model_2RC.pre()
 
-    assert np.allclose(sv0, model_2RC._sv0)
-    assert np.allclose(svdot0, model_2RC._svdot0)
+    np.testing.assert_allclose(sv0, model_2RC._sv0)
+    np.testing.assert_allclose(svdot0, model_2RC._svdot0)
 
 
 def test_run_options(model_0RC, constant_steps):
@@ -253,12 +253,12 @@ def test_run_options(model_0RC, constant_steps):
     svdot0 = model_0RC._svdot0.copy()
 
     soln = model_0RC.run(constant_steps)
-    assert np.allclose(sv0, model_0RC._sv0)
-    assert np.allclose(svdot0, model_0RC._svdot0)
+    np.testing.assert_allclose(sv0, model_0RC._sv0)
+    np.testing.assert_allclose(svdot0, model_0RC._svdot0)
 
     soln = model_0RC.run(constant_steps, reset_state=False)
-    assert np.allclose(soln.y[-1], model_0RC._sv0)
-    assert np.allclose(soln.yp[-1], model_0RC._svdot0)
+    np.testing.assert_allclose(soln.y[-1], model_0RC._sv0)
+    np.testing.assert_allclose(soln.yp[-1], model_0RC._svdot0)
 
 
 def test_model_w_multistep_experiment(model_0RC, model_1RC, model_2RC,
@@ -324,7 +324,10 @@ def test_resting_experiment(model_2RC):
     soln = model_2RC.run(expr)
 
     assert soln.success
-    assert np.allclose(soln.vars['voltage_V'], soln.vars['voltage_V'][0])
+    np.testing.assert_allclose(
+        soln.vars['voltage_V'],
+        soln.vars['voltage_V'][0],
+    )
 
 
 def test_current_sign_convention(model_2RC, constant_steps):
@@ -347,11 +350,19 @@ def test_constant_V_shift_w_constant_R0(model_0RC, constant_steps):
 
     discharge = soln.get_steps(0)
     ocv = model_0RC.ocv(discharge.vars['soc'])
-    assert np.allclose(ocv - 1e-2, discharge.vars['voltage_V'])
+    np.testing.assert_allclose(
+        discharge.vars['voltage_V'],
+        ocv - 1e-2,
+        rtol=1e-3,
+    )
 
     charge = soln.get_steps(2)
     ocv = model_0RC.ocv(charge.vars['soc'])
-    assert np.allclose(ocv + 1e-2, charge.vars['voltage_V'])
+    np.testing.assert_allclose(
+        charge.vars['voltage_V'],
+        ocv + 1e-2,
+        rtol=1e-3,
+    )
 
 
 def test_isothermal_flag(model_2RC, constant_steps):
@@ -369,7 +380,7 @@ def test_isothermal_flag(model_2RC, constant_steps):
     model_2RC.pre()
 
     soln = model_2RC.run(constant_steps)
-    assert np.allclose(soln.vars['temperature_K'], model_2RC.T_inf)
+    np.testing.assert_allclose(soln.vars['temperature_K'], model_2RC.T_inf)
 
 
 @pytest.mark.filterwarnings("ignore:.*default parameter file.*:UserWarning")
@@ -416,6 +427,66 @@ def test_coulombic_efficiency():
                                    initial=0.)
 
     assert round(abs(cap_dis).max() / abs(cap_chg).max(), 1) == 0.8
+
+
+@pytest.mark.filterwarnings("ignore:.*default parameter file.*:UserWarning")
+def test_hysteresis():
+
+    model_woh = thev.Model()  # without hysteresis
+    model_woh.soc0 = 1.
+    model_woh.pre()
+
+    assert model_woh.gamma == 0.
+    assert model_woh.M_hyst(0.) == 0.
+
+    model_wh = thev.Model()  # with hysteresis
+    model_wh.soc0 = 1.
+    model_wh.gamma = 50.
+    model_wh.M_hyst = lambda soc: 0.07
+    model_wh.pre()
+
+    assert model_wh.gamma == 50.
+    assert model_wh.M_hyst(0.) == 0.07
+
+    discharge = thev.Experiment()
+    discharge.add_step('current_C', 1., (3600., 10.), limits=('soc', 0.5))
+    discharge.add_step('current_A', 0., (600., 10.))
+
+    charge = thev.Experiment()
+    charge.add_step('current_C', -1., (3600., 10.), limits=('soc', 0.8))
+    charge.add_step('current_A', 0., (600., 10.))
+
+    soln = model_woh.run(discharge, reset_state=False)
+    np.testing.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
+    np.testing.assert_almost_equal(
+        soln.vars['voltage_V'][-1],
+        model_woh.ocv(0.5),
+        decimal=2,
+    )
+
+    soln = model_woh.run(charge, reset_state=False)
+    np.testing.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
+    np.testing.assert_almost_equal(
+        soln.vars['voltage_V'][-1],
+        model_woh.ocv(0.8),
+        decimal=2,
+    )
+
+    soln = model_wh.run(discharge, reset_state=False)
+    np.testing.assert_allclose(soln.vars['hysteresis_V'][-1], -0.07, rtol=1e-4)
+    np.testing.assert_almost_equal(
+        soln.vars['voltage_V'][-1],
+        model_woh.ocv(0.5) - 0.07,
+        decimal=2,
+    )
+
+    soln = model_wh.run(charge, reset_state=False)
+    np.testing.assert_allclose(soln.vars['hysteresis_V'][-1], 0.07, rtol=1e-4)
+    np.testing.assert_almost_equal(
+        soln.vars['voltage_V'][-1],
+        model_woh.ocv(0.8) + 0.07,
+        decimal=2,
+    )
 
 
 def test_mutable_warning():

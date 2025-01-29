@@ -23,7 +23,7 @@ The hysteresis only includes a dynamic component and neglects any instantaneous 
 .. math:: 
 
   \begin{equation}
-    \frac{dh}{dt} = \bigg| \frac{\eta_{\rm ce} I \gamma}{3600 Q_{\rm max}}\bigg| \times (-{\rm sign}(I)M({\rm SOC}) - h),
+    \frac{dh}{dt} = \bigg| \frac{\eta_{\rm ce} I \gamma}{3600 Q_{\rm max}} \bigg| \times (-{\rm sign}(I)M({\rm SOC}) - h),
   \end{equation}
 
 The solution to this expression causes $h$ to exponentially decaying toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internal evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis you can set both $\gamma$ and $M$ to zero.
