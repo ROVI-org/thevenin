@@ -36,8 +36,7 @@ exclude_patterns = [
     'build',
     'Thumbs.db',
     '.DS_Store',
-    '*.ipynb_checkpoints',
-    '__pycache__',
+    '.ipynb_checkpoints',
 ]
 
 source_suffix = {
@@ -110,7 +109,6 @@ napoleon_custom_sections = [
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
 
 autoapi_type = 'python'
-autoapi_ignore = ['*/__pycache__/*']
 autoapi_dirs = ['../../src/thevenin']
 autoapi_keep_files = True
 autoapi_root = 'api'

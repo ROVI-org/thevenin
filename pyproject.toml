@@ -50,6 +50,7 @@ thevenin = ["templates/*.yaml"]
 docs = [
     "sphinx",
     "myst-nb",
+    "astroid>=3",
     "sphinx-design",
     "sphinx-autoapi",
     "sphinx-favicon",
