@@ -1,19 +1,23 @@
 # .readthedocs.yaml
 # Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# https://docs.readthedocs.io/en/stable/config-file/v2.html
 
 # Required
 version: 2
 
-# Set OS, Python version, and other tools for the build
+# Set OS, Python version, and other tools
 build:
-  os: ubuntu-22.04
+  os: ubuntu-lts-latest
   tools:
-    python: miniconda-latest
+    python: latest
 
-# Conda environment to install local thevenin
-conda:
-  environment: environments/rtd_environment.yml
+# Install local thevenin package
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
 
 # Location of sphinx configuration file
 sphinx:
