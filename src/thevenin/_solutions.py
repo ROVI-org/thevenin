@@ -13,6 +13,9 @@ from ._ida_solver import IDAResult
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
 
+if not hasattr(np, 'concat'):  # pragma: no cover
+    np.concat = np.concatenate
+
 
 class ExitHandler:
     """

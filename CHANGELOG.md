@@ -3,12 +3,16 @@
 ## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
+- Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Optimizations
+- Pre-initialize `CycleSolution` arrays rather than appending lists, much faster ([#7](https://github.com/NREL/thevenin/pull/7))
+- Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Bug Fixes
 
 ### Breaking Changes
+- New hysteresis option means users will need to update old `params` inputs to also include `gamma` and `M_hyst`
 
 ## [v0.1.2](https://github.com/NREL/thevenin/tree/v0.1.2)
 
