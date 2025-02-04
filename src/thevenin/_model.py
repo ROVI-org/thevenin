@@ -298,18 +298,22 @@ class Model:
 
         """
 
-        rhs = np.zeros(self._ptr['size'])
+        ptr = self._ptr
+        rhs = np.zeros(ptr['size'])
 
         # state
-        soc = sv[self._ptr['soc']]
-        T_cell = sv[self._ptr['T_cell']]*self.T_inf
-        hyst = sv[self._ptr['hyst']]
-        eta_j = sv[self._ptr['eta_j']]
-        voltage = sv[self._ptr['V_cell']]
+        soc = sv[ptr['soc']]
+        T_cell = sv[ptr['T_cell']]*self.T_inf
+        hyst = sv[ptr['hyst']]
+        eta_j = sv[ptr['eta_j']]
+        voltage = sv[ptr['V_cell']]
 
         # state-dependent properties
         ocv = self.ocv(soc)
         R0 = self.R0(soc, T_cell)
+
+        # dependent parameters
+        Q_inv = 1. / (3600. * self.capacity)
 
         # calculated current and power
         current = -(voltage - ocv - hyst + np.sum(eta_j)) / R0
@@ -317,24 +321,24 @@ class Model:
 
         # state of charge (differential)
         ce = 1. if current >= 0. else self.ce
-        rhs[self._ptr['soc']] = -ce*current / 3600. / self.capacity
+        rhs[ptr['soc']] = -ce*current*Q_inv
 
         # temperature (differential)
         Q_gen = current*(ocv - voltage)
         Q_conv = self.h_therm*self.A_therm*(self.T_inf - T_cell)
 
-        rhs[self._ptr['T_cell']] = (Q_gen + Q_conv) * (1 - self.isothermal)
+        rhs[ptr['T_cell']] = (Q_gen + Q_conv) * (1 - self.isothermal)
 
         # hysteresis (differential)
         direction = -np.sign(current)
-        coeff = np.abs(ce*current*self.gamma / 3600. / self.capacity)
-        rhs[self._ptr['hyst']] = coeff*(direction*self.M_hyst(soc) - hyst)
+        coeff = np.abs(ce*current*self.gamma*Q_inv)
+        rhs[ptr['hyst']] = coeff*(direction*self.M_hyst(soc) - hyst)
 
         # RC overpotentials (differential)
-        for j, ptr in enumerate(self._ptr['eta_j'], start=1):
+        for j, pj in enumerate(ptr['eta_j'], start=1):
             Rj = getattr(self, 'R' + str(j))(soc, T_cell)
             Cj = getattr(self, 'C' + str(j))(soc, T_cell)
-            rhs[ptr] = -sv[ptr] / (Rj*Cj) + current / Cj
+            rhs[pj] = -sv[pj] / (Rj*Cj) + current / Cj
 
         # cell voltage (algebraic)
         mode = inputs['mode']
@@ -342,13 +346,13 @@ class Model:
         value = inputs['value']
 
         if mode == 'current' and units == 'A':
-            rhs[self._ptr['V_cell']] = current - value(t)
+            rhs[ptr['V_cell']] = current - value(t)
         elif mode == 'current' and units == 'C':
-            rhs[self._ptr['V_cell']] = current - self.capacity*value(t)
+            rhs[ptr['V_cell']] = current - self.capacity*value(t)
         elif mode == 'voltage':
-            rhs[self._ptr['V_cell']] = voltage - value(t)
+            rhs[ptr['V_cell']] = voltage - value(t)
         elif mode == 'power':
-            rhs[self._ptr['V_cell']] = power - value(t)
+            rhs[ptr['V_cell']] = power - value(t)
 
         # values for rootfns
         total_time = self._t0 + t
