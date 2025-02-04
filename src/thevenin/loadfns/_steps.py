@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
+if not hasattr(np, 'concat'):  # pragma: no cover
+    np.concat = np.concatenate
+
 
 class StepFunction:
     """Piecewise step function."""
@@ -74,7 +77,7 @@ class StepFunction:
             raise ValueError("tp must be strictly increasing.")
 
         self._tp = tp
-        self._yp = np.concatenate(([y0], yp, [yp[-1]]))
+        self._yp = np.concat(([y0], yp, [yp[-1]]))
 
         def func(t):
 
@@ -159,8 +162,8 @@ class RampedSteps:
         if any(np.diff(tp) <= 0.):
             raise ValueError("tp must be strictly increasing.")
 
-        tp = np.concatenate((tp, tp + t_ramp))
-        yp = np.concatenate(([y0], yp[:-1], yp))
+        tp = np.concat((tp, tp + t_ramp))
+        yp = np.concat(([y0], yp[:-1], yp))
 
         argsort = np.argsort(tp)
 

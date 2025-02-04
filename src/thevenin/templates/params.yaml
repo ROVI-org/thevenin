@@ -1,6 +1,7 @@
 num_RC_pairs: 1
 soc0: 1.
 capacity: 75.
+gamma: 0.
 ce: 1.
 mass: 1.9
 isothermal: False
@@ -11,6 +12,8 @@ A_therm: 1.
 ocv: !eval | 
     lambda soc:   84.6*soc**7 - 348.6*soc**6 + 592.3*soc**5 - 534.3*soc**4 \
                 + 275.*soc**3 - 80.3*soc**2 + 12.8*soc + 2.8
+M_hyst: !eval |
+    lambda soc: 0.
 R0: !eval |
     lambda soc, T_cell: 1e-4 + soc/1e5 - T_cell/3e9
 R1: !eval |

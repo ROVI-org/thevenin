@@ -43,6 +43,7 @@ class Model:
             soc0          initial state of charge    *float*, -
             capacity      maximum battery capacity   *float*, Ah
             ce            coulombic efficiency       *float*, -
+            gamma         hysteresis approach rate   *float*, -
             mass          total battery mass         *float*, kg
             isothermal    flag for isothermal model  *bool*, -
             Cp            specific heat capacity     *float*, J/kg/K
@@ -50,6 +51,7 @@ class Model:
             h_therm       convective coefficient     *float*, W/m2/K
             A_therm       heat loss area             *float*, m2
             ocv           open circuit voltage       *callable*, V
+            M_hyst        max hysteresis magnitude   *callable*, V
             R0            series resistance          *callable*, Ohm
             Rj            resistance in RCj          *callable*, Ohm
             Cj            capacity in RCj            *callable*, F
@@ -70,10 +72,11 @@ class Model:
 
         Notes
         -----
-        The 'ocv' property needs a signature like ``f(soc: float) -> float``,
-        where 'soc' is the state of charge. All R0, Rj, and Cj properties need
-        signatures like ``f(soc: float, T_cell: float) -> float``. 'T_cell' is
-        the cell temperature in K.
+        The 'ocv' and 'M_hyst' properties need to be callables with signatures
+        like ``f(soc: float) -> float``, where 'soc' is the state of charge.
+        All other properties that require callables (e.g., R0, Rj, and Cj) need
+        signatures like ``f(soc: float, T_cell: float) -> float``, with 'T_cell'
+        being the cell temperature in K.
 
         Rj and Cj are not real property names. These are used generally in the
         documentation. If ``num_RC_pairs=1`` then in addition to R0, you should
@@ -94,6 +97,7 @@ class Model:
             'soc0',
             'capacity',
             'ce',
+            'gamma',
             'mass',
             'isothermal',
             'Cp',
@@ -106,6 +110,7 @@ class Model:
         self.soc0 = params.pop('soc0')
         self.capacity = params.pop('capacity')
         self.ce = params.pop('ce')
+        self.gamma = params.pop('gamma')
         self.mass = params.pop('mass')
         self.isothermal = params.pop('isothermal')
         self.Cp = params.pop('Cp')
@@ -119,6 +124,8 @@ class Model:
         for j in range(1, self.num_RC_pairs + 1):
             setattr(self, 'R' + str(j), params.pop('R' + str(j)))
             setattr(self, 'C' + str(j), params.pop('C' + str(j)))
+
+        self.M_hyst = params.pop('M_hyst')
 
         if len(params) != 0:
             extra_keys = list(params.keys())
@@ -220,20 +227,23 @@ class Model:
         ptr = {}
         ptr['soc'] = 0
         ptr['T_cell'] = 1
-        ptr['eta_j'] = np.arange(2, 2 + self.num_RC_pairs)
-        ptr['V_cell'] = self.num_RC_pairs + 2
-        ptr['size'] = self.num_RC_pairs + 3
+        ptr['hyst'] = 2
+        ptr['eta_j'] = np.arange(3, 3 + self.num_RC_pairs)
+        ptr['V_cell'] = self.num_RC_pairs + 3
+        ptr['size'] = self.num_RC_pairs + 4
 
         algidx = [ptr['V_cell']]
 
         mass_matrix = np.zeros(ptr['size'])
         mass_matrix[ptr['soc']] = 1.
         mass_matrix[ptr['T_cell']] = self.mass*self.Cp*self.T_inf
+        mass_matrix[ptr['hyst']] = 1.
         mass_matrix[ptr['eta_j']] = 1.
 
         sv0 = np.zeros(ptr['size'])
         sv0[ptr['soc']] = self.soc0
         sv0[ptr['T_cell']] = 1.
+        sv0[ptr['hyst']] = 0.
         sv0[ptr['eta_j']] = 0.
         sv0[ptr['V_cell']] = self.ocv(self.soc0)
 
@@ -288,37 +298,47 @@ class Model:
 
         """
 
-        rhs = np.zeros(self._ptr['size'])
+        ptr = self._ptr
+        rhs = np.zeros(ptr['size'])
 
         # state
-        soc = sv[self._ptr['soc']]
-        T_cell = sv[self._ptr['T_cell']]*self.T_inf
-        eta_j = sv[self._ptr['eta_j']]
-        voltage = sv[self._ptr['V_cell']]
+        soc = sv[ptr['soc']]
+        T_cell = sv[ptr['T_cell']]*self.T_inf
+        hyst = sv[ptr['hyst']]
+        eta_j = sv[ptr['eta_j']]
+        voltage = sv[ptr['V_cell']]
 
         # state-dependent properties
         ocv = self.ocv(soc)
         R0 = self.R0(soc, T_cell)
 
+        # dependent parameters
+        Q_inv = 1. / (3600. * self.capacity)
+
         # calculated current and power
-        current = -(voltage - ocv + np.sum(eta_j)) / R0
+        current = -(voltage - ocv - hyst + np.sum(eta_j)) / R0
         power = current*voltage
 
         # state of charge (differential)
         ce = 1. if current >= 0. else self.ce
-        rhs[self._ptr['soc']] = -ce*current / 3600. / self.capacity
+        rhs[ptr['soc']] = -ce*current*Q_inv
 
         # temperature (differential)
         Q_gen = current*(ocv - voltage)
         Q_conv = self.h_therm*self.A_therm*(self.T_inf - T_cell)
 
-        rhs[self._ptr['T_cell']] = (Q_gen + Q_conv) * (1 - self.isothermal)
+        rhs[ptr['T_cell']] = (Q_gen + Q_conv) * (1 - self.isothermal)
+
+        # hysteresis (differential)
+        direction = -np.sign(current)
+        coeff = np.abs(ce*current*self.gamma*Q_inv)
+        rhs[ptr['hyst']] = coeff*(direction*self.M_hyst(soc) - hyst)
 
         # RC overpotentials (differential)
-        for j, ptr in enumerate(self._ptr['eta_j'], start=1):
+        for j, pj in enumerate(ptr['eta_j'], start=1):
             Rj = getattr(self, 'R' + str(j))(soc, T_cell)
             Cj = getattr(self, 'C' + str(j))(soc, T_cell)
-            rhs[ptr] = -sv[ptr] / (Rj*Cj) + current / Cj
+            rhs[pj] = -sv[pj] / (Rj*Cj) + current / Cj
 
         # cell voltage (algebraic)
         mode = inputs['mode']
@@ -326,13 +346,13 @@ class Model:
         value = inputs['value']
 
         if mode == 'current' and units == 'A':
-            rhs[self._ptr['V_cell']] = current - value(t)
+            rhs[ptr['V_cell']] = current - value(t)
         elif mode == 'current' and units == 'C':
-            rhs[self._ptr['V_cell']] = current - self.capacity*value(t)
+            rhs[ptr['V_cell']] = current - self.capacity*value(t)
         elif mode == 'voltage':
-            rhs[self._ptr['V_cell']] = voltage - value(t)
+            rhs[ptr['V_cell']] = voltage - value(t)
         elif mode == 'power':
-            rhs[self._ptr['V_cell']] = power - value(t)
+            rhs[ptr['V_cell']] = power - value(t)
 
         # values for rootfns
         total_time = self._t0 + t

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, Callable, TYPE_CHECKING
 
 import textwrap
 from copy import deepcopy
@@ -7,12 +7,32 @@ from copy import deepcopy
 import atexit
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import cumulative_trapezoid
 
 from ._ida_solver import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
+
+if not hasattr(np, 'concat'):  # pragma: no cover
+    np.concat = np.concatenate
+
+
+class ExitHandler:
+    """
+    Exit handler.
+
+    Use this class to register functions that you want to run just before a
+    file exits. This is primarily used to register plt.show() so plots appear
+    in both interactive and non-interactive environments, even if the user
+    forgets to explicitly call it.
+
+    """
+    _registered = []
+
+    @classmethod
+    def register_atexit(cls, func: Callable) -> None:
+        if func not in cls._registered:
+            atexit.register(func)
 
 
 class BaseSolution(IDAResult):
@@ -117,9 +137,9 @@ class BaseSolution(IDAResult):
         plt.ylabel(ylabel)
 
         if show_plot and not plt.isinteractive():
-            atexit.register(plt.show)
+            ExitHandler.register_atexit(plt.show)
 
-    def _to_dict(self) -> None:
+    def _fill_vars(self) -> None:
         """
         Fills the 'vars' dictionary by slicing the SolverReturn solution
         states. Users should generally only access the solution via 'vars'
@@ -138,14 +158,14 @@ class BaseSolution(IDAResult):
 
         soc = self.y[:, ptr['soc']]
         T_cell = self.y[:, ptr['T_cell']]*model.T_inf
+        hyst = self.y[:, ptr['hyst']]
         eta_j = self.y[:, ptr['eta_j']]
         voltage = self.y[:, ptr['V_cell']]
 
         ocv = model.ocv(soc)
         R0 = model.R0(soc, T_cell)
 
-        current = -(voltage - ocv + np.sum(eta_j, axis=1)) / R0
-        capacity = cumulative_trapezoid(-current, x=time/3600., initial=0.)
+        current = -(voltage - ocv - hyst + np.sum(eta_j, axis=1)) / R0
 
         # stored time
         self.vars['time_s'] = time
@@ -156,11 +176,11 @@ class BaseSolution(IDAResult):
         self.vars['soc'] = soc
         self.vars['temperature_K'] = T_cell
         self.vars['voltage_V'] = voltage
+        self.vars['hysteresis_V'] = hyst
 
         # post-processed variables
         self.vars['current_A'] = current
         self.vars['power_W'] = current*voltage
-        self.vars['capacity_Ah'] = soc[0]*model.capacity + capacity
         self.vars['eta0_V'] = current*R0
 
         for j, eta in enumerate(eta_j.T, start=1):
@@ -208,7 +228,7 @@ class StepSolution(BaseSolution):
 
         self._timer = timer
 
-        self._to_dict()
+        self._fill_vars()
 
     @property
     def solvetime(self) -> str:
@@ -250,15 +270,16 @@ class CycleSolution(BaseSolution):
         self._solns = soln
         self._model = soln[0]._model
 
+        t_size = np.sum([soln.t.size for soln in self._solns])
         sv_size = self._model._sv0.size
 
         self.message = []
         self.success = []
         self.status = []
 
-        self.t = np.empty([0])
-        self.y = np.empty([0, sv_size])
-        self.yp = np.empty([0, sv_size])
+        self.t = np.empty([t_size])
+        self.y = np.empty([t_size, sv_size])
+        self.yp = np.empty([t_size, sv_size])
 
         self.t_events = None
         self.y_events = None
@@ -269,14 +290,18 @@ class CycleSolution(BaseSolution):
 
         self._timers = []
 
+        first = 0
         for soln in self._solns:
-            if self.t.size > 0:
-                shift_t = self.t[-1] + soln.t + t_shift
+            soln_size = soln.t.size
+            last = first + soln_size
+
+            if first > 0:
+                shift_t = self.t[first - 1] + soln.t + t_shift
             else:
                 shift_t = soln.t
 
-            if soln.t_events and self.t.size > 0:
-                shift_t_events = self.t[-1] + soln.t_events + t_shift
+            if soln.t_events and first > 0:
+                shift_t_events = self.t[first - 1] + soln.t_events + t_shift
             elif soln.t_events:
                 shift_t_events = soln.t_events
 
@@ -284,9 +309,11 @@ class CycleSolution(BaseSolution):
             self.success.append(soln.success)
             self.status.append(soln.status)
 
-            self.t = np.hstack([self.t, shift_t])
-            self.y = np.vstack([self.y, soln.y])
-            self.yp = np.vstack([self.yp, soln.yp])
+            self.t[first:last] = shift_t
+            self.y[first:last, :] = soln.y
+            self.yp[first:last, :] = soln.yp
+
+            first = last
 
             if soln.t_events:
                 if self.t_events is None:
@@ -294,16 +321,16 @@ class CycleSolution(BaseSolution):
                     self.y_events = soln.y_events
                     self.yp_events = soln.yp_events
                 else:
-                    self.t_events = np.hstack([self.t_events, shift_t_events])
-                    self.y_events = np.vstack([soln.y_events])
-                    self.yp_events = np.vstack([soln.yp_events])
+                    self.t_events = np.concat([self.t_events, shift_t_events])
+                    self.y_events = np.concat([self.y_events, soln.y_events])
+                    self.yp_events = np.concat([self.yp_events, soln.yp_events])
 
             self.nfev.append(soln.nfev)
             self.njev.append(soln.njev)
 
             self._timers.append(soln._timer)
 
-        self._to_dict()
+        self._fill_vars()
 
     @property
     def solvetime(self) -> str:
