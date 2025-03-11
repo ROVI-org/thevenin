@@ -18,7 +18,6 @@ includes search functionality and more detailed examples.
 """
 
 # core package
-from ._ida_solver import IDASolver, IDAResult
 from ._experiment import Experiment
 from ._model import Model
 from ._solutions import StepSolution, CycleSolution
@@ -26,16 +25,16 @@ from ._solutions import StepSolution, CycleSolution
 # submodules
 from . import loadfns
 from . import plotutils
+from . import solvers
 
 __version__ = '0.2.0.dev'
 
 __all__ = [
-    'IDASolver',
-    'IDAResult',
     'Experiment',
     'Model',
     'StepSolution',
     'CycleSolution',
     'loadfns',
     'plotutils',
+    'solvers',
 ]

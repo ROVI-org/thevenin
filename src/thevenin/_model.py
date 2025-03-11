@@ -444,7 +444,7 @@ class Model:
 
         """
 
-        from ._ida_solver import IDASolver
+        from .solvers import IDASolver
         from ._solutions import StepSolution
 
         step = exp.steps[stepidx].copy()

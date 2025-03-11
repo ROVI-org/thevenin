@@ -50,7 +50,6 @@ thevenin = ["templates/*.yaml"]
 docs = [
     "sphinx",
     "myst-nb",
-    "astroid>=3",  # codespell:ignore astroid
     "sphinx-design",
     "sphinx-autoapi",
     "sphinx-favicon",

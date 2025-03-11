@@ -8,7 +8,7 @@ import atexit
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ._ida_solver import IDAResult
+from .solvers import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._model import Model
