@@ -3,7 +3,7 @@ The ``solvers`` module provides interfaces for solving the systems of ordinary
 differential equations that govern equivalent circuit models. The solvers are
 taken from `scikit-sundae`_, a wrapper for `SUNDIALS`_. Specifically, both the
 IDA (for differential-algebraic equations) and CVODE (for ordinary differential
-equations) are included.
+equations) interfaces are included.
 
 These solvers offer robust numerical methods with settings to adjust the
 accuracy, stability, and performance. While the implementations from from the

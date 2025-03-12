@@ -40,7 +40,7 @@ The hysteresis only includes a dynamic component and neglects any instantaneous 
 
 $$\frac{dh}{dt} = \bigg| \frac{\eta_{\rm ce} I \gamma}{3600 Q_{\rm max}} \bigg| \times (-{\rm sign}(I)M({\rm SOC}) - h),$$
 
-The solution to this expression causes $h$ to exponentially decaying toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internal evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis you can set both $\gamma$ and $M$ to zero.
+The solution to this expression causes $h$ to exponentially decaying toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internally evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis you can set both $\gamma$ and $M$ to zero.
 
 The thermal submodel assumes uniform temperature within the cell. The temperature increases while the cell is active according to
 
@@ -77,17 +77,17 @@ If you run into issues with installation due to the [scikit-sundae](https://gith
 For those interested in setting up a developer and/or editable version of this software please see the directions available in the "Development" section of our [documentation](https://thevenin.readthedocs.io/en/latest/development).
 
 ## Get Started
-The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To learn more about the model and see more detailed examples check out the [documentation](https://thevenin.readthedocs.io/) on Read the Docs.
+The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To learn more about the model and see more detailed examples check out the [documentation](https://thevenin.readthedocs.io/) on Read the Docs. Note that there are two interfaces to the model: `Simulation` and `Prediction`. These are optimized for full timeseries simulations and step-by-step state predictions, respectively.
 
 ```python
 import thevenin as thev
 
-model = thev.Model()
+sim = thev.Simulation()
 
 expr = thev.Experiment()
 expr.add_step('current_A', 75., (3600., 1.), limits=('voltage_V', 3.))
 
-soln = model.run(expr)
+soln = sim.run(expr)
 soln.plot('time_h', 'voltage_V')
 ```
 

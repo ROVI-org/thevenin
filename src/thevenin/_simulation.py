@@ -11,6 +11,8 @@ import numpy as np
 import scipy.sparse as sparse
 from ruamel.yaml import YAML, add_constructor, SafeConstructor
 
+from thevenin._basemodel import BaseModel
+
 if TYPE_CHECKING:  # pragma: no cover
     from ._experiment import Experiment
     from ._solutions import BaseSolution, StepSolution, CycleSolution
@@ -18,8 +20,8 @@ if TYPE_CHECKING:  # pragma: no cover
     Solution = TypeVar('Solution', bound='BaseSolution')
 
 
-class Model:
-    """Circuit model."""
+class Simulation(BaseModel):
+    """Simulation model wrapper."""
 
     def __init__(self, params: dict | str = 'params.yaml'):
         """
@@ -150,9 +152,13 @@ class Model:
 
         summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
 
-        readable = f"Model(\n    {summary}\n)"
+        readable = f"Simulation(\n    {summary}\n)"
 
         return readable
+
+    @property
+    def classname(self):
+        return self.__class__.__name__
 
     def pre(self, initial_state: bool | Solution = True) -> None:
         """
@@ -207,8 +213,8 @@ class Model:
                 missing_attrs.append('C' + str(j))
 
         if missing_attrs:
-            raise AttributeError(f"Model is missing attrs {missing_attrs} to"
-                                 " be consistent with 'num_RC_pairs'.")
+            raise AttributeError(f"'Simulation' missing attrs {missing_attrs}"
+                                 " to be consistent with 'num_RC_pairs'.")
 
         extra_attrs = []
         pattern = re.compile(r"^[RC](\d+)")
@@ -234,11 +240,8 @@ class Model:
 
         algidx = [ptr['V_cell']]
 
-        mass_matrix = np.zeros(ptr['size'])
-        mass_matrix[ptr['soc']] = 1.
-        mass_matrix[ptr['T_cell']] = self.mass*self.Cp*self.T_inf
-        mass_matrix[ptr['hyst']] = 1.
-        mass_matrix[ptr['eta_j']] = 1.
+        mass_matrix = np.ones(ptr['size'])
+        mass_matrix[ptr['V_cell']] = 0.
 
         sv0 = np.zeros(ptr['size'])
         sv0[ptr['soc']] = self.soc0
@@ -272,135 +275,6 @@ class Model:
         elif initial_state:
             self._sv0 = sv0
             self._svdot0 = svdot0
-
-    def rhs_funcs(self, t: float, sv: np.ndarray, inputs: dict) -> np.ndarray:
-        """
-        Right hand side functions.
-
-        Returns the right hand side for the DAE system. For any differential
-        variable i, rhs[i] must be equivalent to M[i, i]*y[i] where M is the
-        mass matrix and y is an array of states. For algebraic variables rhs[i]
-        must be an expression that equals zero.
-
-        Parameters
-        ----------
-        t : float
-            Value of time [s].
-        sv : 1D np.array
-            State variables at time t.
-        inputs : dict
-            Dictionary detailing an experimental step.
-
-        Returns
-        -------
-        rhs : 1D np.array
-            The right hand side values of the DAE system.
-
-        """
-
-        ptr = self._ptr
-        rhs = np.zeros(ptr['size'])
-
-        # state
-        soc = sv[ptr['soc']]
-        T_cell = sv[ptr['T_cell']]*self.T_inf
-        hyst = sv[ptr['hyst']]
-        eta_j = sv[ptr['eta_j']]
-        voltage = sv[ptr['V_cell']]
-
-        # state-dependent properties
-        ocv = self.ocv(soc)
-        R0 = self.R0(soc, T_cell)
-
-        # dependent parameters
-        Q_inv = 1. / (3600. * self.capacity)
-
-        # calculated current and power
-        current = -(voltage - ocv - hyst + np.sum(eta_j)) / R0
-        power = current*voltage
-
-        # state of charge (differential)
-        ce = 1. if current >= 0. else self.ce
-        rhs[ptr['soc']] = -ce*current*Q_inv
-
-        # temperature (differential)
-        Q_gen = current*(ocv - voltage)
-        Q_conv = self.h_therm*self.A_therm*(self.T_inf - T_cell)
-
-        rhs[ptr['T_cell']] = (Q_gen + Q_conv) * (1 - self.isothermal)
-
-        # hysteresis (differential)
-        direction = -np.sign(current)
-        coeff = np.abs(ce*current*self.gamma*Q_inv)
-        rhs[ptr['hyst']] = coeff*(direction*self.M_hyst(soc) - hyst)
-
-        # RC overpotentials (differential)
-        for j, pj in enumerate(ptr['eta_j'], start=1):
-            Rj = getattr(self, 'R' + str(j))(soc, T_cell)
-            Cj = getattr(self, 'C' + str(j))(soc, T_cell)
-            rhs[pj] = -sv[pj] / (Rj*Cj) + current / Cj
-
-        # cell voltage (algebraic)
-        mode = inputs['mode']
-        units = inputs['units']
-        value = inputs['value']
-
-        if mode == 'current' and units == 'A':
-            rhs[ptr['V_cell']] = current - value(t)
-        elif mode == 'current' and units == 'C':
-            rhs[ptr['V_cell']] = current - self.capacity*value(t)
-        elif mode == 'voltage':
-            rhs[ptr['V_cell']] = voltage - value(t)
-        elif mode == 'power':
-            rhs[ptr['V_cell']] = power - value(t)
-
-        # values for rootfns
-        total_time = self._t0 + t
-
-        roots = {
-            'soc': soc,
-            'temperature_K': T_cell,
-            'current_A': current,
-            'current_C': current / self.capacity,
-            'voltage_V': voltage,
-            'power_W': power,
-            'capacity_Ah': soc*self.capacity,
-            'time_s': total_time,
-            'time_min': total_time / 60.,
-            'time_h': total_time / 3600.,
-        }
-
-        inputs['roots'] = roots
-
-        return rhs
-
-    def residuals(self, t: float, sv: np.ndarray, svdot: np.ndarray,
-                  inputs: dict) -> np.ndarray:
-        """
-        Return the DAE residuals.
-
-        The DAE residuals should be near zero at each time step. The solver
-        requires the DAE to be written in terms of its residuals in order to
-        minimize their values.
-
-        Parameters
-        ----------
-        t : float
-            Value of time [s].
-        sv : 1D np.array
-            State variables at time t.
-        svdot : 1D np.array
-            State variable time derivatives at time t.
-        inputs : dict
-            Dictionary detailing an experimental step.
-
-        Returns
-        -------
-        res : 1D np.array
-            DAE residuals, res = M*yp - rhs(t, y).
-
-        """
-        return self._mass_matrix.dot(svdot) - self.rhs_funcs(t, sv, inputs)
 
     def run_step(self, exp: Experiment, stepidx: int) -> StepSolution:
         """
@@ -459,9 +333,9 @@ class Model:
         kwargs['algebraic_idx'] = self._algidx
 
         if step['limits'] is not None:
-            _setup_rootfn(step['limits'], kwargs)
+            _setup_eventsfn(step['limits'], kwargs)
 
-        solver = IDASolver(self._residuals, **kwargs)
+        solver = IDASolver(self._resfn, **kwargs)
 
         start = time.time()
         ida_soln = solver.solve(step['tspan'], self._sv0, self._svdot0)
@@ -530,8 +404,8 @@ class Model:
 
         return soln
 
-    def _residuals(self, t: float, sv: np.ndarray, svdot: np.ndarray,
-                   res: np.ndarray, inputs: dict) -> None:
+    def _resfn(self, t: float, sv: np.ndarray, svdot: np.ndarray,
+               res: np.ndarray, inputs: dict) -> None:
         """
         Solver-structured residuals.
 
@@ -558,20 +432,20 @@ class Model:
 
         """
 
-        res[:] = self.residuals(t, sv, svdot, inputs)
+        res[:] = self._mass_matrix*svdot - self._rhsfn(t, sv, inputs)
 
 
-class _RootFunction:
-    """Root function callables."""
+class _EventsFunction:
+    """Event function callables."""
 
     def __init__(self, limits: tuple[str, float]) -> None:
         """
-        This class is a generalized root function callable.
+        This class is a generalized event function callable.
 
         Parameters
         ----------
         limits : tuple[str, float]
-            A tuple of root function criteria arranged as ordered pairs of
+            A tuple of event function criteria arranged as ordered pairs of
             limit names and values, e.g., ('time_h', 10., 'voltage_V', 4.2).
 
         """
@@ -583,11 +457,11 @@ class _RootFunction:
     def __call__(self, t: float, sv: np.ndarray, svdot: np.ndarray,
                  events: np.ndarray, inputs: dict) -> None:
         """
-        Solver-structured root function.
+        Solver-structured event function.
 
-        The IDASolver requires a root function in this exact form. Rather
+        The IDASolver requires a event function in this exact form. Rather
         than outputting the events array, the function returns None, but
-        fills the 'events' input array with root functions. If any 'events'
+        fills the 'events' input array with event functions. If any 'events'
         index equals zero, the solver will exit prior to 'tspan[-1]'.
 
         Parameters
@@ -599,10 +473,10 @@ class _RootFunction:
         svdot : 1D np.array
             State variable time derivatives at time t.
         events : 1D np.array
-            An array of root/event functions. During integration, the solver
-            will exit prior to 'tspan[-1]' if any 'events' index equals zero.
+            An array of event functions. During integration, the solver will
+            exit prior to 'tspan[-1]' if any 'events' index equals zero.
         inputs : dict
-            Dictionary detailing an experimental step, with the 'roots' key
+            Dictionary detailing an experimental step, with the 'events' key
             added and filled within the `rhs_funcs()' method.
 
         Returns
@@ -612,22 +486,22 @@ class _RootFunction:
         """
 
         for i, (key, value) in enumerate(zip(self.keys, self.values)):
-            events[i] = inputs['roots'][key] - value
+            events[i] = inputs['events'][key] - value
 
 
-def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
+def _setup_eventsfn(limits: tuple[str, float], kwargs: dict) -> None:
     """
-    Set up a root function for the IDASolver.
+    Set up a event function for the IDASolver.
 
-    The IDASolver requires two keyword arguments to be set when using root
-    functions. The first is 'rootfn' which requires a Callable. The second
-    is 'num_events' with allocates memory to an array that stores the root
+    The IDASolver requires two keyword arguments to be set when using event
+    functions. The first is 'eventsfn' which requires a Callable. The second
+    is 'num_events' with allocates memory to an array that stores the event
     function values.
 
     Parameters
     ----------
     limits : tuple[str, float]
-        A tuple of root function criteria arranged as ordered pairs of limit
+        A tuple of event function criteria arranged as ordered pairs of limit
         names and values, e.g., ('time_h', 10., 'voltage_V', 4.2).
     kwargs : dict
         The IDASolver keyword argumnents dictionary. Both the 'eventsfn' and
@@ -639,10 +513,10 @@ def _setup_rootfn(limits: tuple[str, float], kwargs: dict) -> None:
 
     """
 
-    rootfn = _RootFunction(limits)
+    eventsfn = _EventsFunction(limits)
 
-    kwargs['eventsfn'] = rootfn
-    kwargs['num_events'] = rootfn.size
+    kwargs['eventsfn'] = eventsfn
+    kwargs['num_events'] = eventsfn.size
 
 
 def _yaml_reader(file: str) -> dict:

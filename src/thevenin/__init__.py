@@ -19,7 +19,8 @@ includes search functionality and more detailed examples.
 
 # core package
 from ._experiment import Experiment
-from ._model import Model
+from ._simulation import Simulation
+from ._prediction import TransientState, Prediction
 from ._solutions import StepSolution, CycleSolution
 
 # submodules
@@ -31,10 +32,28 @@ __version__ = '0.2.0.dev'
 
 __all__ = [
     'Experiment',
-    'Model',
+    'Simulation',
+    'TransientState',
+    'Prediction',
     'StepSolution',
     'CycleSolution',
     'loadfns',
     'plotutils',
     'solvers',
 ]
+
+
+class Model(Simulation):  # pragma: no cover
+
+    def __init__(self, params: dict | str = 'params.yaml') -> None:
+        from warnings import warn
+
+        warn("The 'Model' class has been renamed 'Simulation'. In a future"
+             " release 'Model' will be deprecated.", DeprecationWarning,
+             stacklevel=2)
+
+        super().__init__(params)
+
+    @property
+    def classname(self) -> str:  # forced to return parent class
+        return getattr(self.__class__.__base__, '__name__')

@@ -11,13 +11,13 @@ def soln():
 
     warnings.filterwarnings('ignore')
 
-    model = thev.Model()
+    sim = thev.Simulation()
 
     expr = thev.Experiment()
     expr.add_step('current_A', 1., (3600., 1.), limits=('voltage_V', 3.))
     expr.add_step('current_A', 0., (3600., 1.))
 
-    soln = model.run(expr)
+    soln = sim.run(expr)
 
     return soln
 
