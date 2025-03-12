@@ -45,7 +45,7 @@ __all__ = [
 
 class Model(Simulation):  # pragma: no cover
 
-    def __init__(self, params: dict | str = 'params.yaml') -> None:
+    def __init__(self, params='params.yaml'):
         from warnings import warn
 
         warn("The 'Model' class has been renamed 'Simulation'. In a future"
