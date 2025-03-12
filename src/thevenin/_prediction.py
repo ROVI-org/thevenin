@@ -5,8 +5,7 @@ from typing import Callable, TYPE_CHECKING
 
 import numpy as np
 
-from thevenin._simulation import short_warn
-from thevenin._basemodel import BaseModel
+from thevenin._basemodel import BaseModel, short_warn
 
 if TYPE_CHECKING:  # pragma: no cover
     from .solvers import CVODEResult
@@ -62,10 +61,6 @@ class Prediction(BaseModel):
 
     """
 
-    def __init__(self, params: dict | str = 'params.yaml'):
-        from ._simulation import Simulation
-        Simulation.__init__(self, params)
-
     @property
     def classname(self):
         return self.__class__.__name__
@@ -97,13 +92,14 @@ class Prediction(BaseModel):
             short_warn(f"There are extra RC attributes {extra_attrs}, beyond"
                        " what was expected based on 'num_RC_pairs'.")
 
-        self._ptr = {
-            'soc': 0,
-            'T_cell': 1,
-            'hyst': 2,
-            'eta_j': np.arange(3, 3 + self.num_RC_pairs),
-            'size': self.num_RC_pairs + 3,
-        }
+        ptr = {}
+        ptr['soc'] = 0
+        ptr['T_cell'] = 1
+        ptr['hyst'] = 2
+        ptr['eta_j'] = np.arange(3, 3 + self.num_RC_pairs)
+        ptr['size'] = self.num_RC_pairs + 3
+
+        self._ptr = ptr
 
         self.set_options()
 
@@ -125,15 +121,16 @@ class Prediction(BaseModel):
         state : TransientState
             Description of the starting state.
         current : float | Callable
-            Demand current [A].
+            Demand current [A]. For a dynamic current, use a callable with a
+            signature like ``def current(t: float) -> float``, where the input
+            time is in seconds relative to the overall step.
         delta_t : float
             Magnitude of time step, in seconds.
 
         Returns
         -------
-        state : TransientState
-            Predicted state. The key/value pairs and units are the same as the
-            input state.
+        :class:`~thevenin.TransientState`
+            Predicted state at the end of the time step.
 
         """
 
@@ -191,6 +188,29 @@ class Prediction(BaseModel):
         return sv
 
     def _svdot(self, t: float, sv: np.ndarray, svdot: np.ndarray,
-               inputs: dict) -> None:
+               userdata: dict) -> None:
+        """
+        Solver-structured right-hand-side.
 
-        svdot[:] = self._rhsfn(t, sv, inputs)
+        The CVODESolver requires a right-hand-side function in this form.
+        Rather than outputting the derivatives, the function returns None,
+        but fills the 'svdot' input array with the ODE expressions.
+
+        Parameters
+        ----------
+        t : float
+            Value of time [s].
+        sv : 1D np.array
+            State variables at time t.
+        svdot : 1D np.array
+            State variable time derivatives from ODEs, svdot = rhs(t, sv).
+        userdata : dict
+            Dictionary detailing an experimental step.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        svdot[:] = self._rhsfn(t, sv, userdata)

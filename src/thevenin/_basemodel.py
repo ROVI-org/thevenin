@@ -1,7 +1,11 @@
 from __future__ import annotations
+
+import os
+import warnings
 from abc import ABC, abstractmethod
 
 import numpy as np
+from ruamel.yaml import YAML, add_constructor, SafeConstructor
 
 
 def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float:
@@ -23,11 +27,180 @@ def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float:
 
 
 class BaseModel(ABC):
+    """Abstract BaseModel for Simulation and Prediction."""
 
-    def __init__(self, params: dict | str = 'params.yaml') -> None:
+    def __init__(self, params: dict | str = 'params.yaml'):
+        """
+        A class to construct and run the model. Provide the parameters using
+        either a dictionary or a '.yaml' file. Note that the number of Rj and
+        Cj attributes must be consistent with the num_RC_pairs value. See the
+        notes for more information on the callable parameters.
+
+        Parameters
+        ----------
+        params : dict | str
+            Mapping of model parameter names to their values. Can be either
+            a dict or absolute/relateive file path to a yaml file (str). The
+            keys/value pair descriptions are given below. The default uses an
+            internal yaml file.
+
+            ============= ========================== ================
+            Key           Value                      *type*, units
+            ============= ========================== ================
+            num_RC_pairs  number of RC pairs         *int*, -
+            soc0          initial state of charge    *float*, -
+            capacity      maximum battery capacity   *float*, Ah
+            ce            coulombic efficiency       *float*, -
+            gamma         hysteresis approach rate   *float*, -
+            mass          total battery mass         *float*, kg
+            isothermal    flag for isothermal model  *bool*, -
+            Cp            specific heat capacity     *float*, J/kg/K
+            T_inf         room/air temperature       *float*, K
+            h_therm       convective coefficient     *float*, W/m2/K
+            A_therm       heat loss area             *float*, m2
+            ocv           open circuit voltage       *callable*, V
+            M_hyst        max hysteresis magnitude   *callable*, V
+            R0            series resistance          *callable*, Ohm
+            Rj            resistance in RCj          *callable*, Ohm
+            Cj            capacity in RCj            *callable*, F
+            ============= ========================== ================
+
+        Raises
+        ------
+        TypeError
+            'params' must be type dict or str.
+        ValueError
+            'params' contains invalid and/or excess key/value pairs.
+
+        Warning
+        -------
+        A pre-processor runs at the end of the model initialization. If you
+        modify any parameters after class instantiation, you will need to
+        re-run the pre-processor (i.e., the ``pre()`` method) afterward.
+
+        Notes
+        -----
+        The 'ocv' and 'M_hyst' properties need to be callables with signatures
+        like ``f(soc: float) -> float``, where 'soc' is the state of charge.
+        All other properties that require callables (e.g., R0, Rj, and Cj) need
+        signatures like ``f(soc: float, T_cell: float) -> float``, with 'T_cell'
+        being the cell temperature in K.
+
+        Rj and Cj are not real property names. These are used generally in the
+        documentation. If ``num_RC_pairs=1`` then in addition to R0, you should
+        define R1 and C1. If ``num_RC_pairs=2`` then you should also give R2
+        and C2, etc. For the special case where ``num_RC_pairs=0``, you should
+        not provide any resistance or capacitance values besides the series
+        resistance R0, which is always required.
+
+        """
+
+        if isinstance(params, dict):
+            params = params.copy()
+        elif isinstance(params, str):
+            params = _yaml_reader(params)
+
+        self._repr_keys = [
+            'num_RC_pairs',
+            'soc0',
+            'capacity',
+            'ce',
+            'gamma',
+            'mass',
+            'isothermal',
+            'Cp',
+            'T_inf',
+            'h_therm',
+            'A_therm',
+        ]
+
+        self.num_RC_pairs = params.pop('num_RC_pairs')
+        self.soc0 = params.pop('soc0')
+        self.capacity = params.pop('capacity')
+        self.ce = params.pop('ce')
+        self.gamma = params.pop('gamma')
+        self.mass = params.pop('mass')
+        self.isothermal = params.pop('isothermal')
+        self.Cp = params.pop('Cp')
+        self.T_inf = params.pop('T_inf')
+        self.h_therm = params.pop('h_therm')
+        self.A_therm = params.pop('A_therm')
+
+        self.ocv = params.pop('ocv')
+        self.R0 = params.pop('R0')
+
+        for j in range(1, self.num_RC_pairs + 1):
+            setattr(self, 'R' + str(j), params.pop('R' + str(j)))
+            setattr(self, 'C' + str(j), params.pop('C' + str(j)))
+
+        self.M_hyst = params.pop('M_hyst')
+
+        if len(params) != 0:
+            extra_keys = list(params.keys())
+            raise ValueError("'params' contains invalid and/or excess"
+                             f" key/value pairs: {extra_keys=}")
+
+        self.pre()
+
+    def __repr__(self) -> str:  # pragma: no cover
+        """
+        Return a readable repr string.
+
+        Returns
+        -------
+        readable : str
+            A console-readable instance representation.
+
+        """
+
+        keys = self._repr_keys
+        values = [getattr(self, k) for k in keys]
+
+        summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
+
+        classname = self.__class__.__name__
+        readable = f"{classname}(\n    {summary}\n)"
+
+        return readable
+
+    @property
+    @abstractmethod
+    def classname(self) -> str:
+        """Return the name of the class."""
         pass
 
-    def _rhsfn(self, t, sv, userdata) -> np.ndarray:
+    @abstractmethod
+    def pre(self, *args, **kwargs) -> None:
+        """Preprocessor: ensure model setup is correct and ready to run."""
+        pass
+
+    def _rhsfn(self, t: float, sv: np.ndarray, userdata: dict) -> np.ndarray:
+        """
+        Right-hand-side functions.
+
+        Given a DAE of the form ``M*yp = f(t, y)``, this function represents
+        the right-hand-side ``f(t, y)``. For the 'Simulation' class, M has a
+        single zero-element diagonal term for the algebraic expression used to
+        solve for the cell voltage, making the system a DAE. When the system
+        of equations is accessed via the 'Prediction' class, only the pure ODE
+        is returned, allowing for faster solves via CVODE.
+
+        Parameters
+        ----------
+        t : float
+            Value of time [s].
+        sv : 1D np.array
+            State variables at time t.
+        userdata : dict
+            Dictionary detailing an experimental step.
+
+        Returns
+        -------
+        rhs : 1D np.array
+            The right-hand-side array: equivalent to yp for the 'Prediction'
+            class, but contains an extra algebraic expression for 'Simulation'.
+
+        """
 
         ptr = self._ptr
         rhs = np.zeros(ptr['size'])
@@ -114,11 +287,74 @@ class BaseModel(ABC):
 
         return rhs
 
-    @property
-    @abstractmethod
-    def classname(self) -> str:
-        pass
 
-    @abstractmethod
-    def pre(self) -> None:
-        pass
+def _yaml_reader(file: str) -> dict:
+    """
+    Read a yaml file.
+
+    This yaml reader has a custom ``!eval`` constructor, which allows you to
+    evaluate ``np`` expressions and ``lambda`` functions.
+
+    Parameters
+    ----------
+    file : str
+        An absolute or relative path to a '.yaml' file. The extension will
+        be added if not included.
+
+    Raises
+    ------
+    ValueError
+        Invalid file. Only supports '.yaml' files.
+    FileNotFoundError
+        File does not exist.
+
+    Returns
+    -------
+    data : dict
+        Data dictionary corresponding to the input file.
+
+    """
+
+    _, extension = os.path.splitext(file)
+
+    if extension == '':
+        file += '.yaml'
+    elif extension != '.yaml':
+        raise ValueError("Invalid file. Only supports '.yaml' files.")
+
+    here = os.path.dirname(__file__)
+    templates = here + '/templates'
+
+    if file in os.listdir(templates):
+        short_warn(f"Using the default parameter file '{file}'.")
+        file = templates + '/' + file
+
+    def eval_constructor(loader, node):
+        return eval(node.value)
+
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"File '{file}' does not exist.")
+
+    reader = YAML(typ='safe')
+
+    add_constructor('!eval', eval_constructor, constructor=SafeConstructor)
+
+    with open(file, 'r') as f:
+        data = reader.load(f)
+
+    return data
+
+
+def formatwarning(message, category, filename, lineno, line=None):
+    """Shortened warning format - used for parameter/pre warnings."""
+    return f"\n[thevenin {category.__name__}] {message}\n\n"
+
+
+def short_warn(message, category=None, stacklevel=1, source=None):
+    """Print a warning with the short format from ``formatwarning``."""
+    original_format = warnings.formatwarning
+
+    warnings.formatwarning = formatwarning
+    warnings.warn(message, category, stacklevel, source)
+
+    warnings.formatwarning = original_format
