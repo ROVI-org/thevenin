@@ -1,14 +1,12 @@
 from __future__ import annotations
 from typing import TypeVar, TYPE_CHECKING
 
-import re
 import time
 from copy import deepcopy
 
 import numpy as np
-import scipy.sparse as sparse
 
-from thevenin._basemodel import BaseModel, short_warn
+from thevenin._basemodel import BaseModel
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._experiment import Experiment
@@ -19,10 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class Simulation(BaseModel):
     """Simulation model wrapper."""
-
-    @property
-    def classname(self):
-        return self.__class__.__name__
 
     def pre(self, initial_state: bool | Solution = True) -> None:
         """
@@ -69,30 +63,7 @@ class Simulation(BaseModel):
 
         from ._solutions import BaseSolution
 
-        missing_attrs = []
-        for j in range(1, self.num_RC_pairs + 1):
-            if not hasattr(self, 'R' + str(j)):
-                missing_attrs.append('R' + str(j))
-            if not hasattr(self, 'C' + str(j)):
-                missing_attrs.append('C' + str(j))
-
-        if missing_attrs:
-            raise AttributeError(f"'Simulation' missing attrs {missing_attrs}"
-                                 " to be consistent with 'num_RC_pairs'.")
-
-        extra_attrs = []
-        pattern = re.compile(r"^[RC](\d+)")
-        for attr in list(self.__dict__.keys()):
-
-            matches = pattern.match(attr)
-            if matches is None:
-                pass
-            elif int(matches.group(1)) > self.num_RC_pairs:
-                extra_attrs.append(attr)
-
-        if extra_attrs:
-            short_warn(f"Extra RC attributes {extra_attrs} are present, beyond"
-                       " what was expected based on 'num_RC_pairs'.")
+        self._check_RC_pairs()  # inherited from BaseModel
 
         ptr = {}
         ptr['soc'] = 0
@@ -118,7 +89,7 @@ class Simulation(BaseModel):
 
         self._ptr = ptr
         self._algidx = algidx
-        self._mass_matrix = sparse.diags(mass_matrix)
+        self._mass_matrix = np.array(mass_matrix)
 
         self._t0 = 0.
         if isinstance(initial_state, BaseSolution):

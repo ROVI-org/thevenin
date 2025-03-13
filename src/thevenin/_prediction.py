@@ -1,11 +1,9 @@
 from __future__ import annotations
-
-import re
 from typing import Callable, TYPE_CHECKING
 
 import numpy as np
 
-from thevenin._basemodel import BaseModel, short_warn
+from thevenin._basemodel import BaseModel
 
 if TYPE_CHECKING:  # pragma: no cover
     from .solvers import CVODEResult
@@ -61,36 +59,9 @@ class Prediction(BaseModel):
 
     """
 
-    @property
-    def classname(self):
-        return self.__class__.__name__
-
     def pre(self) -> None:
 
-        missing_attrs = []
-        for j in range(1, self.num_RC_pairs + 1):
-            if not hasattr(self, 'R' + str(j)):
-                missing_attrs.append('R' + str(j))
-            if not hasattr(self, 'C' + str(j)):
-                missing_attrs.append('C' + str(j))
-
-        if missing_attrs:
-            raise AttributeError(f"'Prediction' missing attrs {missing_attrs}"
-                                 " to be consistent with 'num_RC_pairs'.")
-
-        extra_attrs = []
-        pattern = re.compile(r"^[RC](\d+)")
-        for attr in list(self.__dict__.keys()):
-
-            matches = pattern.match(attr)
-            if matches is None:
-                pass
-            elif int(matches.group(1)) > self.num_RC_pairs:
-                extra_attrs.append(attr)
-
-        if extra_attrs:
-            short_warn(f"There are extra RC attributes {extra_attrs}, beyond"
-                       " what was expected based on 'num_RC_pairs'.")
+        self._check_RC_pairs()  # inherited from BaseModel
 
         ptr = {}
         ptr['soc'] = 0

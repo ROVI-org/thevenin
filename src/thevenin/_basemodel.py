@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import os
 import warnings
 from abc import ABC, abstractmethod
@@ -14,16 +15,16 @@ def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float:
     elif eta_j.ndim == 2:
         return -(voltage - ocv - hyst + np.sum(eta_j, axis=1)) / R0
     else:
-        ValueError("Dimension error in calculating voltage.")
+        raise ValueError("Dimension error in calculating voltage.")
 
 
 def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float:
     if eta_j.ndim == 1:
         return ocv + hyst - np.sum(eta_j) - current*R0
-    elif eta_j.ndim == 1:
+    elif eta_j.ndim == 2:
         return ocv + hyst - np.sum(eta_j, axis=1) - current*R0
     else:
-        ValueError("Dimension error in calculating current.")
+        raise ValueError("Dimension error in calculating current.")
 
 
 class BaseModel(ABC):
@@ -157,22 +158,56 @@ class BaseModel(ABC):
         values = [getattr(self, k) for k in keys]
 
         summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
-
-        classname = self.__class__.__name__
-        readable = f"{classname}(\n    {summary}\n)"
+        readable = f"{self.classname}(\n    {summary}\n)"
 
         return readable
 
     @property
-    @abstractmethod
     def classname(self) -> str:
         """Return the name of the class."""
-        pass
+        return self.__class__.__name__
+
+    @property
+    def _classname(self) -> str:
+        """Use until 'Model' is deprecated to control flags in _rhsfn."""
+        if self.classname == 'Model':
+            return 'Simulation'
+
+        return self.classname
 
     @abstractmethod
     def pre(self, *args, **kwargs) -> None:
         """Preprocessor: ensure model setup is correct and ready to run."""
         pass
+
+    def _check_RC_pairs(self) -> None:
+        """Verify correct attributes are set based on num_RC_pairs."""
+
+        missing_attrs = []
+        for j in range(1, self.num_RC_pairs + 1):
+            if not hasattr(self, 'R' + str(j)):
+                missing_attrs.append('R' + str(j))
+            if not hasattr(self, 'C' + str(j)):
+                missing_attrs.append('C' + str(j))
+
+        classname = self.classname
+        if missing_attrs:
+            raise AttributeError(f"'{classname}' missing attrs {missing_attrs}"
+                                 " to be consistent with 'num_RC_pairs'.")
+
+        extra_attrs = []
+        pattern = re.compile(r"^[RC](\d+)")
+        for attr in list(self.__dict__.keys()):
+
+            matches = pattern.match(attr)
+            if matches is None:
+                pass
+            elif int(matches.group(1)) > self.num_RC_pairs:
+                extra_attrs.append(attr)
+
+        if extra_attrs:
+            short_warn(f"Extra RC attributes {extra_attrs} are present, beyond"
+                       " what was expected based on 'num_RC_pairs'.")
 
     def _rhsfn(self, t: float, sv: np.ndarray, userdata: dict) -> np.ndarray:
         """
@@ -220,11 +255,11 @@ class BaseModel(ABC):
         alpha_inv = 1. / (self.mass * self.Cp * self.T_inf)
 
         # current, voltage, and power - different for Simulation/Prediction
-        if self.classname == 'Simulation':
+        if self._classname == 'Simulation':
             voltage = sv[ptr['V_cell']]
             current = calculated_current(voltage, ocv, hyst, eta_j, R0)
 
-        elif self.classname == 'Prediction':
+        elif self._classname == 'Prediction':
             current = userdata['current'](t)
             voltage = calculated_voltage(current, ocv, hyst, eta_j, R0)
 
@@ -253,7 +288,7 @@ class BaseModel(ABC):
             rhs[pj] = -sv[pj] / (Rj*Cj) + current / Cj
 
         # cell voltage (algebraic) - only if using Simulation, not Prediction
-        if self.classname == 'Simulation':
+        if self._classname == 'Simulation':
             mode = userdata['mode']
             units = userdata['units']
             value = userdata['value']
@@ -350,11 +385,11 @@ def formatwarning(message, category, filename, lineno, line=None):
     return f"\n[thevenin {category.__name__}] {message}\n\n"
 
 
-def short_warn(message, category=None, stacklevel=1, source=None):
+def short_warn(message, category=UserWarning, stacklevel=1, source=None):
     """Print a warning with the short format from ``formatwarning``."""
     original_format = warnings.formatwarning
 
     warnings.formatwarning = formatwarning
-    warnings.warn(message, category, stacklevel, source)
+    warnings.warn_explicit(message, category, filename='None', lineno=0)
 
     warnings.formatwarning = original_format

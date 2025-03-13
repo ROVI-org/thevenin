@@ -53,7 +53,3 @@ class Model(Simulation):  # pragma: no cover
              stacklevel=2)
 
         super().__init__(params)
-
-    @property
-    def classname(self) -> str:  # forced to return parent class
-        return getattr(self.__class__.__base__, '__name__')
