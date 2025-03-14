@@ -4,6 +4,7 @@
 
 ### New Features
 - Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
+- New `Prediction` and `TransientState` classes for an improved interface to Kalman filters ([#8](https://github.com/NREL/thevenin/pull/8))
 
 ### Optimizations
 - Pre-initialize `CycleSolution` arrays rather than appending lists, much faster ([#7](https://github.com/NREL/thevenin/pull/7))
