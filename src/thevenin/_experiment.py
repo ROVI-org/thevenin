@@ -24,7 +24,7 @@ class Experiment:
 
         See also
         --------
-        ~thevenin.IDASolver :
+        ~thevenin.solvers.IDASolver :
             The solver class, with documentation for most keyword arguments
             that you might want to adjust.
 

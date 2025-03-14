@@ -15,7 +15,7 @@ def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float:
     elif eta_j.ndim == 2:
         return -(voltage - ocv - hyst + np.sum(eta_j, axis=1)) / R0
     else:
-        raise ValueError("Dimension error in calculating voltage.")
+        raise ValueError("Dimension error in calculating current.")
 
 
 def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float:
@@ -24,7 +24,7 @@ def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float:
     elif eta_j.ndim == 2:
         return ocv + hyst - np.sum(eta_j, axis=1) - current*R0
     else:
-        raise ValueError("Dimension error in calculating current.")
+        raise ValueError("Dimension error in calculating voltage.")
 
 
 class BaseModel(ABC):
@@ -32,16 +32,16 @@ class BaseModel(ABC):
 
     def __init__(self, params: dict | str = 'params.yaml'):
         """
-        A class to construct and run the model. Provide the parameters using
-        either a dictionary or a '.yaml' file. Note that the number of Rj and
-        Cj attributes must be consistent with the num_RC_pairs value. See the
-        notes for more information on the callable parameters.
+        Models can be constructed using either a dictionary or a '.yaml' file.
+        Note that the number of Rj and Cj attributes must be consistent with
+        the 'num_RC_pairs' value. See the notes for more information on the
+        callable parameters.
 
         Parameters
         ----------
         params : dict | str
             Mapping of model parameter names to their values. Can be either
-            a dict or absolute/relateive file path to a yaml file (str). The
+            a dict or absolute/relative file path to a yaml file (str). The
             keys/value pair descriptions are given below. The default uses an
             internal yaml file.
 
@@ -72,12 +72,6 @@ class BaseModel(ABC):
             'params' must be type dict or str.
         ValueError
             'params' contains invalid and/or excess key/value pairs.
-
-        Warning
-        -------
-        A pre-processor runs at the end of the model initialization. If you
-        modify any parameters after class instantiation, you will need to
-        re-run the pre-processor (i.e., the ``pre()`` method) afterward.
 
         Notes
         -----

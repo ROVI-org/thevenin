@@ -94,14 +94,34 @@ class Prediction(BaseModel):
     """
     Prediction model wrapper.
 
-    This class is primarily intended to interface with prediction-correction
-    algorithms, e.g., Kalman filters. The ``take_step`` method progresses the
-    model forward by a single step, starting from a user-defined state.
+    This class is primarily intended for prediction-correction algorithms,
+    e.g., Kalman filters. The interface is set up to let the user manage the
+    internal state via the :class:`~thevenin.TransientState` class. In addition
+    the model is only designed to run current-based loads in a step-by-step
+    fashion. If you are looking to simulate more complex protocols and use the
+    resulting timeseries data you should use the :class:`~thevenin.Simulation`
+    class instead.
 
     """
 
     def pre(self) -> None:
-        """TODO
+        """
+        Pre-process and prepare the model to make predictions. Specifically,
+        this method builds pointers so it can manage mapping the state back
+        and forth between the solver-required array format and the user-managed
+        ``TransientState`` class. So long as you do not change the size of the
+        circuit by dynamically modifying ``num_RC_pairs`` and any corresponding
+        resistor/capacitor attributes then this method will never need to be
+        run manually. In fact, we highly recommended that users not adjust
+        ``num_RC_pairs``. Instead, if you need a new circuit with a different
+        number of RC pairs, you should create a new instance of the model. If
+        you follow this recommendation you are less likely to run into complex
+        errors that can arise.
+
+        Returns
+        -------
+        None.
+
         """
 
         self._check_RC_pairs()  # inherited from BaseModel
@@ -130,7 +150,7 @@ class Prediction(BaseModel):
 
         See also
         --------
-        ~thevenin.CVODESolver :
+        ~thevenin.solvers.CVODESolver :
             The solver class, with documentation for most keyword arguments
             that you might want to adjust.
 
@@ -191,17 +211,19 @@ class Prediction(BaseModel):
         return state
 
     def _to_state(self, array: np.ndarray) -> TransientState:
-        """TODO
+        """
+        Map an array returned by the solver to a 'TransientState' instance.
 
         Parameters
         ----------
-        array : np.ndarray
-            _description_
+        array : 1D np.array
+            State variables array compatible with the solver..
 
         Returns
         -------
-        TransientState
-            _description_
+        :class:`~thevenin.TransientState`
+            Human-interpretable instance of the state variables array.
+
         """
 
         ptr = self._ptr.copy()
@@ -214,22 +236,25 @@ class Prediction(BaseModel):
         return TransientState(**state)
 
     def _to_array(self, state: TransientState) -> np.ndarray:
-        """TODO
+        """
+        Map a 'TransientState' instance to a numpy array for the solver.
 
         Parameters
         ----------
         state : TransientState
-            _description_
+            Human-interpretable instance of the state variables array.
 
         Returns
         -------
-        np.ndarray
-            _description_
+        array : 1D np.array
+            State variables array compatible with the solver.
 
         Raises
         ------
         ValueError
-            _description_
+            state.eta_j has an invalid length. The number of overpotentials
+            must be consistent with the model's 'num_RC_pairs' attribute.
+
         """
 
         if state.num_RC_pairs != self.num_RC_pairs:

@@ -16,7 +16,23 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Simulation(BaseModel):
-    """Simulation model wrapper."""
+    """
+    Simulation model wrapper.
+
+    This class is primarily intended for full timeseries simulations. Use the
+    :class:`~thevenin.Experiment` class to provide the details of an experiment.
+    Note that this version of the model interface manages its own internal
+    state. The user has limited ability to directly control the state. At the
+    beginning of all simulations, the model is assumed in a fully rested state
+    at the user-supplied state-of-charge ``soc0``. Through the pre-processor
+    method ``pre()`` you can manually force the state to start at a value given
+    by a previous solution, but you cannot individually overwrite and set any
+    internal state variables. If you are interested in having more control,
+    see the :class:`~thevenin.Prediction` class instead which is intended more
+    for step-by-step predictions used in prediction-correction algorithms like
+    Kalman filters.
+
+    """
 
     def pre(self, initial_state: bool | Solution = True) -> None:
         """
@@ -58,6 +74,13 @@ class Simulation(BaseModel):
         initializing based on a Solution instance, the solution must also be
         the same size as the current model. In other words, a 1RC-pair model
         cannot be initialized given a solution from a 2RC-pair circuit.
+
+        While any of the model parameters can be modified dynamically, it is
+        recommended to not adjust ``num_RC_pairs``. Instead, if you need a new
+        circuit with a different number of RC pairs, you should create a new
+        instance of the model. If you follow this recommendation you are less
+        likely to run into complex errors that can arise like the one mentioned
+        above.
 
         """
 
