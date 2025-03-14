@@ -1,5 +1,6 @@
 import warnings
 
+import pytest
 import numpy as np
 import thevenin as thev
 
@@ -72,3 +73,61 @@ def test_prediction_steps_against_simulation():
         np.testing.assert_allclose(
             pred_etaj[:, j], soln.vars[f"eta{j+1}_V"], rtol=1e-3, atol=1e-5,
         )
+
+
+def test_0_RC_pair_pred():
+
+    params = {
+        'num_RC_pairs': 0,
+        'soc0': 1.,
+        'capacity': 1.,
+        'ce': 1.,
+        'gamma': 0.,
+        'mass': 1.,
+        'isothermal': True,
+        'Cp': 1.,
+        'T_inf': 1.,
+        'h_therm': 1.,
+        'A_therm': 1.,
+        'ocv': lambda soc: 3. + (4.3 - 3.)*soc,
+        'M_hyst': lambda soc: 0.,
+        'R0': lambda soc, T_cell: 1e-3,
+    }
+
+    pred = thev.Prediction(params)
+    state = thev.TransientState(soc=1., T_cell=300, hyst=0, eta_j=None)
+
+    new_state = pred.take_step(state, 1., 3600.)
+    np.testing.assert_almost_equal(new_state.soc, 0.)
+    np.testing.assert_almost_equal(new_state.voltage, 3., decimal=2)
+
+
+def test_dynamic_pred_step():
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        pred = thev.Prediction()
+
+    eta_j = np.zeros(pred.num_RC_pairs)
+    state = thev.TransientState(soc=1., T_cell=300, hyst=0, eta_j=eta_j)
+
+    soc_0 = state.soc
+    voltage_0 = pred.ocv(soc_0)
+
+    new_state = pred.take_step(state, lambda t: 0., 300.)
+    np.testing.assert_almost_equal(new_state.soc, soc_0)
+    np.testing.assert_almost_equal(new_state.voltage, voltage_0)
+
+
+def test_incompatible_state():
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        pred = thev.Prediction()
+
+    state = thev.TransientState(soc=1., T_cell=300, hyst=0, eta_j=None)
+
+    assert pred.num_RC_pairs != state.num_RC_pairs
+
+    with pytest.raises(ValueError):
+        _ = pred.take_step(state, 0., 1.)

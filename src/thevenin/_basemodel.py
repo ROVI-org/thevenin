@@ -176,7 +176,7 @@ class BaseModel(ABC):
         return self.classname
 
     @abstractmethod
-    def pre(self, *args, **kwargs) -> None:
+    def pre(self, *args, **kwargs) -> None:  # pragma: no cover
         """Preprocessor: ensure model setup is correct and ready to run."""
         pass
 

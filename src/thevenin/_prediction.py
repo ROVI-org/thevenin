@@ -1,51 +1,92 @@
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING
+from typing import Callable
 
 import numpy as np
 
 from thevenin._basemodel import BaseModel
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .solvers import CVODEResult
-
 
 class TransientState:
-    """
-    The key/value pairs and units are given in the table below.
-
-        ======== ==================== ==================
-        Key      Value                *type*, units
-        ======== ==================== ==================
-        soc      state of charge      *float*, -
-        T_cell   cell temperature     *float*, K
-        hyst     hysteresis           *float*, V
-        eta_j    RC overpotentials    *list[float]*, V
-        ======== ==================== ==================
-
-    """
+    """Transient state for predictions."""
 
     def __init__(self, soc: float, T_cell: float, hyst: float,
-                 eta_j: np.ndarray) -> None:
+                 eta_j: np.ndarray | None) -> None:
+        """
+        This class allows the user to manage the state when working with the
+        :class:`~thevenin.Prediction` class. The user has control over the
+        independent state variables only (i.e., soc, T_cell, hyst, eta_j).
+
+        The read-only ``voltage`` property will return None if the state was
+        user defined. If instead the state was returned by the ``Prediction``
+        class, then the value will be the predicted voltage after a given step.
+
+        Parameters
+        ----------
+        soc : float
+            State of charge [-].
+        T_cell : float
+            Temperature of the cell [K].
+        hyst : float
+            Hysteresis voltage [V].
+        eta_j : np.ndarray | None
+            RC pair overpotentials [V].
+
+        See also
+        --------
+        Prediction :
+            The model wrapper that interfaces with ``TransientState``.
+
+        """
 
         self.soc = soc
         self.T_cell = T_cell
         self.hyst = hyst
-        self.eta_j = eta_j
+
+        if eta_j is None:
+            self.eta_j = np.array([])
+        else:
+            self.eta_j = np.asarray(eta_j)
 
         self._voltage = None
 
+        self._repr_keys = [
+            'soc',
+            'T_cell',
+            'hyst',
+            'eta_j',
+        ]
+
+    def __repr__(self) -> str:  # pragma: no cover
+        """
+        Return a readable repr string.
+
+        Returns
+        -------
+        readable : str
+            A console-readable instance representation.
+
+        """
+
+        keys = self._repr_keys
+        values = [getattr(self, k) for k in keys]
+
+        summary = "\n    ".join([f"{k}={v}," for k, v in zip(keys, values)])
+        readable = f"TransientState(\n    {summary}\n)"
+
+        return readable
+
     @property
-    def num_RC_pairs(self) -> int | None:
-        if self.eta_j is None:
-            return None
-        else:
-            return len(self.eta_j)
+    def num_RC_pairs(self) -> int:
+        """Number of RC pairs in the circuit."""
+        return len(self.eta_j)
 
     @property
     def voltage(self) -> float | None:
+        """None if user-defined state. Otherwise, predicted voltage [V]."""
         return self._voltage
 
     def _set_voltage(self, voltage: float) -> None:
+        """A hidden method for the 'Prediction' class to set the voltage."""
         self._voltage = voltage
 
 
@@ -60,6 +101,8 @@ class Prediction(BaseModel):
     """
 
     def pre(self) -> None:
+        """TODO
+        """
 
         self._check_RC_pairs()  # inherited from BaseModel
 
@@ -75,6 +118,24 @@ class Prediction(BaseModel):
         self.set_options()
 
     def set_options(self, **options) -> None:
+        """
+        Set the solver options for the underlying ODE integrator.
+
+        Parameters
+        ----------
+        **kwargs : dict, optional
+            CVODESolver keyword arguments that span all steps. You can re-run
+            this method between prediction steps if you need different settings
+            per step.
+
+        See also
+        --------
+        ~thevenin.CVODESolver :
+            The solver class, with documentation for most keyword arguments
+            that you might want to adjust.
+
+        """
+
         from .solvers import CVODESolver
 
         self._userdata = {}
@@ -116,7 +177,7 @@ class Prediction(BaseModel):
         soln = self._solver.step(delta_t)
 
         # state prediction
-        state = self._to_state(soln)
+        state = self._to_state(soln.y)
 
         # voltage prediction
         ocv = self.ocv(state.soc)
@@ -129,32 +190,58 @@ class Prediction(BaseModel):
 
         return state
 
-    def _to_state(self, soln: CVODEResult) -> dict:
+    def _to_state(self, array: np.ndarray) -> TransientState:
+        """TODO
 
-        ptr = self._ptr
+        Parameters
+        ----------
+        array : np.ndarray
+            _description_
 
-        state = {
-            'soc': soln.y[ptr['soc']].item(),
-            'T_cell': soln.y[ptr['T_cell']].item() * self.T_inf,
-            'hyst': soln.y[ptr['hyst']].item(),
-            'eta_j': soln.y[ptr['eta_j']],
-        }
+        Returns
+        -------
+        TransientState
+            _description_
+        """
+
+        ptr = self._ptr.copy()
+        _ = ptr.pop('size')
+
+        state = {}
+        for k, v in ptr.items():
+            state[k] = array[v] * (self.T_inf if k == 'T_cell' else 1.)
 
         return TransientState(**state)
 
     def _to_array(self, state: TransientState) -> np.ndarray:
+        """TODO
+
+        Parameters
+        ----------
+        state : TransientState
+            _description_
+
+        Returns
+        -------
+        np.ndarray
+            _description_
+
+        Raises
+        ------
+        ValueError
+            _description_
+        """
 
         if state.num_RC_pairs != self.num_RC_pairs:
-            raise ValueError(f"{state['eta_j']=} has an invalid length since"
+            raise ValueError(f"{state.eta_j=} has an invalid length since"
                              f" num_RC_pairs={self.num_RC_pairs}.")
 
-        ptr = self._ptr
+        ptr = self._ptr.copy()
+        size = ptr.pop('size')
 
-        sv = np.zeros(self._ptr['size'])
-        sv[ptr['soc']] = state.soc
-        sv[ptr['T_cell']] = state.T_cell / self.T_inf
-        sv[ptr['hyst']] = state.hyst
-        sv[ptr['eta_j']] = state.eta_j
+        sv = np.zeros(size)
+        for k, v in ptr.items():
+            sv[v] = getattr(state, k) / (self.T_inf if k == 'T_cell' else 1.)
 
         return sv
 
