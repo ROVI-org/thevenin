@@ -13,12 +13,12 @@ class TransientState:
                  eta_j: np.ndarray | None) -> None:
         """
         This class allows the user to manage the state when working with the
-        :class:`~thevenin.Prediction` class. The user has control over the
-        independent state variables only (i.e., soc, T_cell, hyst, eta_j).
+        :class:`~thevenin.Prediction` class. The user only has control over
+        independent state variables (i.e., soc, T_cell, hyst, eta_j).
 
         The read-only ``voltage`` property will return None if the state was
         user defined. If instead the state was returned by the ``Prediction``
-        class, then the value will be the predicted voltage after a given step.
+        class, the value will be the predicted voltage after a given step.
 
         Parameters
         ----------

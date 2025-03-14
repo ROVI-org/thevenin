@@ -11,11 +11,12 @@ class Experiment:
 
     def __init__(self, **kwargs) -> None:
         """
-        A class to define an experimental protocol. Use the add_step() method
-        to add a series of sequential steps. Each step defines a control mode,
-        a constant or time-dependent load profile, a time span, and optional
-        limiting criteria to stop the step early if a specified event/state is
-        detected.
+        A class to define an experimental protocol. Use the ``add_step()``
+        method sequential steps to run. Each step defines a control mode, a
+        constant or time-dependent load profile, a time span, and optional
+        limiting criteria to stop the step early if a specified event/state
+        is detected. Note that ``Experiment`` is designed to only interface
+        with the :class:`thevenin.Simulation` model wrapper.
 
         Parameters
         ----------
@@ -27,6 +28,8 @@ class Experiment:
         ~thevenin.solvers.IDASolver :
             The solver class, with documentation for most keyword arguments
             that you might want to adjust.
+        ~thevenin.Simulation :
+            The correct model interface to use with the ``Experiment`` class.
 
         """
 
@@ -151,7 +154,7 @@ class Experiment:
 
         See also
         --------
-        ~thevenin.IDASolver :
+        ~thevenin.solvers.IDASolver :
             The solver class, with documentation for most keyword arguments
             that you might want to adjust.
 
