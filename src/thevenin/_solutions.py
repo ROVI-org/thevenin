@@ -8,10 +8,10 @@ import atexit
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ._ida_solver import IDAResult
+from .solvers import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ._model import Model
+    from ._simulation import Simulation
 
 if not hasattr(np, 'concat'):  # pragma: no cover
     np.concat = np.concatenate
@@ -94,7 +94,7 @@ class BaseSolution(IDAResult):
 
         return readable
 
-    def plot(self, x: str, y: str, show_plot: bool = True, **kwargs) -> None:
+    def plot(self, x: str, y: str, **kwargs) -> None:
         """
         Plot any two variables in 'vars' against each other.
 
@@ -104,10 +104,6 @@ class BaseSolution(IDAResult):
             A variable key in 'vars' to be used for the x-axis.
         y : str
             A variable key in 'vars' to be used for the y-axis.
-        show_plot : bool, optional
-            For non-interactive environments only. When True (default) this
-            registers `plt.show()` to run at the end of the program. If False,
-            you must call `plt.show()` manually.
         **kwargs : dict, optional
             Keyword arguments to pass through to `plt.plot()`. For more info
             please refer to documentation for `maplotlib.pyplot.plot()`.
@@ -136,7 +132,7 @@ class BaseSolution(IDAResult):
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
 
-        if show_plot and not plt.isinteractive():
+        if not plt.isinteractive():
             ExitHandler.register_atexit(plt.show)
 
     def _fill_vars(self) -> None:
@@ -151,21 +147,23 @@ class BaseSolution(IDAResult):
 
         """
 
-        model = self._model
-        ptr = model._ptr
+        from ._basemodel import calculated_current
+
+        sim = self._sim
+        ptr = sim._ptr
 
         time = self.t
 
         soc = self.y[:, ptr['soc']]
-        T_cell = self.y[:, ptr['T_cell']]*model.T_inf
+        T_cell = self.y[:, ptr['T_cell']]*sim.T_inf
         hyst = self.y[:, ptr['hyst']]
         eta_j = self.y[:, ptr['eta_j']]
         voltage = self.y[:, ptr['V_cell']]
 
-        ocv = model.ocv(soc)
-        R0 = model.R0(soc, T_cell)
+        ocv = sim.ocv(soc)
+        R0 = sim.R0(soc, T_cell)
 
-        current = -(voltage - ocv - hyst + np.sum(eta_j, axis=1)) / R0
+        current = calculated_current(voltage, ocv, hyst, eta_j, R0)
 
         # stored time
         self.vars['time_s'] = time
@@ -190,15 +188,15 @@ class BaseSolution(IDAResult):
 class StepSolution(BaseSolution):
     """Single-step solution."""
 
-    def __init__(self, model: Model, ida_soln: IDAResult,
+    def __init__(self, sim: Simulation, ida_soln: IDAResult,
                  timer: float) -> None:
         """
         A solution instance for a single experimental step.
 
         Parameters
         ----------
-        model : Model
-            The model instance that was run to produce the solution.
+        sim : Simulation
+            The simulation instance that was run to produce the solution.
         ida_soln : IDAResult
             The unformatted solution returned by IDASolver.
         timer : float
@@ -208,7 +206,7 @@ class StepSolution(BaseSolution):
 
         super().__init__()
 
-        self._model = deepcopy(model)
+        self._sim = deepcopy(sim)
 
         self.message = ida_soln.message
         self.success = ida_soln.success
@@ -268,10 +266,10 @@ class CycleSolution(BaseSolution):
         super().__init__()
 
         self._solns = soln
-        self._model = soln[0]._model
+        self._sim = soln[0]._sim
 
         t_size = np.sum([soln.t.size for soln in self._solns])
-        sv_size = self._model._sv0.size
+        sv_size = self._sim._sv0.size
 
         self.message = []
         self.success = []

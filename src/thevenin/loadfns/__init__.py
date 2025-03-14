@@ -1,6 +1,4 @@
 """
-Load Functions
---------------
 This module contains classes to help construct time-varying load profiles.
 All of the classes are callable after construction and take in a value of
 time in seconds. Most load functions include a linear ramp that "smooths"

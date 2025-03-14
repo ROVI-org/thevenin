@@ -20,6 +20,7 @@ Examples below demonstrate how to set up and simulate Thevenin equivalent circui
 
             yaml_inputs.ipynb
             dict_inputs.ipynb
+            prediction_interface.ipynb
 
    .. grid-item-card:: Dynamic loads
          :class-footer: border-0
