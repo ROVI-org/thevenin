@@ -3,8 +3,9 @@
 ## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
-- Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
+- Allow the `CycleSolution` to append more solutions after it has been initialized ([#9](https://github.com/NREL/thevenin/pull/9))
 - New `Prediction` and `TransientState` classes for an improved interface to Kalman filters ([#8](https://github.com/NREL/thevenin/pull/8))
+- Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Optimizations
 - Pre-initialize `CycleSolution` arrays rather than appending lists, much faster ([#7](https://github.com/NREL/thevenin/pull/7))
@@ -13,7 +14,7 @@
 ### Bug Fixes
 
 ### Breaking Changes
-- New hysteresis option means users will need to update old `params` inputs to also include `gamma` and `M_hyst`
+- New hysteresis option means users will need to update old `params` inputs to also include `gamma` and `M_hyst` ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ## [v0.1.2](https://github.com/NREL/thevenin/tree/v0.1.2)
 
