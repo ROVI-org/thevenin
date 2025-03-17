@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, Callable, TYPE_CHECKING
+from typing import Iterable, Callable, TypeVar, TYPE_CHECKING
 
 import textwrap
 from copy import deepcopy
@@ -12,6 +12,8 @@ from .solvers import IDAResult
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._simulation import Simulation
+
+    Solution = TypeVar('Solution', bound='BaseSolution')
 
 if not hasattr(np, 'concat'):  # pragma: no cover
     np.concat = np.concatenate
@@ -265,6 +267,8 @@ class CycleSolution(BaseSolution):
 
         super().__init__()
 
+        soln = deepcopy(list(soln))  # ensure type list, memory safe copy
+
         self._solns = soln
         self._sim = soln[0]._sim
 
@@ -298,9 +302,9 @@ class CycleSolution(BaseSolution):
             else:
                 shift_t = soln.t
 
-            if soln.t_events and first > 0:
+            if soln.t_events is not None and first > 0:
                 shift_t_events = self.t[first - 1] + soln.t_events + t_shift
-            elif soln.t_events:
+            elif soln.t_events is not None:
                 shift_t_events = soln.t_events
 
             self.message.append(soln.message)
@@ -313,7 +317,7 @@ class CycleSolution(BaseSolution):
 
             first = last
 
-            if soln.t_events:
+            if soln.t_events is not None:
                 if self.t_events is None:
                     self.t_events = shift_t_events
                     self.y_events = soln.y_events
@@ -350,7 +354,7 @@ class CycleSolution(BaseSolution):
         Parameters
         ----------
         idx : int | tuple
-            The step index (int) or first/last indices (tuple) to return.
+            The step index (int) or range (first, last) to return.
 
         Returns
         -------
@@ -366,3 +370,100 @@ class CycleSolution(BaseSolution):
         elif isinstance(idx, (tuple, list)):
             solns = self._solns[idx[0]:idx[1] + 1]
             return CycleSolution(*solns)
+
+    def append_soln(self, soln: Solution, t_shift: float = 1e-3) -> None:
+        """
+        Append another solution object to the current instance. Appending the
+        instance itself is also allowed, which is helpful to visualize multiple
+        cycles.
+
+        Parameters
+        ----------
+        soln : StepSolution | CycleSolution
+            A solution (step or cycle) to append to the end of the current
+            instance.
+        t_shift : float, optional
+            Time (in seconds) to add between the current solution and new
+            appended solution. If zero, the current final time and new initial
+            time will exactly overlap. The default is 1e-3.
+
+        Returns
+        -------
+        None.
+
+        Raises
+        ------
+        TypeError
+            'soln' input must be StepSolution, CycleSolution.
+        ValueError
+            'soln' input is incompatible because it came from a simulation with
+            different num_RC_pairs.
+
+        Notes
+        -----
+        The ``t_shift`` input only affects the shift between the current and
+        new solutions. For example if two ``CycleSolution`` had original shifts
+        of 1 and 5 for their respective steps when stitched, this appended case
+        will still have 1 for the first few steps, ``t_shift`` between, and 5
+        for the shifts between the latter half's steps.
+
+        Appending solutions cannot simply be undone. If you think you may want
+        to go back to an instance prior to appending another solution then you
+        should create a copy to operate on. Use ``copy.deepcopy`` from Python's
+        standard library to make sure the copy is memory safe, i.e., the two
+        instances do not share any common memory.
+
+        """
+
+        if not isinstance(soln, (StepSolution, CycleSolution)):
+            raise TypeError("'soln' input must be StepSolution, CycleSolution.")
+
+        if self._sim.num_RC_pairs != soln._sim.num_RC_pairs:
+            raise ValueError("'soln' input is incompatible because it came"
+                             " from a simulation with different num_RC_pairs.")
+
+        soln = deepcopy(soln)
+
+        shift_t = self.t[-1] + soln.t + t_shift
+        if soln.t_events is not None:
+            shift_t_events = self.t[-1] + soln.t_events + t_shift
+
+        if isinstance(soln, StepSolution):
+            self._solns.append(soln)
+
+            self.message.append(soln.message)
+            self.success.append(soln.success)
+            self.status.append(soln.status)
+
+            self.nfev.append(soln.nfev)
+            self.njev.append(soln.njev)
+
+            self._timers.append(soln._timer)
+
+        elif isinstance(soln, CycleSolution):
+            self._solns.extend(soln._solns)
+
+            self.message.extend(soln.message)
+            self.success.extend(soln.success)
+            self.status.extend(soln.status)
+
+            self.nfev.extend(soln.nfev)
+            self.njev.extend(soln.njev)
+
+            self._timers.extend(soln._timers)
+
+        self.t = np.concat([self.t, shift_t])
+        self.y = np.concat([self.y, soln.y])
+        self.yp = np.concat([self.yp, soln.yp])
+
+        if soln.t_events is not None:
+            if self.t_events is None:
+                self.t_events = shift_t_events
+                self.y_events = soln.y_events
+                self.yp_events = soln.yp_events
+            else:
+                self.t_events = np.concat([self.t_events, shift_t_events])
+                self.y_events = np.concat([self.y_events, soln.y_events])
+                self.yp_events = np.concat([self.yp_events, soln.yp_events])
+
+        self._fill_vars()
