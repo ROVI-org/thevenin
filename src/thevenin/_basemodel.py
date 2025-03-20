@@ -9,7 +9,38 @@ import numpy as np
 from ruamel.yaml import YAML, add_constructor, SafeConstructor
 
 
-def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float:
+def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float | np.ndarray:
+    """
+    Calculate the current [A].
+
+    Inputs must be consistent with one another. For example, to calculate the
+    current at a single time all values must be a float except eta_j which is
+    a 1D array at a given time step. To return the current across all times,
+    use 1D arrays for all inputs except eta_j, which then must be a 2D array
+    with rows corresponding to times and columns to each RC pair. eta_j can
+    be empty if there are no RC pairs, but must still be 1D or 2D as required.
+
+    Parameters
+    ----------
+    voltage : float | np.ndarray
+        Cell voltage at a single or multiple times [V].
+    ocv : float | np.ndarray
+        Open-circuit voltage at a single or multiple times [V].
+    hyst : float | np.ndarray
+        Hysteresis voltage at a single or multiple times [V].
+    eta_j : np.ndarray
+        RC-pair overpotentials at a single (1D) or multiple (2D) times [V]. If
+        2D the rows correspond to time indices and columns to each RC pair.
+    R0 : float | np.ndarray
+        Series resistance values at a single or multiple times [Ohm].
+
+    Returns
+    -------
+    current : float | np.ndarray
+        Calculated current at a single or multiple times [A].
+
+    """
+
     if eta_j.ndim == 1:
         return -(voltage - ocv - hyst + np.sum(eta_j)) / R0
     elif eta_j.ndim == 2:
@@ -18,7 +49,38 @@ def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float:
         raise ValueError("Dimension error in calculating current.")
 
 
-def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float:
+def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float | np.ndarray:
+    """
+    Calculate the voltage [V].
+
+    Inputs must be consistent with one another. For example, to calculate the
+    voltage at a single time all values must be a float except eta_j which is
+    a 1D array at a given time step. To return the voltage across all times,
+    use 1D arrays for all inputs except eta_j, which then must be a 2D array
+    with rows corresponding to times and columns to each RC pair. eta_j can
+    be empty if there are no RC pairs, but must still be 1D or 2D as required.
+
+    Parameters
+    ----------
+    current : float | np.ndarray
+        Current at a single or multiple times [A].
+    ocv : float | np.ndarray
+        Open-circuit voltage at a single or multiple times [V].
+    hyst : float | np.ndarray
+        Hysteresis voltage at a single or multiple times [V].
+    eta_j : np.ndarray
+        RC-pair overpotentials at a single (1D) or multiple (2D) times [V]. If
+        2D the rows correspond to time indices and columns to each RC pair.
+    R0 : float | np.ndarray
+        Series resistance values at a single or multiple times [Ohm].
+
+    Returns
+    -------
+    voltage : float | np.ndarray
+        Calculated voltage at a single or multiple times [V].
+
+    """
+
     if eta_j.ndim == 1:
         return ocv + hyst - np.sum(eta_j) - current*R0
     elif eta_j.ndim == 2:
@@ -268,7 +330,7 @@ class BaseModel(ABC):
         Q_conv = self.h_therm*self.A_therm*(self.T_inf - T_cell)
 
         rhs[ptr['T_cell']] = alpha_inv * (Q_gen + Q_conv) \
-            * (1 - self.isothermal)
+                           * (1 - self.isothermal)
 
         # hysteresis (differential)
         direction = -np.sign(current)
