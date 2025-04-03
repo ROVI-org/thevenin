@@ -1,7 +1,9 @@
 import warnings
 
-import pytest
 import numpy as np
+import numpy.testing as npt
+
+import pytest
 import thevenin as thev
 import matplotlib.pyplot as plt
 
@@ -106,10 +108,10 @@ def test_append_step_soln(soln):
 
     t_new_times = t_orig[-1] + step0.vars['time_s']
     t_append = np.concatenate([t_orig, t_new_times])
-    np.testing.assert_allclose(soln.vars['time_s'], t_append)
+    npt.assert_allclose(soln.vars['time_s'], t_append)
 
     V_append = np.concatenate([V_orig, step0.vars['voltage_V']])
-    np.testing.assert_allclose(soln.vars['voltage_V'], V_append)
+    npt.assert_allclose(soln.vars['voltage_V'], V_append)
 
 
 def test_append_cycle_soln(soln):
@@ -122,10 +124,10 @@ def test_append_cycle_soln(soln):
 
     t_new_times = t_orig[-1] + t_orig
     t_append = np.concatenate([t_orig, t_new_times])
-    np.testing.assert_allclose(soln.vars['time_s'], t_append)
+    npt.assert_allclose(soln.vars['time_s'], t_append)
 
     V_append = np.concatenate([V_orig, V_orig])
-    np.testing.assert_allclose(soln.vars['voltage_V'], V_append)
+    npt.assert_allclose(soln.vars['voltage_V'], V_append)
 
 
 def test_append_w_events(rest, soln):

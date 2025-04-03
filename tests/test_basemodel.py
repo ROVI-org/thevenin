@@ -1,8 +1,10 @@
 import warnings
 
 import pytest
-import numpy as np
 import thevenin as thev
+
+import numpy as np
+import numpy.testing as npt
 
 
 def test_model_deprecation():
@@ -39,7 +41,7 @@ def test_calculated_current():
 
     # with 2D eta_j
     eta_j = np.zeros((500, 3))
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         calculated_current(voltage, ocv, hyst, eta_j, R0),
         np.zeros(500),
     )
@@ -64,7 +66,7 @@ def test_calculated_voltage():
 
     # with 2D eta_j
     eta_j = np.zeros((500, 3))
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         calculated_voltage(current, ocv, hyst, eta_j, R0),
         ocv*np.ones(500),
     )
