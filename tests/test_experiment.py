@@ -1,6 +1,8 @@
 import pytest
-import numpy as np
 import thevenin as thev
+
+import numpy as np
+import numpy.testing as npt
 
 
 @pytest.fixture(scope='function')
@@ -24,26 +26,26 @@ def test_tspan_construction(expr):
     expr.add_step('current_A', 0., (10., 7))
 
     step = expr._steps[-1]
-    assert np.allclose(step['tspan'], np.linspace(0., 10., 7))
+    npt.assert_allclose(step['tspan'], np.linspace(0., 10., 7))
 
     # using arange - evenly divisible
     expr.add_step('current_A', 0., (10., 2.))
 
     step = expr._steps[-1]
-    assert np.allclose(step['tspan'], np.array([0., 2., 4., 6., 8., 10.]))
+    npt.assert_allclose(step['tspan'], np.array([0., 2., 4., 6., 8., 10.]))
 
     # using arange - not evenly divisible
     expr.add_step('current_A', 0., (10., 3.))
 
     step = expr._steps[-1]
-    assert np.allclose(step['tspan'], np.array([0., 3., 6., 9., 10.]))
+    npt.assert_allclose(step['tspan'], np.array([0., 3., 6., 9., 10.]))
 
     # custom tspan array
     tspan = np.hstack([0., np.logspace(-3, 3, 10)])
     expr.add_step('current_A', 0., tspan)
 
     step = expr._steps[-1]
-    assert np.allclose(step['tspan'], tspan)
+    npt.assert_allclose(step['tspan'], tspan)
 
 
 def test_add_step(expr):
@@ -90,14 +92,14 @@ def test_add_step(expr):
     step = expr.steps[0]
 
     assert expr.num_steps == 1
-    assert np.allclose(step['tspan'], np.linspace(0., 3600., 150))
+    npt.assert_allclose(step['tspan'], np.linspace(0., 3600., 150))
 
     # test voltage and arange construction
     expr.add_step('voltage_V', 4., (3600., 1.))
     step = expr.steps[1]
 
     assert expr.num_steps == 2
-    assert np.allclose(step['tspan'], np.arange(0., 3601., 1., dtype=float))
+    npt.assert_allclose(step['tspan'], np.arange(0., 3601., 1., dtype=float))
 
     # test power construction
     expr.add_step('power_W', 1., (3600., 1.))

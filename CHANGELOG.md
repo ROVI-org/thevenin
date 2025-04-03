@@ -8,10 +8,12 @@
 - Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Optimizations
+- Use `np.testing` where possible in tests for more informative fail statements ([#10](https://github.com/NREL/thevenin/pull/10))
 - Pre-initialize `CycleSolution` arrays rather than appending lists, much faster ([#7](https://github.com/NREL/thevenin/pull/7))
-- Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once ([#7](https://github.com/NREL/thevenin/pull/7))
+- Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once, replaces `show_plot` option in `Solutions` ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Bug Fixes
+None.
 
 ### Breaking Changes
 - New hysteresis option means users will need to update old `params` inputs to also include `gamma` and `M_hyst` ([#7](https://github.com/NREL/thevenin/pull/7))
@@ -25,10 +27,10 @@
 - Bounded exponential input to avoid overflow warnings inside the sigmoid function of `loadfns.Ramp2Constant` ([#6](https://github.com/NREL/thevenin/pull/6))
 
 ### Bug Fixes
-- `*Solution.plot()` now has a `show_plot` option to register `plt.show()` and block at the end of a program ([#5](https://github.com/NREL/thevenin/pull/5)). This keeps figures from auto-closing at the end of scripts run in non-interactive environments. Interactive environments (IPython, Jupyter Notebook) are not affected. When set to `False`, users running in non-interactive environments must manually call `plt.show()`. The default is `True`.
+- `*Solution.plot()` now has a `show_plot` option to register `plt.show` and block at the end of a program ([#5](https://github.com/NREL/thevenin/pull/5))
 
 ### Breaking Changes
-- New Coulombic efficiency option means users will need to update old `params` inputs to also include `ce`
+- New Coulombic efficiency option means users will need to update old `params` inputs to also include `ce` ([#4](https://github.com/NREL/thevenin/pull/4))
 
 ## [v0.1.1](https://github.com/NREL/thevenin/tree/v0.1.1)
 

@@ -1,6 +1,9 @@
 import pytest
-import numpy as np
 import thevenin as thev
+
+import numpy as np
+import numpy.testing as npt
+
 from scipy.integrate import cumulative_trapezoid
 
 
@@ -213,20 +216,20 @@ def test_preprocessing_initial_state_options(sim_0RC, constant_steps):
     svdot0 = sim_0RC._svdot0.copy()
 
     soln = sim_0RC.run(constant_steps)
-    np.testing.assert_allclose(sv0, sim_0RC._sv0)
-    np.testing.assert_allclose(svdot0, sim_0RC._svdot0)
+    npt.assert_allclose(sv0, sim_0RC._sv0)
+    npt.assert_allclose(svdot0, sim_0RC._svdot0)
 
     sim_0RC.pre(initial_state=soln)
-    np.testing.assert_allclose(soln.y[-1], sim_0RC._sv0)
-    np.testing.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
+    npt.assert_allclose(soln.y[-1], sim_0RC._sv0)
+    npt.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
 
     sim_0RC.pre(initial_state=False)
-    np.testing.assert_allclose(soln.y[-1], sim_0RC._sv0)
-    np.testing.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
+    npt.assert_allclose(soln.y[-1], sim_0RC._sv0)
+    npt.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
 
     sim_0RC.pre()
-    np.testing.assert_allclose(sv0, sim_0RC._sv0)
-    np.testing.assert_allclose(svdot0, sim_0RC._svdot0)
+    npt.assert_allclose(sv0, sim_0RC._sv0)
+    npt.assert_allclose(svdot0, sim_0RC._svdot0)
 
 
 def test_run_step(sim_2RC, constant_steps):
@@ -242,8 +245,8 @@ def test_run_step(sim_2RC, constant_steps):
 
     sim_2RC.pre()
 
-    np.testing.assert_allclose(sv0, sim_2RC._sv0)
-    np.testing.assert_allclose(svdot0, sim_2RC._svdot0)
+    npt.assert_allclose(sv0, sim_2RC._sv0)
+    npt.assert_allclose(svdot0, sim_2RC._svdot0)
 
 
 def test_run_options(sim_0RC, constant_steps):
@@ -251,12 +254,12 @@ def test_run_options(sim_0RC, constant_steps):
     svdot0 = sim_0RC._svdot0.copy()
 
     soln = sim_0RC.run(constant_steps)
-    np.testing.assert_allclose(sv0, sim_0RC._sv0)
-    np.testing.assert_allclose(svdot0, sim_0RC._svdot0)
+    npt.assert_allclose(sv0, sim_0RC._sv0)
+    npt.assert_allclose(svdot0, sim_0RC._svdot0)
 
     soln = sim_0RC.run(constant_steps, reset_state=False)
-    np.testing.assert_allclose(soln.y[-1], sim_0RC._sv0)
-    np.testing.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
+    npt.assert_allclose(soln.y[-1], sim_0RC._sv0)
+    npt.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
 
 
 def test_sim_w_multistep_experiment(sim_0RC, sim_1RC, sim_2RC, constant_steps):
@@ -318,7 +321,7 @@ def test_resting_experiment(sim_2RC):
     soln = sim_2RC.run(expr)
 
     assert soln.success
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         soln.vars['voltage_V'],
         soln.vars['voltage_V'][0],
     )
@@ -344,7 +347,7 @@ def test_constant_V_shift_w_constant_R0(sim_0RC, constant_steps):
 
     discharge = soln.get_steps(0)
     ocv = sim_0RC.ocv(discharge.vars['soc'])
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         discharge.vars['voltage_V'],
         ocv - 1e-2,
         rtol=1e-3,
@@ -352,7 +355,7 @@ def test_constant_V_shift_w_constant_R0(sim_0RC, constant_steps):
 
     charge = soln.get_steps(2)
     ocv = sim_0RC.ocv(charge.vars['soc'])
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         charge.vars['voltage_V'],
         ocv + 1e-2,
         rtol=1e-3,
@@ -374,7 +377,7 @@ def test_isothermal_flag(sim_2RC, constant_steps):
     sim_2RC.pre()
 
     soln = sim_2RC.run(constant_steps)
-    np.testing.assert_allclose(soln.vars['temperature_K'], sim_2RC.T_inf)
+    npt.assert_allclose(soln.vars['temperature_K'], sim_2RC.T_inf)
 
 
 @pytest.mark.filterwarnings("ignore:.*default parameter file.*:UserWarning")
@@ -451,32 +454,32 @@ def test_hysteresis():
     charge.add_step('current_A', 0., (600., 10.))
 
     soln = sim_woh.run(discharge, reset_state=False)
-    np.testing.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
-    np.testing.assert_almost_equal(
+    npt.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
+    npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
         sim_woh.ocv(0.5),
         decimal=2,
     )
 
     soln = sim_woh.run(charge, reset_state=False)
-    np.testing.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
-    np.testing.assert_almost_equal(
+    npt.assert_allclose(soln.vars['hysteresis_V'], 0., atol=1e-9)
+    npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
         sim_woh.ocv(0.8),
         decimal=2,
     )
 
     soln = sim_wh.run(discharge, reset_state=False)
-    np.testing.assert_allclose(soln.vars['hysteresis_V'][-1], -0.07, rtol=1e-4)
-    np.testing.assert_almost_equal(
+    npt.assert_allclose(soln.vars['hysteresis_V'][-1], -0.07, rtol=1e-4)
+    npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
         sim_woh.ocv(0.5) - 0.07,
         decimal=2,
     )
 
     soln = sim_wh.run(charge, reset_state=False)
-    np.testing.assert_allclose(soln.vars['hysteresis_V'][-1], 0.07, rtol=1e-4)
-    np.testing.assert_almost_equal(
+    npt.assert_allclose(soln.vars['hysteresis_V'][-1], 0.07, rtol=1e-4)
+    npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
         sim_woh.ocv(0.8) + 0.07,
         decimal=2,
@@ -484,7 +487,7 @@ def test_hysteresis():
 
     # Check current is unaffected by hysteresis
     step = soln.get_steps(0)
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         step.vars['current_A'],
         -1.*sim_wh.capacity,
         rtol=1e-3,

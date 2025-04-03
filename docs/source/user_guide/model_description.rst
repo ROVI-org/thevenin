@@ -52,7 +52,7 @@ The overall cell voltage is
 .. math:: 
 
     \begin{equation}
-      V_{\rm cell} = V_{\rm OCV}({\rm SOC}) - \sum_j V_j - IR_0,
+      V_{\rm cell} = V_{\rm OCV}({\rm SOC}) + h - \sum_j V_j - IR_0,
     \end{equation}
 
 where :math:`R_0` is the lone series resistance (Ohm), as shown in Figure 1. Just like the other resistive elements, :math:`R_0` is a function of SOC and :math:`T_{\rm cell}`.

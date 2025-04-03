@@ -1,8 +1,10 @@
 import warnings
 
 import pytest
-import numpy as np
 import thevenin as thev
+
+import numpy as np
+import numpy.testing as npt
 
 
 def test_prediction_steps_against_simulation():
@@ -62,15 +64,15 @@ def test_prediction_steps_against_simulation():
         for j in range(sim.num_RC_pairs):
             pred_etaj[i+1][j] = state.eta_j[j]
 
-    np.testing.assert_allclose(pred_V, soln.vars['voltage_V'], rtol=1e-3)
-    np.testing.assert_allclose(pred_T, soln.vars['temperature_K'], rtol=1e-3)
+    npt.assert_allclose(pred_V, soln.vars['voltage_V'], rtol=1e-3)
+    npt.assert_allclose(pred_T, soln.vars['temperature_K'], rtol=1e-3)
 
-    np.testing.assert_allclose(
+    npt.assert_allclose(
         pred_h, soln.vars['hysteresis_V'], rtol=1e-3, atol=1e-3,
     )
 
     for j in range(sim.num_RC_pairs):
-        np.testing.assert_allclose(
+        npt.assert_allclose(
             pred_etaj[:, j], soln.vars[f"eta{j+1}_V"], rtol=1e-3, atol=1e-5,
         )
 
@@ -98,8 +100,8 @@ def test_0_RC_pair_pred():
     state = thev.TransientState(soc=1., T_cell=300, hyst=0, eta_j=None)
 
     new_state = pred.take_step(state, 1., 3600.)
-    np.testing.assert_almost_equal(new_state.soc, 0.)
-    np.testing.assert_almost_equal(new_state.voltage, 3., decimal=2)
+    npt.assert_almost_equal(new_state.soc, 0.)
+    npt.assert_almost_equal(new_state.voltage, 3., decimal=2)
 
 
 def test_dynamic_pred_step():
@@ -115,8 +117,8 @@ def test_dynamic_pred_step():
     voltage_0 = pred.ocv(soc_0)
 
     new_state = pred.take_step(state, lambda t: 0., 300.)
-    np.testing.assert_almost_equal(new_state.soc, soc_0)
-    np.testing.assert_almost_equal(new_state.voltage, voltage_0)
+    npt.assert_almost_equal(new_state.soc, soc_0)
+    npt.assert_almost_equal(new_state.voltage, voltage_0)
 
 
 def test_incompatible_state():
