@@ -445,11 +445,11 @@ def test_hysteresis():
     assert sim_wh.gamma == 50.
     assert sim_wh.M_hyst(0.) == 0.07
 
-    discharge = thev.Experiment()
+    discharge = thev.Experiment(max_step=10.)
     discharge.add_step('current_C', 1., (3600., 10.), limits=('soc', 0.5))
     discharge.add_step('current_A', 0., (600., 10.))
 
-    charge = thev.Experiment()
+    charge = thev.Experiment(max_step=10.)
     charge.add_step('current_C', -1., (3600., 10.), limits=('soc', 0.8))
     charge.add_step('current_A', 0., (600., 10.))
 
@@ -473,7 +473,7 @@ def test_hysteresis():
     npt.assert_allclose(soln.vars['hysteresis_V'][-1], -0.07, rtol=1e-4)
     npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
-        sim_woh.ocv(0.5) - 0.07,
+        sim_wh.ocv(0.5) - 0.07,
         decimal=2,
     )
 
@@ -481,7 +481,7 @@ def test_hysteresis():
     npt.assert_allclose(soln.vars['hysteresis_V'][-1], 0.07, rtol=1e-4)
     npt.assert_almost_equal(
         soln.vars['voltage_V'][-1],
-        sim_woh.ocv(0.8) + 0.07,
+        sim_wh.ocv(0.8) + 0.07,
         decimal=2,
     )
 

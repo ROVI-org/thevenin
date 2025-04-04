@@ -48,7 +48,7 @@ $$mC_p\frac{dT_{\rm cell}}{dt} = Q_{\rm gen} + Q_{\rm conv},$$
 
 where $m$ is mass (kg), $C_p$ is specific heat capacity (J/kg/K), $Q_{\rm gen}$ is the heat generation (W), and $Q_{\rm conv}$ is the convective heat loss (W). Heat generation and convection are defined by
 
-$$Q_{\rm gen} = I \times (V_{\rm OCV}({\rm SOC}) - V_{\rm cell}),$$
+$$Q_{\rm gen} = I \times (V_{\rm OCV}({\rm SOC}) + h - V_{\rm cell}),$$
 $$Q_{\rm conv} = h_TA(T_{\infty} - T_{\rm cell}),$$
 
 where $h_T$ is the convecitive heat transfer coefficient (W/m<sup>2</sup>/K), $A$ is heat loss area (m<sup>2</sup>), and $T_{\infty}$ is the air/room temperature (K). $V_{\rm OCV}$ is the open circuit voltage (V) and is a function of SOC.

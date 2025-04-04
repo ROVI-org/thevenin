@@ -41,7 +41,7 @@ where :math:`m` is mass (kg), :math:`C_p` is specific heat capacity (J/kg/K), :m
 .. math:: 
 
     \begin{align}
-      &\dot{Q}_{\rm gen} = I \times (V_{\rm OCV}({\rm SOC}) - V_{\rm cell}), \\
+      &\dot{Q}_{\rm gen} = I \times (V_{\rm OCV}({\rm SOC}) + h - V_{\rm cell}), \\
       &\dot{Q}_{\rm conv} = h_TA(T_{\infty} - T_{\rm cell}),
     \end{align}
 
