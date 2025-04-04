@@ -13,7 +13,7 @@
 - Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once, replaces `show_plot` option in `Solutions` ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Bug Fixes
-None.
+- Hyseteresis voltage was missing in `Qgen` heat transfer terms, now incorporated ([#11](https://github.com/NREL/thevenin/pull/11))
 
 ### Breaking Changes
 - New hysteresis option means users will need to update old `params` inputs to also include `gamma` and `M_hyst` ([#7](https://github.com/NREL/thevenin/pull/7))

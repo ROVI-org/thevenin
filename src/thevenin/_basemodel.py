@@ -326,7 +326,7 @@ class BaseModel(ABC):
         rhs[ptr['soc']] = -ce*current*Q_inv
 
         # temperature (differential)
-        Q_gen = current*(ocv - voltage)
+        Q_gen = current*(ocv + hyst - voltage)
         Q_conv = self.h_therm*self.A_therm*(self.T_inf - T_cell)
 
         rhs[ptr['T_cell']] = alpha_inv * (Q_gen + Q_conv) \
