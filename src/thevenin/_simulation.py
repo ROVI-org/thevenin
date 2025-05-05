@@ -112,7 +112,7 @@ class Simulation(BaseModel):
 
         self._ptr = ptr
         self._algidx = algidx
-        self._mass_matrix = np.array(mass_matrix)
+        self._mass_matrix = mass_matrix
 
         self._t0 = 0.
         if isinstance(initial_state, BaseSolution):

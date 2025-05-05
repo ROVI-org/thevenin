@@ -197,6 +197,8 @@ class BaseModel(ABC):
             raise ValueError("'params' contains invalid and/or excess"
                              f" key/value pairs: {extra_keys=}")
 
+        self._T_ref = self.T_inf
+
         self.pre()
 
     def __repr__(self) -> str:  # pragma: no cover
@@ -298,7 +300,7 @@ class BaseModel(ABC):
 
         # state
         soc = sv[ptr['soc']]
-        T_cell = sv[ptr['T_cell']]*self.T_inf
+        T_cell = sv[ptr['T_cell']]*self._T_ref
         hyst = sv[ptr['hyst']]
         eta_j = sv[ptr['eta_j']]
 
@@ -308,7 +310,7 @@ class BaseModel(ABC):
 
         # dependent parameters
         Q_inv = 1. / (3600. * self.capacity)
-        alpha_inv = 1. / (self.mass * self.Cp * self.T_inf)
+        alpha_inv = 1. / (self.mass * self.Cp * self._T_ref)
 
         # current, voltage, and power - different for Simulation/Prediction
         if self._classname == 'Simulation':

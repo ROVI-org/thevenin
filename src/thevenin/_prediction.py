@@ -231,7 +231,7 @@ class Prediction(BaseModel):
 
         state = {}
         for k, v in ptr.items():
-            state[k] = array[v] * (self.T_inf if k == 'T_cell' else 1.)
+            state[k] = array[v] * (self._T_ref if k == 'T_cell' else 1.)
 
         return TransientState(**state)
 
@@ -266,7 +266,7 @@ class Prediction(BaseModel):
 
         sv = np.zeros(size)
         for k, v in ptr.items():
-            sv[v] = getattr(state, k) / (self.T_inf if k == 'T_cell' else 1.)
+            sv[v] = getattr(state, k) / (self._T_ref if k == 'T_cell' else 1.)
 
         return sv
 

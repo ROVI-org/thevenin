@@ -157,7 +157,7 @@ class BaseSolution(IDAResult):
         time = self.t
 
         soc = self.y[:, ptr['soc']]
-        T_cell = self.y[:, ptr['T_cell']]*sim.T_inf
+        T_cell = self.y[:, ptr['T_cell']]*sim._T_ref
         hyst = self.y[:, ptr['hyst']]
         eta_j = self.y[:, ptr['eta_j']]
         voltage = self.y[:, ptr['V_cell']]
