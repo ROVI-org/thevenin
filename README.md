@@ -20,7 +20,7 @@
 [pep-l]: https://www.python.org/dev/peps/pep-0008
 
 ## Summary
-This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series reistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC pairs; however, the model can be run with as few as zero, and as many as $N$.
+This package is a wrapper for the well-known Thevenin equivalent circuit model. The model is comprised of a single series resistor followed by any number of parallel RC pairs. Figure 1 below illustrates a circuit with 2 RC pairs; however, the model can be run with as few as zero, and as many as $N$.
 
 <p align="center">
   <img alt="2RC Thevenin circuit." style="width: 75%; min-width: 250px; max-width: 500px;" 
@@ -40,9 +40,9 @@ The hysteresis only includes a dynamic component and neglects any instantaneous 
 
 $$\frac{dh}{dt} = \bigg| \frac{\eta_{\rm ce} I \gamma}{3600 Q_{\rm max}} \bigg| \times (-{\rm sign}(I)M({\rm SOC}) - h),$$
 
-The solution to this expression causes $h$ to exponentially decaying toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internally evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis you can set both $\gamma$ and $M$ to zero.
+The solution to this expression causes $h$ to exponentially decay toward $-{\rm sign}(I)M({\rm SOC})$ at a rate determined by the leading coefficient. The approach rate can be controlled with the unitless parameter $\gamma$. The magnitude of hysteresis $M$ can be defined as a function of SOC for maximum flexibility. The constant or expression used for $M$ should always be positive. The model internally evaluates ${\rm sign}(I)$ to force $h$ to go toward positive and negative $M$ during charge and discharge events, respectively. When calibrating a model against a cell chemistry that has negligible hysteresis, you can set both $\gamma$ and $M$ to zero.
 
-The thermal submodel assumes uniform temperature within the cell. The temperature increases while the cell is active according to
+The thermal submodel assumes uniform temperature within the cell. The temperature increases while the cell is active, according to
 
 $$mC_p\frac{dT_{\rm cell}}{dt} = Q_{\rm gen} + Q_{\rm conv},$$
 
@@ -74,10 +74,10 @@ conda install -c conda-forge thevenin
 
 If you run into issues with installation due to the [scikit-sundae](https://github.com/NREL/scikit-sundae) dependency, please submit an issue [here](https://github.com/NREL/scikit-sundae/issues). We also manage this solver package, but distribute it separately since it is not developed in pure Python.
 
-For those interested in setting up a developer and/or editable version of this software please see the directions available in the "Development" section of our [documentation](https://thevenin.readthedocs.io/en/latest/development).
+For those interested in setting up a developer and/or editable version of this software, please see the directions available in the "Development" section of our [documentation](https://thevenin.readthedocs.io/en/latest/development).
 
 ## Get Started
-The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To learn more about the model and see more detailed examples check out the [documentation](https://thevenin.readthedocs.io/) on Read the Docs. Note that there are two interfaces to the model: `Simulation` and `Prediction`. These are optimized for full timeseries simulations and step-by-step state predictions, respectively.
+The API is organized around three main classes that allow you to construct the model, define an experiment, and interact with the solution. A basic example for a constant-current discharge is given below. To learn more about the model and see more detailed examples, check out the [documentation](https://thevenin.readthedocs.io/) on Read the Docs. Note that there are two interfaces to the model: `Simulation` and `Prediction`. These are optimized for full timeseries simulations and step-by-step state predictions, respectively.
 
 ```python
 import thevenin as thev
@@ -95,7 +95,7 @@ soln.plot('time_h', 'voltage_V')
 * If you are new to Python, check out [Spyder IDE](https://www.spyder-ide.org/). Spyder is a powerful interactive development environment (IDE) that can make programming in Python more approachable to new users.
 
 ## Citing this Work
-This work was authored by researchers at the National Renewable Energy Laboratory (NREL). If you use use this package in your work, please include the following citation:
+This work was authored by researchers at the National Renewable Energy Laboratory (NREL). If you use this package in your work, please include the following citation:
 
 > Randall, Corey R. "thevenin: Equivalent circuit models in Python [SWR-24-132]." Computer software, Nov. 2024. url: https://github.com/NREL/thevenin. doi: https://doi.org/10.11578/dc.20241125.2.
 
