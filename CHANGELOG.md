@@ -13,6 +13,7 @@
 - Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once, replaces `show_plot` option in `Solutions` ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Bug Fixes
+- Change to using `_T_ref` to scale the temperature equation since `T_inf` can be modified ([#12](https://github.com/NREL/thevenin/pull/12))
 - Hyseteresis voltage was missing in `Qgen` heat transfer terms, now incorporated ([#11](https://github.com/NREL/thevenin/pull/11))
 
 ### Breaking Changes
