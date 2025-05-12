@@ -97,7 +97,7 @@ soln.plot('time_h', 'voltage_V')
 ## Citing this Work
 This work was authored by researchers at the National Renewable Energy Laboratory (NREL). If you use use this package in your work, please include the following citation:
 
-> Randall, Corey R. "thevenin: Equivalent circuit models in Python [SWR-24-132]." Computer software. url: https://github.com/NREL/thevenin. doi: https://doi.org/10.11578/dc.20241125.2.
+> Randall, Corey R. "thevenin: Equivalent circuit models in Python [SWR-24-132]." Computer software, Nov. 2024. url: https://github.com/NREL/thevenin. doi: https://doi.org/10.11578/dc.20241125.2.
 
 For convenience, we also provide the following for your BibTex:
 
@@ -107,6 +107,7 @@ For convenience, we also provide the following for your BibTex:
   author = {Randall, Corey R.},
   doi = {10.11578/dc.20241125.2},
   url = {https://github.com/NREL/thevenin},
+  month = {Nov.},
   year = {2024},
 }
 ```
