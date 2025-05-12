@@ -8,6 +8,34 @@ import thevenin as thev
 import matplotlib.pyplot as plt
 
 
+def dict_params(num_RC_pairs: int = 0) -> dict:
+
+    coeffs = np.array([84.6, -348.6, 592.3, -534.3, 275., -80.3, 12.8, 2.8])
+
+    params = {
+        'num_RC_pairs': num_RC_pairs,
+        'soc0': 0.5,
+        'capacity': 1.,
+        'ce': 1.,
+        'gamma': 0.,
+        'mass': 0.5,
+        'isothermal': False,
+        'Cp': 1150.,
+        'T_inf': 300.,
+        'h_therm': 12.,
+        'A_therm': 1.,
+        'ocv': lambda soc: np.polyval(coeffs, soc),
+        'M_hyst': lambda soc: 0.,
+        'R0': lambda soc, T_cell: 0.05 + 0.05*soc - T_cell/1e4,
+    }
+
+    for j in range(1, num_RC_pairs + 1):
+        params['R' + str(j)] = lambda soc, T: 0.01 + 0.01*soc - T/3e4
+        params['C' + str(j)] = lambda soc, T: 10. + 10.*soc - T/3e1
+
+    return params
+
+
 @pytest.fixture(scope='function')  # cannot be module b/c appends
 def soln():
 
@@ -85,14 +113,20 @@ def test_cycle_from_single_step(soln):
 def test_append_errors(soln):
 
     # append wrong size solution (different num_RC_pairs)
+    sim0 = thev.Simulation(dict_params(0))
+    sim1 = thev.Simulation(dict_params(1))
+
+    expr = thev.Experiment()
+    expr.add_step('current_C', 1., (3600., 1.), limits=('voltage_V', 3.))
+
+    soln0 = sim0.run(expr)
+    soln1 = sim1.run(expr)
     with pytest.raises(ValueError):
-        step0 = soln.get_steps(0)
-        step0._sim.num_RC_pairs += 1
-        soln.append_soln(step0)
+        soln0.append_soln(soln1)
 
     # only works with StepSolution and CycleSolution
+    sim = soln._sim
     with pytest.raises(TypeError):
-        sim = soln._sim
         soln.append_soln(sim)
 
 

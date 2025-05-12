@@ -7,13 +7,12 @@ import numpy.testing as npt
 from scipy.integrate import cumulative_trapezoid
 
 
-@pytest.fixture(scope='function')
-def dict_params():
+def dict_params(num_RC_pairs: int = 0) -> dict:
 
     coeffs = np.array([84.6, -348.6, 592.3, -534.3, 275., -80.3, 12.8, 2.8])
 
     params = {
-        'num_RC_pairs': 0,
+        'num_RC_pairs': num_RC_pairs,
         'soc0': 0.5,
         'capacity': 1.,
         'ce': 1.,
@@ -29,40 +28,29 @@ def dict_params():
         'R0': lambda soc, T_cell: 0.05 + 0.05*soc - T_cell/1e4,
     }
 
+    for j in range(1, num_RC_pairs + 1):
+        params['R' + str(j)] = lambda soc, T: 0.01 + 0.01*soc - T/3e4
+        params['C' + str(j)] = lambda soc, T: 10. + 10.*soc - T/3e1
+
     return params
 
 
 @pytest.fixture(scope='function')
-def sim_0RC(dict_params):
-    return thev.Simulation(dict_params)
+def sim_0RC():
+    params = dict_params(0)
+    return thev.Simulation(params)
 
 
 @pytest.fixture(scope='function')
-def sim_1RC(dict_params):
-    sim = thev.Simulation(dict_params)
-
-    sim.num_RC_pairs = 1
-    sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-    sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-
-    sim.pre()
-
-    return sim
+def sim_1RC():
+    params = dict_params(1)
+    return thev.Simulation(params)
 
 
 @pytest.fixture(scope='function')
-def sim_2RC(dict_params):
-    sim = thev.Simulation(dict_params)
-
-    sim.num_RC_pairs = 2
-    sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-    sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-    sim.R2 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-    sim.C2 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-
-    sim.pre()
-
-    return sim
+def sim_2RC():
+    params = dict_params(2)
+    return thev.Simulation(params)
 
 
 @pytest.fixture(scope='function')
@@ -107,16 +95,17 @@ def dynamic_power():
     return expr
 
 
-def test_bad_initialization(dict_params):
+def test_bad_initialization():
 
     # wrong params type
     with pytest.raises(TypeError):
         _ = thev.Simulation(['wrong_type'])
 
     # invalid/excess key/value pairs
+    params = dict_params()
+    params['fake'] = 'parameter'
     with pytest.raises(ValueError):
-        dict_params['fake'] = 'parameter'
-        _ = thev.Simulation(dict_params)
+        _ = thev.Simulation(params)
 
 
 def test_sim_w_yaml_input(constant_steps, dynamic_current, dynamic_voltage,
@@ -158,57 +147,57 @@ def test_bad_yaml_inputs():
     with pytest.raises(FileNotFoundError):
         _ = thev.Simulation('fake')
 
+    # missing attrs
+    params = dict_params(1)
+    _ = params.pop('R1')
+    with pytest.raises(AssertionError):
+        _ = thev.Simulation(params)
 
-def test_preprocessor_raises(dict_params, dynamic_current):
+    params = dict_params(1)
+    _ = params.pop('C1')
+    with pytest.raises(AssertionError):
+        _ = thev.Simulation(params)
+
+    # extra attrs
+    params = dict_params(1)
+    params['R2'] = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
+    with pytest.raises(ValueError):
+        _ = thev.Simulation(params)
+
+
+def test_preprocessor_raises(dynamic_current):
+
+    # can't change num_RC_pairs
+    sim = thev.Simulation(dict_params(0))
+    with pytest.raises(AttributeError):
+        sim.num_RC_pairs = 1
 
     # missing attrs
+    sim = thev.Simulation(dict_params(1))
+
+    del sim.R1
     with pytest.raises(AttributeError):
-        sim = thev.Simulation(dict_params)
-
-        sim.num_RC_pairs = 1
-        sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-
         sim.pre()
 
+    sim = thev.Simulation(dict_params(1))
+
+    del sim.C1
     with pytest.raises(AttributeError):
-        sim = thev.Simulation(dict_params)
-
-        sim.num_RC_pairs = 1
-        sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-
         sim.pre()
 
     # extra attrs - warning
+    sim = thev.Simulation(dict_params(1))
+    sim.R2 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
     with pytest.warns(UserWarning):
-        sim = thev.Simulation(dict_params)
-
-        sim.num_RC_pairs = 1
-        sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-        sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-        sim.R2 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-
         sim.pre()
 
-    # changed sv size w/o reset
-    with pytest.raises(ValueError):
-        sim = thev.Simulation(dict_params)
-
-        sim.num_RC_pairs = 1
-        sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-        sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-
-        sim.pre(initial_state=False)
-
     # soln size inconsistent with sim
+    sim0 = thev.Simulation(dict_params(0))
+    sim1 = thev.Simulation(dict_params(1))
+
+    soln = sim0.run(dynamic_current)
     with pytest.raises(ValueError):
-        sim = thev.Simulation(dict_params)
-        soln = sim.run(dynamic_current)
-
-        sim.num_RC_pairs = 1
-        sim.R1 = lambda soc, T_cell: 0.01 + 0.01*soc - T_cell/3e4
-        sim.C1 = lambda soc, T_cell: 10. + 10.*soc - T_cell/3e1
-
-        sim.pre(initial_state=soln)
+        sim1.pre(initial_state=soln)
 
 
 def test_preprocessing_initial_state_options(sim_0RC, constant_steps):
