@@ -9,7 +9,8 @@ dynamic = ["version"]
 description = "Equivalent circuit models in Python."
 keywords = ["ECM", "equivalent", "circuit", "model", "battery"]
 requires-python = ">=3.9,<3.14"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 authors = [
     { name = "Corey R. Randall" },
     { email = "corey.randall@nrel.gov" },
