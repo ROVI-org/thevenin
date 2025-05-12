@@ -96,11 +96,18 @@ class Prediction(BaseModel):
 
     This class is primarily intended for prediction-correction algorithms,
     e.g., Kalman filters. The interface is set up to let the user manage the
-    internal state via the :class:`~thevenin.TransientState` class. In addition
+    internal state via the :class:`~thevenin.TransientState` class. In addition,
     the model is only designed to run current-based loads in a step-by-step
     fashion. If you are looking to simulate more complex protocols and use the
     resulting timeseries data you should use the :class:`~thevenin.Simulation`
     class instead.
+
+    Note that this class and the :class:`~thevenin.Simulation` class share the
+    same ``params`` inputs. This is for convenience so that users can easily
+    switch between the two. However, the 'soc0' value has no real meaning for
+    the prediction interface. Instead, the user manages the state of charge for
+    each step through the ``TransientState`` interface. This means that you can
+    effectively ignore the 'soc0' input when using this class.
 
     """
 
@@ -109,18 +116,17 @@ class Prediction(BaseModel):
         Pre-process and prepare the model to make predictions. Specifically,
         this method builds pointers so it can manage mapping the state back
         and forth between the solver-required array format and the user-managed
-        ``TransientState`` class. So long as you do not change the size of the
-        circuit by dynamically modifying ``num_RC_pairs`` and any corresponding
-        resistor/capacitor attributes then this method will never need to be
-        run manually. In fact, we highly recommended that users not adjust
-        ``num_RC_pairs``. Instead, if you need a new circuit with a different
-        number of RC pairs, you should create a new instance of the model. If
-        you follow this recommendation you are less likely to run into complex
-        errors that can arise.
+        ``TransientState`` class.
 
         Returns
         -------
         None.
+
+        Notes
+        -----
+        This method runs during the class initialization. It generally does not
+        have to be run again unless you want to re-run internal checks on the
+        class instance.
 
         """
 

@@ -28,7 +28,7 @@ class Simulation(BaseModel):
     method ``pre()`` you can manually force the state to start at a value given
     by a previous solution, but you cannot individually overwrite and set any
     internal state variables. If you are interested in having more control,
-    see the :class:`~thevenin.Prediction` class instead which is intended more
+    see the :class:`~thevenin.Prediction` class instead, which is intended more
     for step-by-step predictions used in prediction-correction algorithms like
     Kalman filters.
 
@@ -39,48 +39,32 @@ class Simulation(BaseModel):
         Pre-process and prepare the model for running experiments.
 
         This method builds solution pointers, registers algebraic variable
-        indices, stores the mass matrix, and initializes the battery state.
+        indices, stores the mass matrix, and initializes the hidden state.
 
         Parameters
         ----------
         initial_state : bool | Solution
             Control how the model state is initialized. If True (default), the
             state is set to a rested condition at 'soc0'. If False, the state
-            is left untouched and only the parameters and pointers are updated.
-            Given a Solution instance, the state is set to the final state of
-            the solution. See notes for more information.
+            is left alone and only internal checks are run. Given a Solution
+            instance, the state is set to the final state of the solution. See
+            the notes for more information.
 
         Returns
         -------
         None.
 
-        Warning
-        -------
-        This method runs during the class initialization. It generally does not
-        have to be run again unless you modify model properties or attributes.
-        You should manually re-run the pre-processor if you change properties
-        after initialization. Forgetting to re-run the pre-processor can cause
-        inconsistencies between the updated properties and the pointers, state,
-        etc. If you are updating properties, but want the model's internal state
-        to not be reset back to a rested condition, use the ``initial_state``
-        option.
-
         Notes
         -----
-        Using ``initial_state=False`` will raise an error if you are changing
-        the size of your circuit (e.g., updating from one to two RC pairs).
-        Without re-initializing, the model's state vector would be a different
-        size than the circuit it is trying to solve. For this same reason, when
-        initializing based on a Solution instance, the solution must also be
+        This method runs during the class initialization. It generally does not
+        have to be run again unless you want to reset the internal hidden state.
+        However, there is limited control over how users can set the state. It
+        can either be set to a rested condition based on 'soc0', or it can be
+        initialized based on a ``Solution`` instance.
+
+        When initializing based on a Solution instance, the solution must be
         the same size as the current model. In other words, a 1RC-pair model
         cannot be initialized given a solution from a 2RC-pair circuit.
-
-        While any of the model parameters can be modified dynamically, it is
-        recommended to not adjust ``num_RC_pairs``. Instead, if you need a new
-        circuit with a different number of RC pairs, you should create a new
-        instance of the model. If you follow this recommendation you are less
-        likely to run into complex errors that can arise like the one mentioned
-        above.
 
         """
 
@@ -103,7 +87,7 @@ class Simulation(BaseModel):
 
         sv0 = np.zeros(ptr['size'])
         sv0[ptr['soc']] = self.soc0
-        sv0[ptr['T_cell']] = 1. * self.T_inf / self._T_ref
+        sv0[ptr['T_cell']] = self.T_inf / self._T_ref
         sv0[ptr['hyst']] = 0.
         sv0[ptr['eta_j']] = 0.
         sv0[ptr['V_cell']] = self.ocv(self.soc0)
@@ -124,11 +108,6 @@ class Simulation(BaseModel):
 
             self._sv0 = soln.y[-1].copy()
             self._svdot0 = soln.yp[-1].copy()
-
-        elif not initial_state:
-            if self._sv0.size != sv0.size:
-                raise ValueError("The pre-processor failed. The model state is"
-                                 " changing sizes but 'initial_state=False'.")
 
         elif initial_state:
             self._sv0 = sv0
@@ -155,11 +134,8 @@ class Simulation(BaseModel):
         The model's internal state is changed at the end of each experimental
         step. Consequently, you should not run steps out of order. You should
         always start with ``stepidx = 0`` and then progress to the subsequent
-        steps afterward. Run ``pre()`` after your last step to reset the state
-        back to a rested condition at 'soc0', if needed. Alternatively, you
-        can continue running experiments back-to-back without a pre-processing
-        in between if you want the following experiment to pick up from the
-        same state that the last experiment ended.
+        steps afterward. If at any time you want to reset the internal hidden
+        state back to a rested condition, use ``pre()``.
 
         See also
         --------
@@ -168,11 +144,11 @@ class Simulation(BaseModel):
 
         Notes
         -----
-        Using the ``run()`` loops through all steps in an experiment and then
-        stitches their solutions together. Most of the time, this is more
-        convenient. However, advantages for running step-by-step is that it
-        makes it easier to fine tune solver options, and allows for analyses
-        or control decisions in the middle of an experiment.
+        Using ``run()`` loops through all steps in an experiment and stitches
+        their solutions together. Most of the time, this is more convenient.
+        However, running step-by-step provides maximum control to fine tune
+        solver options. It also allows for complex analyses and/or control
+        decisions to be performed between experimental steps.
 
         """
 

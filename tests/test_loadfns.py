@@ -70,21 +70,21 @@ def test_ramp_2_constant():
 def test_step_function():
 
     # Inputs must be 1D
+    tp = np.array([[0, 1, 5]])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([[0, 1, 5]])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.StepFunction(tp, yp)
 
     # Inputs must be same length
+    tp = np.array([0, 1])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([0, 1])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.StepFunction(tp, yp)
 
     # tp must be strictly increasing
+    tp = np.array([0, -1, 5])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([0, -1, 5])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.StepFunction(tp, yp)
 
     tp = np.array([0, 1, 5])
@@ -106,27 +106,27 @@ def test_step_function():
 def test_ramped_steps():
 
     # Inputs must be 1D
+    tp = np.array([[0, 1, 5]])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([[0, 1, 5]])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.RampedSteps(tp, yp, 1.)
 
     # Inputs must be same length
+    tp = np.array([0, 1])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([0, 1])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.RampedSteps(tp, yp, 1.)
 
     # t_ramp must be strictly positive
+    tp = np.array([0, 1, 5])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([0, 1, 5])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.RampedSteps(tp, yp, 0.)
 
     # tp must be strictly increasing
+    tp = np.array([0, -1, 5])
+    yp = np.array([-1, 0, 1])
     with pytest.raises(ValueError):
-        tp = np.array([0, -1, 5])
-        yp = np.array([-1, 0, 1])
         _ = thev.loadfns.RampedSteps(tp, yp, 1.)
 
     tp = np.array([0, 1, 5])

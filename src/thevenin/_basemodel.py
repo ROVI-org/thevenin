@@ -150,6 +150,12 @@ class BaseModel(ABC):
         not provide any resistance or capacitance values besides the series
         resistance R0, which is always required.
 
+        While most model parameters can be changed after initialization, the
+        ``num_RC_pairs`` is fixed. Consequently, you cannot add nor remove Rj
+        and Cj attributes. However, modifying the values of Rj and Cj functions
+        is allowed. If you need a circuit with a different number of RC pairs
+        then you will need to create a separate instance.
+
         """
 
         if isinstance(params, dict):
@@ -171,7 +177,7 @@ class BaseModel(ABC):
             'A_therm',
         ]
 
-        self.num_RC_pairs = params.pop('num_RC_pairs')
+        self._num_RC_pairs = params.pop('num_RC_pairs')
         self.soc0 = params.pop('soc0')
         self.capacity = params.pop('capacity')
         self.ce = params.pop('ce')
@@ -187,6 +193,10 @@ class BaseModel(ABC):
         self.R0 = params.pop('R0')
 
         for j in range(1, self.num_RC_pairs + 1):
+
+            assert 'R' + str(j) in params, f"'params' is missing R{str(j)}"
+            assert 'C' + str(j) in params, f"'params' is missing C{str(j)}"
+
             setattr(self, 'R' + str(j), params.pop('R' + str(j)))
             setattr(self, 'C' + str(j), params.pop('C' + str(j)))
 
@@ -224,6 +234,11 @@ class BaseModel(ABC):
     def classname(self) -> str:
         """Return the name of the class."""
         return self.__class__.__name__
+
+    @property
+    def num_RC_pairs(self) -> int:
+        """Return the number of RC pairs."""
+        return self._num_RC_pairs
 
     @property
     def _classname(self) -> str:
