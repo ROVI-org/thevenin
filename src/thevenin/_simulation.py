@@ -103,7 +103,7 @@ class Simulation(BaseModel):
 
         sv0 = np.zeros(ptr['size'])
         sv0[ptr['soc']] = self.soc0
-        sv0[ptr['T_cell']] = 1.
+        sv0[ptr['T_cell']] = 1. * self.T_inf / self._T_ref
         sv0[ptr['hyst']] = 0.
         sv0[ptr['eta_j']] = 0.
         sv0[ptr['V_cell']] = self.ocv(self.soc0)
