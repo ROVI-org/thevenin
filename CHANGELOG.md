@@ -8,6 +8,7 @@
 - Added hysteresis (`hsyt`) to the model, controlled with `gamma` and `M_hyst` parameters ([#7](https://github.com/NREL/thevenin/pull/7))
 
 ### Optimizations
+- Make `num_RC_pairs` read-only so now `pre` only needs to be called to reset the state ([#13](https://github.com/NREL/thevenin/pull/13))
 - Use `np.testing` where possible in tests for more informative fail statements ([#10](https://github.com/NREL/thevenin/pull/10))
 - Pre-initialize `CycleSolution` arrays rather than appending lists, much faster ([#7](https://github.com/NREL/thevenin/pull/7))
 - Introduce `ExitHandler` to ensure `plt.show` doesn't get registered more than once, replaces `show_plot` option in `Solutions` ([#7](https://github.com/NREL/thevenin/pull/7))

@@ -150,9 +150,9 @@ class BaseModel(ABC):
         not provide any resistance or capacitance values besides the series
         resistance R0, which is always required.
 
-        While most model parameters can be changed after initialization, the
-        ``num_RC_pairs`` is fixed. Consequently, you cannot add nor remove Rj
-        and Cj attributes. However, modifying the values of Rj and Cj functions
+        While most parameters can be dynamically updated, the ``num_RC_pairs``
+        attribute is read-only. Consequently, you cannot add nor remove Rj and
+        Cj attributes. However, modifying the values of Rj and Cj functions
         is allowed. If you need a circuit with a different number of RC pairs
         then you will need to create a separate instance.
 
