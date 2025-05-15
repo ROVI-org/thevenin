@@ -12,9 +12,14 @@ class TransientState:
     def __init__(self, soc: float, T_cell: float, hyst: float,
                  eta_j: np.ndarray | None) -> None:
         """
-        This class allows the user to manage the state when working with the
-        :class:`~thevenin.Prediction` class. The user only has control over
-        independent state variables (i.e., soc, T_cell, hyst, eta_j).
+        This class allows the user to manage the state when working with model
+        classes. The user only has control over independent state variables
+        (i.e., soc, T_cell, hyst, eta_j). The :class:`~thevenin.Prediction`
+        interface requires an instance of the ``TransientState`` each time a
+        prediction step is made. You can optionally use instances of this class
+        to define the starting state of :class:`~thevenin.Simulation` instances
+        using their ``pre()`` method. In general, however, the model interface
+        for simulations is more limited when it comes to user-defined states.
 
         The read-only ``voltage`` property will return None if the state was
         user defined. If instead the state was returned by the ``Prediction``
@@ -28,13 +33,13 @@ class TransientState:
             Temperature of the cell [K].
         hyst : float
             Hysteresis voltage [V].
-        eta_j : np.ndarray | None
+        eta_j : 1D np.array | None
             RC pair overpotentials [V].
 
         See also
         --------
-        Prediction :
-            The model wrapper that interfaces with ``TransientState``.
+        Simulation : The model wrapper used for timeseries simulations.
+        Prediction : The model wrapper used for step-by-step predictions.
 
         """
 

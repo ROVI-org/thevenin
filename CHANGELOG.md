@@ -3,12 +3,14 @@
 ## [Unreleased](https://github.com/NREL/thevenin)
 
 ### New Features
+- Allow `TransientState` as an input option to `sim.pre()` ([#14](https://github.com/NREL/thevenin/pull/14))
 
 ### Optimizations
 
 ### Bug Fixes
 
 ### Breaking Changes
+- `initial_state` was renamed to `state0` in `sim.pre()` ([#14](https://github.com/NREL/thevenin/pull/14))
 
 ## [v0.2.0](https://github.com/NREL/thevenin/tree/v0.2.0)
 

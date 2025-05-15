@@ -197,28 +197,60 @@ def test_preprocessor_raises(dynamic_current):
 
     soln = sim0.run(dynamic_current)
     with pytest.raises(ValueError):
-        sim1.pre(initial_state=soln)
+        sim1.pre(state0=soln)
 
 
-def test_preprocessing_initial_state_options(sim_0RC, constant_steps):
-    sv0 = sim_0RC._sv0.copy()
-    svdot0 = sim_0RC._svdot0.copy()
+def test_preprocessing_state0_options(sim_2RC, constant_steps):
+    sv0 = sim_2RC._sv0.copy()
+    svdot0 = sim_2RC._svdot0.copy()
 
-    soln = sim_0RC.run(constant_steps)
-    npt.assert_allclose(sv0, sim_0RC._sv0)
-    npt.assert_allclose(svdot0, sim_0RC._svdot0)
+    soln = sim_2RC.run(constant_steps)
+    npt.assert_allclose(sv0, sim_2RC._sv0)
+    npt.assert_allclose(svdot0, sim_2RC._svdot0)
 
-    sim_0RC.pre(initial_state=soln)
-    npt.assert_allclose(soln.y[-1], sim_0RC._sv0)
-    npt.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
+    # given a Solution instance
+    sim_2RC.pre(state0=soln)
+    npt.assert_allclose(soln.y[-1], sim_2RC._sv0)
+    npt.assert_allclose(soln.yp[-1], sim_2RC._svdot0)
 
-    sim_0RC.pre(initial_state=False)
-    npt.assert_allclose(soln.y[-1], sim_0RC._sv0)
-    npt.assert_allclose(soln.yp[-1], sim_0RC._svdot0)
+    # with bool values
+    sim_2RC.pre(state0=False)
+    npt.assert_allclose(soln.y[-1], sim_2RC._sv0)
+    npt.assert_allclose(soln.yp[-1], sim_2RC._svdot0)
 
-    sim_0RC.pre()
-    npt.assert_allclose(sv0, sim_0RC._sv0)
-    npt.assert_allclose(svdot0, sim_0RC._svdot0)
+    sim_2RC.pre()
+    npt.assert_allclose(sv0, sim_2RC._sv0)
+    npt.assert_allclose(svdot0, sim_2RC._svdot0)
+
+    # given a TransientState
+    state = thev.TransientState(
+        soc=0.5,
+        T_cell=400.,
+        hyst=10.,
+        eta_j=None,
+    )
+    with pytest.raises(ValueError):  # incompatible num_RC_pairs
+        sim_2RC.pre(state)
+
+    state = thev.TransientState(
+        soc=0.5,
+        T_cell=400.,
+        hyst=10.,
+        eta_j=[1e-3, 1e-3],
+    )
+
+    sv0 = np.zeros(sim_2RC._ptr['size'])
+    sv0[sim_2RC._ptr['soc']] = state.soc
+    sv0[sim_2RC._ptr['T_cell']] = state.T_cell / sim_2RC._T_ref
+    sv0[sim_2RC._ptr['hyst']] = state.hyst
+    sv0[sim_2RC._ptr['eta_j']] = state.eta_j
+    sv0[sim_2RC._ptr['V_cell']] = sim_2RC.ocv(state.soc)
+
+    svdot0 = np.zeros_like(sv0)
+
+    sim_2RC.pre(state0=state)
+    npt.assert_allclose(sv0, sim_2RC._sv0)
+    npt.assert_allclose(svdot0, sim_2RC._svdot0)
 
 
 def test_run_step(sim_2RC, constant_steps):

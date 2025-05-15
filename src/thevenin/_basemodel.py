@@ -22,21 +22,21 @@ def calculated_current(voltage, ocv, hyst, eta_j, R0) -> float | np.ndarray:
 
     Parameters
     ----------
-    voltage : float | np.ndarray
+    voltage : float | 1D np.array
         Cell voltage at a single or multiple times [V].
-    ocv : float | np.ndarray
+    ocv : float | 1D np.array
         Open-circuit voltage at a single or multiple times [V].
-    hyst : float | np.ndarray
+    hyst : float | 1D np.array
         Hysteresis voltage at a single or multiple times [V].
-    eta_j : np.ndarray
+    eta_j : 1D or 2D np.array
         RC-pair overpotentials at a single (1D) or multiple (2D) times [V]. If
         2D the rows correspond to time indices and columns to each RC pair.
-    R0 : float | np.ndarray
+    R0 : float | 1D np.array
         Series resistance values at a single or multiple times [Ohm].
 
     Returns
     -------
-    current : float | np.ndarray
+    current : float | 1D np.array
         Calculated current at a single or multiple times [A].
 
     """
@@ -62,21 +62,21 @@ def calculated_voltage(current, ocv, hyst, eta_j, R0) -> float | np.ndarray:
 
     Parameters
     ----------
-    current : float | np.ndarray
+    current : float | 1D np.array
         Current at a single or multiple times [A].
-    ocv : float | np.ndarray
+    ocv : float | 1D np.array
         Open-circuit voltage at a single or multiple times [V].
-    hyst : float | np.ndarray
+    hyst : float | 1D np.array
         Hysteresis voltage at a single or multiple times [V].
-    eta_j : np.ndarray
+    eta_j : 1D or 2D np.array
         RC-pair overpotentials at a single (1D) or multiple (2D) times [V]. If
         2D the rows correspond to time indices and columns to each RC pair.
-    R0 : float | np.ndarray
+    R0 : float | 1D np.array
         Series resistance values at a single or multiple times [Ohm].
 
     Returns
     -------
-    voltage : float | np.ndarray
+    voltage : float | 1D np.array
         Calculated voltage at a single or multiple times [V].
 
     """
