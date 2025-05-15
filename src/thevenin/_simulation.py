@@ -10,6 +10,7 @@ from thevenin._basemodel import BaseModel
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._experiment import Experiment
+    from ._prediction import TransientState
     from ._solutions import BaseSolution, StepSolution, CycleSolution
 
     Solution = TypeVar('Solution', bound='BaseSolution')
@@ -26,15 +27,12 @@ class Simulation(BaseModel):
     beginning of all simulations, the model is assumed in a fully rested state
     at the user-supplied state-of-charge ``soc0``. Through the pre-processor
     method ``pre()`` you can manually force the state to start at a value given
-    by a previous solution, but you cannot individually overwrite and set any
-    internal state variables. If you are interested in having more control,
-    see the :class:`~thevenin.Prediction` class instead, which is intended more
-    for step-by-step predictions used in prediction-correction algorithms like
-    Kalman filters.
+    a previous solution, or using a :class:`~thevenin.TransientState` instance
+    for maximum control.
 
     """
 
-    def pre(self, initial_state: bool | Solution = True) -> None:
+    def pre(self, state0: bool | Solution | TransientState = True) -> None:
         """
         Pre-process and prepare the model for running experiments.
 
@@ -43,7 +41,7 @@ class Simulation(BaseModel):
 
         Parameters
         ----------
-        initial_state : bool | Solution
+        state0 : bool | Solution | TransientState
             Control how the model state is initialized. If True (default), the
             state is set to a rested condition at 'soc0'. If False, the state
             is left alone and only internal checks are run. Given a Solution
@@ -58,17 +56,20 @@ class Simulation(BaseModel):
         -----
         This method runs during the class initialization. It generally does not
         have to be run again unless you want to reset the internal hidden state.
-        However, there is limited control over how users can set the state. It
-        can either be set to a rested condition based on 'soc0', or it can be
-        initialized based on a ``Solution`` instance.
+        Using the ``state0`` argument, you can set the state back to a rested
+        condition at 'soc0', to the final value from a ``Solution``, or to a
+        user-defined state given by a ``TransientState`` instance.
 
         When initializing based on a Solution instance, the solution must be
         the same size as the current model. In other words, a 1RC-pair model
-        cannot be initialized given a solution from a 2RC-pair circuit.
+        cannot be initialized by a solution from a 2RC-pair circuit. Similarly,
+        the eta_j size from a TransientState instance must match the size of
+        RC pairs in the current model.
 
         """
 
         from ._solutions import BaseSolution
+        from ._prediction import TransientState
 
         self._check_RC_pairs()  # inherited from BaseModel
 
@@ -99,17 +100,33 @@ class Simulation(BaseModel):
         self._mass_matrix = mass_matrix
 
         self._t0 = 0.
-        if isinstance(initial_state, BaseSolution):
-            soln = deepcopy(initial_state)
+        if isinstance(state0, BaseSolution):
+            soln = deepcopy(state0)
             if soln.y[-1].size != sv0.size:
                 raise ValueError("Cannot initialize state based on Solution"
-                                 " object given in 'initial_state'. The model"
-                                 " and solution have incompatible sizes.")
+                                 " object given in 'state0'. The model and"
+                                 " solution have incompatible sizes.")
 
-            self._sv0 = soln.y[-1].copy()
-            self._svdot0 = soln.yp[-1].copy()
+            self._sv0 = soln.y[-1]
+            self._svdot0 = soln.yp[-1]
 
-        elif initial_state:
+        elif isinstance(state0, TransientState):
+            state0 = deepcopy(state0)
+            if state0.num_RC_pairs != self.num_RC_pairs:
+                raise ValueError("Cannot initialize state from TransientState"
+                                 " object given in 'state0'. The model and"
+                                 " solution have incompatible sizes.")
+
+            sv0[ptr['soc']] = state0.soc
+            sv0[ptr['T_cell']] = state0.T_cell / self._T_ref
+            sv0[ptr['hyst']] = state0.hyst
+            sv0[ptr['eta_j']] = state0.eta_j
+            sv0[ptr['V_cell']] = self.ocv(state0.soc)
+
+            self._sv0 = sv0
+            self._svdot0 = svdot0
+
+        elif state0:
             self._sv0 = sv0
             self._svdot0 = svdot0
 
